@@ -3,14 +3,16 @@ name: Fetch TOB
 on:
   workflow_dispatch:
     inputs:
-      period:
-        description: Period to fetch
-        required: true
-        default: this_year
-        type: choice
-        options:
-          - this_year
-          - past_year
+      start_date:
+        description: "Start date (YYYY/MM/DD or YYYY-MM-DD). Empty = Jan 1 this year"
+        required: false
+        default: ""
+        type: string
+      end_date:
+        description: "End date (YYYY/MM/DD or YYYY-MM-DD). Empty = today"
+        required: false
+        default: ""
+        type: string
   schedule:
     - cron: "0 0 * * 1-5"
 
@@ -29,25 +31,31 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch TOB list
+      - name: Fetch TOB list and cases
         env:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
-          PERIOD="${{ github.event.inputs.period }}"
-          if [ -z "$PERIOD" ]; then
-            PERIOD="this_year"
+          START="${{ github.event.inputs.start_date }}"
+          END="${{ github.event.inputs.end_date }}"
+          if [ -n "$START" ]; then
+            ARGS=(--from-date "$START")
+            if [ -n "$END" ]; then
+              ARGS+=(--to-date "$END")
+            fi
+            python fetch_tob.py "${ARGS[@]}" --out output/tob_list.csv --cases-out output/tob_cases.csv
+          else
+            python fetch_tob.py --period this_year --out output/tob_list.csv --cases-out output/tob_cases.csv
           fi
-          python fetch_tob.py --period "$PERIOD" --out output/tob_list.csv
 
       - name: Commit CSV if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p output
-          git add output/tob_list.csv
+          git add output/tob_list.csv output/tob_cases.csv
           if git diff --staged --quiet; then
             echo "No changes"
           else
-            git commit -m "Update TOB list $(date -u +%Y-%m-%d)"
+            git commit -m "Update TOB list and cases $(date -u +%Y-%m-%d)"
             git push
           fi

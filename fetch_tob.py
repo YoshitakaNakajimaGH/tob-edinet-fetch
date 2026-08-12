@@ -4,11 +4,12 @@ EDINET API から TOB（公開買付）関連書類の一覧を取得し、CSV �
 
 流れ:
   1. 環境変数 EDINET_API_KEY を読む
-  2. 期間を決める（今年 / 過去1年 / 開始日指定）
+  2. 期間を決める（開始日指定 / 今年 / 過去1年）
   3. 日付を1日ずつ回す
   4. 書類一覧 API を呼ぶ
   5. docTypeCode 240-320 だけ残す
-  6. output/tob_list.csv に保存する
+  6. output/tob_list.csv（書類ごと）を保存する
+  7. ParentDocID で案件にまとめ output/tob_cases.csv を保存する
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -53,7 +55,12 @@ ROLE_HINTS = {
     "320": "対質問回答",
 }
 
-CSV_FIELDS = [
+OFFEROR_SIDE = {"240", "250", "260", "270", "280"}
+OPINION_SIDE = {"290", "300"}
+REPORT_SIDE = {"270", "280"}
+FILING_SIDE = {"240", "250"}
+
+LIST_FIELDS = [
     "SubmitDateTime",
     "DocTypeCode",
     "DocTypeName",
@@ -67,6 +74,33 @@ CSV_FIELDS = [
     "PdfFlag",
     "XbrlFlag",
     "ParentDocID",
+    "CaseID",
+]
+
+CASE_FIELDS = [
+    # filled now from list metadata
+    "CaseID",
+    "OfferorName",
+    "OfferorEdinetCode",
+    "TargetEdinetCode",
+    "FirstFilingDate",
+    "LastUpdateDate",
+    "Status",
+    "HasOpinion",
+    "LatestFilingDocID",
+    "LatestOpinionDocID",
+    "LatestReportDocID",
+    "DocCount",
+    "DocIDList",
+    # reserved for future PDF/XBRL enrichment (leave empty for now)
+    "OfferPrice",
+    "OfferPeriodStart",
+    "OfferPeriodEnd",
+    "OwnershipRatio",
+    "OpinionStance",
+    "FinalResultNote",
+    "EnrichmentStatus",
+    "LastEnrichedDocID",
 ]
 
 
@@ -77,11 +111,22 @@ def normalize_doc_type(code: object) -> str | None:
     return text or None
 
 
+def parse_user_date(value: str) -> date:
+    """Accept YYYY/MM/DD or YYYY-MM-DD."""
+    text = value.strip()
+    for fmt in ("%Y/%m/%d", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(text, fmt).date()
+        except ValueError:
+            continue
+    raise SystemExit(f"日付形式が不正です（YYYY/MM/DD または YYYY-MM-DD）: {value}")
+
+
 def resolve_range(period: str, from_date: str | None, to_date: str | None) -> tuple[date, date]:
     today = date.today()
     if from_date:
-        start = date.fromisoformat(from_date)
-        end = date.fromisoformat(to_date) if to_date else today
+        start = parse_user_date(from_date)
+        end = parse_user_date(to_date) if to_date else today
     elif period == "past_year":
         start = today - timedelta(days=365)
         end = today
@@ -125,6 +170,7 @@ def row_from_doc(doc: dict) -> dict | None:
         "PdfFlag": doc.get("pdfFlag") or "",
         "XbrlFlag": doc.get("xbrlFlag") or "",
         "ParentDocID": doc.get("parentDocID") or "",
+        "CaseID": "",
     }
 
 
@@ -141,12 +187,191 @@ def save_cache(cache_dir: Path, day: date, payload: dict) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 
 
-def write_csv(path: Path, rows: list[dict]) -> None:
+def write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
+
+
+def fallback_case_id(row: dict) -> str:
+    offeror = row.get("FilerEdinetCode") or ""
+    target = row.get("SubjectEdinetCode") or ""
+    # Opinion filings swap roles in EDINET metadata; normalize roughly.
+    if row.get("DocTypeCode") in OPINION_SIDE:
+        offeror, target = target, offeror
+    return f"fallback:{offeror}|{target}"
+
+
+def resolve_case_id(row: dict, by_id: dict[str, dict], memo: dict[str, str]) -> str:
+    doc_id = row.get("DocID") or ""
+    if not doc_id:
+        return fallback_case_id(row)
+    if doc_id in memo:
+        return memo[doc_id]
+
+    seen: list[str] = []
+    current_id = doc_id
+    external_parent: str | None = None
+
+    while current_id:
+        if current_id in memo:
+            root = memo[current_id]
+            break
+        if current_id in seen:
+            root = current_id
+            break
+        seen.append(current_id)
+        current = by_id.get(current_id)
+        if current is None:
+            # Parent points outside the fetched window.
+            external_parent = current_id if current_id != doc_id else None
+            root = None
+            break
+        parent = (current.get("ParentDocID") or "").strip()
+        if not parent:
+            root = current_id
+            break
+        if parent not in by_id:
+            external_parent = parent
+            root = None
+            break
+        current_id = parent
+    else:
+        root = doc_id
+
+    if root is None:
+        case_id = external_parent or fallback_case_id(row)
+    else:
+        case_id = root
+
+    for node in seen:
+        memo[node] = case_id
+    memo[doc_id] = case_id
+    return case_id
+
+
+def assign_case_ids(rows: list[dict]) -> None:
+    by_id = {r["DocID"]: r for r in rows if r.get("DocID")}
+    memo: dict[str, str] = {}
+    for row in rows:
+        row["CaseID"] = resolve_case_id(row, by_id, memo)
+
+
+def latest_doc(docs: list[dict], type_codes: set[str]) -> dict | None:
+    matched = [d for d in docs if d.get("DocTypeCode") in type_codes]
+    if not matched:
+        return None
+    return max(matched, key=lambda d: d.get("SubmitDateTime") or "")
+
+
+def earliest_doc(docs: list[dict], type_codes: set[str]) -> dict | None:
+    matched = [d for d in docs if d.get("DocTypeCode") in type_codes]
+    if not matched:
+        return None
+    return min(matched, key=lambda d: d.get("SubmitDateTime") or "")
+
+
+def case_status(docs: list[dict]) -> str:
+    codes = {d.get("DocTypeCode") for d in docs}
+    if "260" in codes:
+        return "撤回"
+    if codes & REPORT_SIDE:
+        return "報告書提出"
+    if "250" in codes:
+        return "訂正あり"
+    if "240" in codes:
+        return "届出中"
+    if codes & OPINION_SIDE:
+        return "意見表明のみ"
+    return "関連書類"
+
+
+def pick_offeror_target(docs: list[dict]) -> tuple[str, str, str]:
+    """Return OfferorName, OfferorEdinetCode, TargetEdinetCode."""
+    offeror_docs = [d for d in docs if d.get("DocTypeCode") in OFFEROR_SIDE]
+    preferred = sorted(offeror_docs, key=lambda d: d.get("SubmitDateTime") or "")
+    if preferred:
+        # Prefer values from the earliest filing-side doc, else any offeror-side.
+        filing_first = earliest_doc(docs, FILING_SIDE) or preferred[0]
+        return (
+            filing_first.get("FilerName") or "",
+            filing_first.get("FilerEdinetCode") or "",
+            filing_first.get("SubjectEdinetCode") or "",
+        )
+
+    opinion = latest_doc(docs, OPINION_SIDE)
+    if opinion:
+        # On opinion filings, filer is target and subject is often the offeror.
+        return (
+            "",
+            opinion.get("SubjectEdinetCode") or "",
+            opinion.get("FilerEdinetCode") or "",
+        )
+    # last resort
+    first = sorted(docs, key=lambda d: d.get("SubmitDateTime") or "")[0]
+    return (
+        first.get("FilerName") or "",
+        first.get("FilerEdinetCode") or "",
+        first.get("SubjectEdinetCode") or "",
+    )
+
+
+def build_cases(rows: list[dict]) -> list[dict]:
+    groups: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        case_id = row.get("CaseID") or fallback_case_id(row)
+        groups[case_id].append(row)
+
+    cases: list[dict] = []
+    for case_id, docs in groups.items():
+        docs_sorted = sorted(docs, key=lambda d: d.get("SubmitDateTime") or "")
+        offeror_name, offeror_code, target_code = pick_offeror_target(docs_sorted)
+
+        # If offeror name missing but we have an offeror-side doc later, fill name.
+        if not offeror_name:
+            for d in docs_sorted:
+                if d.get("DocTypeCode") in OFFEROR_SIDE and d.get("FilerName"):
+                    offeror_name = d["FilerName"]
+                    break
+
+        first_filing = earliest_doc(docs_sorted, {"240"}) or docs_sorted[0]
+        last_doc = docs_sorted[-1]
+        latest_filing = latest_doc(docs_sorted, FILING_SIDE)
+        latest_opinion = latest_doc(docs_sorted, OPINION_SIDE)
+        latest_report = latest_doc(docs_sorted, REPORT_SIDE)
+        has_opinion = "Yes" if latest_opinion else "No"
+        doc_ids = [d.get("DocID") or "" for d in docs_sorted if d.get("DocID")]
+
+        cases.append(
+            {
+                "CaseID": case_id,
+                "OfferorName": offeror_name,
+                "OfferorEdinetCode": offeror_code,
+                "TargetEdinetCode": target_code,
+                "FirstFilingDate": (first_filing.get("SubmitDateTime") or "")[:10],
+                "LastUpdateDate": (last_doc.get("SubmitDateTime") or "")[:10],
+                "Status": case_status(docs_sorted),
+                "HasOpinion": has_opinion,
+                "LatestFilingDocID": (latest_filing or {}).get("DocID", ""),
+                "LatestOpinionDocID": (latest_opinion or {}).get("DocID", ""),
+                "LatestReportDocID": (latest_report or {}).get("DocID", ""),
+                "DocCount": str(len(docs_sorted)),
+                "DocIDList": ";".join(doc_ids),
+                "OfferPrice": "",
+                "OfferPeriodStart": "",
+                "OfferPeriodEnd": "",
+                "OwnershipRatio": "",
+                "OpinionStance": "",
+                "FinalResultNote": "",
+                "EnrichmentStatus": "",
+                "LastEnrichedDocID": "",
+            }
+        )
+
+    cases.sort(key=lambda c: (c.get("FirstFilingDate") or "", c.get("CaseID") or ""))
+    return cases
 
 
 def main() -> int:
@@ -157,12 +382,23 @@ def main() -> int:
         default="this_year",
         help="取得期間（from/to 未指定時）",
     )
-    parser.add_argument("--from-date", help="開始日 YYYY-MM-DD")
-    parser.add_argument("--to-date", help="終了日 YYYY-MM-DD")
+    parser.add_argument(
+        "--from-date",
+        help="開始日 YYYY/MM/DD または YYYY-MM-DD",
+    )
+    parser.add_argument(
+        "--to-date",
+        help="終了日 YYYY/MM/DD または YYYY-MM-DD（省略時は今日）",
+    )
     parser.add_argument(
         "--out",
         default="output/tob_list.csv",
-        help="出力CSVパス",
+        help="書類一覧CSVパス",
+    )
+    parser.add_argument(
+        "--cases-out",
+        default="output/tob_cases.csv",
+        help="案件一覧CSVパス",
     )
     parser.add_argument(
         "--cache-dir",
@@ -185,6 +421,7 @@ def main() -> int:
     start, end = resolve_range(args.period, args.from_date, args.to_date)
     cache_dir = Path(args.cache_dir)
     out_path = Path(args.out)
+    cases_path = Path(args.cases_out)
 
     days = (end - start).days + 1
     print(f"期間: {start} 〜 {end}（{days} 日）")
@@ -223,10 +460,16 @@ def main() -> int:
             time.sleep(args.sleep)
         current += timedelta(days=1)
 
+    assign_case_ids(rows)
     rows.sort(key=lambda r: (r["SubmitDateTime"], r["DocTypeCode"], r["FilerName"]))
-    write_csv(out_path, rows)
+    write_csv(out_path, rows, LIST_FIELDS)
     print(f"ヒット件数: {len(rows)}")
     print(f"CSV出力: {out_path}")
+
+    cases = build_cases(rows)
+    write_csv(cases_path, cases, CASE_FIELDS)
+    print(f"案件件数: {len(cases)}")
+    print(f"案件CSV出力: {cases_path}")
     return 0
 
 
