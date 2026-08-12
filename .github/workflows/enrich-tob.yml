@@ -1,0 +1,64 @@
+name: Enrich TOB
+
+on:
+  workflow_dispatch:
+    inputs:
+      case_limit:
+        description: "Max cases to enrich (0 = all)"
+        required: false
+        default: "0"
+        type: string
+      only_pending:
+        description: "Only cases without done/partial enrichment"
+        required: false
+        default: false
+        type: boolean
+      force_refresh:
+        description: "Re-download XBRL even if cached"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Enrich TOB cases from XBRL
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+        run: |
+          ARGS=()
+          LIMIT="${{ github.event.inputs.case_limit }}"
+          if [ -n "$LIMIT" ] && [ "$LIMIT" != "0" ]; then
+            ARGS+=(--case-limit "$LIMIT")
+          fi
+          if [ "${{ github.event.inputs.only_pending }}" = "true" ]; then
+            ARGS+=(--only-pending)
+          fi
+          if [ "${{ github.event.inputs.force_refresh }}" = "true" ]; then
+            ARGS+=(--force-refresh)
+          fi
+          python enrich_tob.py "${ARGS[@]}"
+
+      - name: Commit enriched CSV if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/tob_cases.csv
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Enrich TOB cases from XBRL $(date -u +%Y-%m-%d)"
+            git push
+          fi

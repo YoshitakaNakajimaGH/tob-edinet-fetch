@@ -1,4 +1,5 @@
 cache/
+cache/docs/
 EdinetcodeDlInfo.csv
 *.zip
 api_key.txt
