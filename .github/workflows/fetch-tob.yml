@@ -13,9 +13,6 @@ on:
           - past_year
   schedule:
     - cron: "0 0 * * 1-5"
-  push:
-    paths:
-      - ".github/workflows/fetch-tob.yml"
 
 permissions:
   contents: write
