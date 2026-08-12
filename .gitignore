@@ -1,0 +1,6 @@
+cache/
+EdinetcodeDlInfo.csv
+*.zip
+api_key.txt
+__pycache__/
+.venv/

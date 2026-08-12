@@ -1,0 +1,55 @@
+name: Fetch TOB
+
+on:
+  # 後継者はここから手動実行できる
+  workflow_dispatch:
+    inputs:
+      period:
+        description: "取得期間"
+        required: true
+        default: this_year
+        type: choice
+        options:
+          - this_year
+          - past_year
+  # 平日 0:00 UTC ≒ 日本時間 9:00
+  schedule:
+    - cron: "0 0 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch TOB list
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+        run: |
+          PERIOD="${{ github.event.inputs.period }}"
+          if [ -z "$PERIOD" ]; then
+            PERIOD="this_year"
+          fi
+          python fetch_tob.py --period "$PERIOD" --out output/tob_list.csv
+
+      - name: Commit CSV if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p output
+          git add output/tob_list.csv
+          if git diff --staged --quiet; then
+            echo "変更なし"
+          else
+            git commit -m "Update TOB list $(date -u +%Y-%m-%d)"
+            git push
+          fi
