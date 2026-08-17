@@ -1,11 +1,14 @@
 {
-  "version": "2021-edinet-taxonomy (jptoo-ton/pst/tor_cor)",
-  "note": "Element IDs confirmed from sample filings S100XEKS, S100XELY, S100XMO3",
+  "year": 2026,
+  "taxonomy_date": "2025-11-01",
+  "note": "Element IDs taken from official 2026 EDINET element list (2025-11-11). Old 2021 names remain as fallback.",
+  "source_url": "https://www.fsa.go.jp/search/20251111/1e_ElementList.xlsx",
   "ton": {
     "offer_price_text": [
       "jptoo-ton_cor:PriceOfPurchaseEtcTextBlock"
     ],
     "period_text": [
+      "jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock",
       "jptoo-ton_cor:OriginalPeriodAtFilingTextBlock"
     ],
     "ownership_ratio": [
@@ -14,6 +17,7 @@
   },
   "pst": {
     "opinion_text": [
+      "jptoo-pst_cor:OpinionRegardingSaidTenderOfferAndBasisAndReasonsEtcTextBlock",
       "jptoo-pst_cor:OpinionAndBasisAndReasonOfOpinionRegardingSaidTenderOfferTextBlock"
     ]
   },
@@ -26,6 +30,19 @@
     ],
     "ownership_ratio": [
       "jptoo-tor_cor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc"
+    ]
+  },
+  "wto": {
+    "period_text": [
+      "jptoo-wto_cor:TenderOfferPeriodTextBlock"
+    ],
+    "withdrawal_reason_text": [
+      "jptoo-wto_cor:ReasonForWithdrawalEtcTextBlock"
+    ]
+  },
+  "toa": {
+    "response_text": [
+      "jptoo-toa_cor:ResponsesToInquiriesTextBlock"
     ]
   }
 }

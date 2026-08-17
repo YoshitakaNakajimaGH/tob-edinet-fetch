@@ -1,0 +1,67 @@
+{
+  "note": "他社株公開買付（jptoo-ton/pst/wto/tor/toa）の年度別タクソノミ。訂正書類は元書類と同じ版を使う。",
+  "source_index": "https://www.fsa.go.jp/search/20251111.html",
+  "detection_markers": {
+    "2026": [
+      "jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock",
+      "jptoo-pst_cor:OpinionRegardingSaidTenderOfferAndBasisAndReasonsEtcTextBlock"
+    ],
+    "2021": [
+      "jptoo-ton_cor:OriginalPeriodAtFilingTextBlock",
+      "jptoo-pst_cor:OpinionAndBasisAndReasonOfOpinionRegardingSaidTenderOfferTextBlock"
+    ]
+  },
+  "versions": [
+    {
+      "year": 2021,
+      "taxonomy_date": "2020-11-01",
+      "status": "canonical",
+      "applies_from": "2021-01-01",
+      "applies_to": "2026-04-30",
+      "mapping": "mappings/2021.json",
+      "note": "2021年版。他社株TOBは2026-04-30提出分までこの版が継続適用。"
+    },
+    {
+      "year": 2022,
+      "status": "alias",
+      "inherits": 2021,
+      "applies_from": "2022-01-01",
+      "applies_to": "2022-12-31",
+      "note": "他社株TOBタクソノミの年次改訂なし。2021年版を継続使用。"
+    },
+    {
+      "year": 2023,
+      "status": "alias",
+      "inherits": 2021,
+      "applies_from": "2023-01-01",
+      "applies_to": "2023-12-31",
+      "note": "他社株TOBタクソノミの年次改訂なし。2021年版を継続使用。"
+    },
+    {
+      "year": 2024,
+      "status": "alias",
+      "inherits": 2021,
+      "applies_from": "2024-01-01",
+      "applies_to": "2024-12-31",
+      "note": "他社株TOBタクソノミの年次改訂なし。2021年版を継続使用。"
+    },
+    {
+      "year": 2025,
+      "status": "alias",
+      "inherits": 2021,
+      "applies_from": "2025-01-01",
+      "applies_to": "2025-12-31",
+      "note": "他社株TOBタクソノミの年次改訂なし。2021年版を継続使用。"
+    },
+    {
+      "year": 2026,
+      "taxonomy_date": "2025-11-01",
+      "status": "canonical",
+      "applies_from": "2026-05-01",
+      "applies_to": null,
+      "mapping": "mappings/2026.json",
+      "source_url": "https://www.fsa.go.jp/search/20251111/1e_ElementList.xlsx",
+      "note": "2026年版。2026-05-01以後に公開買付開始公告し提出する書類から適用。"
+    }
+  ]
+}

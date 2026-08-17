@@ -3,13 +3,13 @@ name: Fetch TOB
 on:
   workflow_dispatch:
     inputs:
-      start_date:
-        description: "Start date (YYYY/MM/DD or YYYY-MM-DD). Empty = Jan 1 this year"
+      start_year:
+        description: "Start year (YYYY). Empty = current year"
         required: false
         default: ""
         type: string
-      end_date:
-        description: "End date (YYYY/MM/DD or YYYY-MM-DD). Empty = today"
+      end_year:
+        description: "End year (YYYY). Empty = current year (through today)"
         required: false
         default: ""
         type: string
@@ -31,20 +31,26 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch TOB list and cases
+      - name: Fetch TOB list and rebuild cases
         env:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
-          START="${{ github.event.inputs.start_date }}"
-          END="${{ github.event.inputs.end_date }}"
-          if [ -n "$START" ]; then
-            ARGS=(--from-date "$START")
+          START="${{ github.event.inputs.start_year }}"
+          END="${{ github.event.inputs.end_year }}"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python fetch_tob.py --recent-days 35 --out output/tob_list.csv --cases-out output/tob_cases.csv
+          else
+            ARGS=()
+            if [ -n "$START" ]; then
+              ARGS+=(--from-year "$START")
+            fi
             if [ -n "$END" ]; then
-              ARGS+=(--to-date "$END")
+              ARGS+=(--to-year "$END")
+            fi
+            if [ ${#ARGS[@]} -eq 0 ]; then
+              ARGS+=(--from-year "$(date +%Y)" --to-year "$(date +%Y)")
             fi
             python fetch_tob.py "${ARGS[@]}" --out output/tob_list.csv --cases-out output/tob_cases.csv
-          else
-            python fetch_tob.py --period this_year --out output/tob_list.csv --cases-out output/tob_cases.csv
           fi
 
       - name: Commit CSV if changed

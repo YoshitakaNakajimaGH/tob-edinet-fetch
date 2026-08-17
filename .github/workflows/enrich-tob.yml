@@ -3,15 +3,15 @@ name: Enrich TOB
 on:
   workflow_dispatch:
     inputs:
-      case_limit:
-        description: "Max cases to enrich (0 = all)"
+      doc_limit:
+        description: "Max documents to enrich (0 = all)"
         required: false
         default: "0"
         type: string
       only_pending:
-        description: "Only cases without done/partial enrichment"
+        description: "Only documents without done/partial/skipped extraction"
         required: false
-        default: false
+        default: true
         type: boolean
       force_refresh:
         description: "Re-download XBRL even if cached"
@@ -34,16 +34,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Enrich TOB cases from XBRL
+      - name: Enrich TOB documents from XBRL
         env:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
           ARGS=()
-          LIMIT="${{ github.event.inputs.case_limit }}"
+          LIMIT="${{ github.event.inputs.doc_limit }}"
           if [ -n "$LIMIT" ] && [ "$LIMIT" != "0" ]; then
-            ARGS+=(--case-limit "$LIMIT")
+            ARGS+=(--doc-limit "$LIMIT")
           fi
-          if [ "${{ github.event.inputs.only_pending }}" = "true" ]; then
+          if [ "${{ github.event.inputs.only_pending }}" != "false" ]; then
             ARGS+=(--only-pending)
           fi
           if [ "${{ github.event.inputs.force_refresh }}" = "true" ]; then
@@ -55,10 +55,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add output/tob_cases.csv
+          git add output/tob_list.csv output/tob_cases.csv
           if git diff --staged --quiet; then
             echo "No changes"
           else
-            git commit -m "Enrich TOB cases from XBRL $(date -u +%Y-%m-%d)"
+            git commit -m "Enrich TOB documents from XBRL $(date -u +%Y-%m-%d)"
             git push
           fi
