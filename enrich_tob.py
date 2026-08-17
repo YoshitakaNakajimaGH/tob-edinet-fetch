@@ -31,6 +31,7 @@ from extract_fields import (
     clean_extracted_name,
     compute_holding_ratios,
     format_pct,
+    judge_tob_result,
     parse_holding_pct_from_text,
     parse_period_dates,
     summarize_price,
@@ -134,13 +135,6 @@ def parse_opinion_stance(text: str) -> str:
     return "要確認"
 
 
-def summarize_result(text: str) -> str:
-    if not text:
-        return ""
-    text = re.sub(r"\s+", " ", text.strip())
-    return text[:300]
-
-
 def summarize_text(text: str, limit: int = 300) -> str:
     if not text:
         return ""
@@ -153,9 +147,9 @@ def expected_fields_for_type(type_code: str) -> tuple[str, ...]:
     if type_code in OPINION_SIDE:
         return ("OpinionStance",)
     if type_code in REPORT_SIDE:
-        return ("FinalResultNote", "OfferPeriodStart", "AfterPurchaseRatio")
+        return ("FinalResultNote", "OfferPeriodStart")
     if type_code in WITHDRAW_SIDE:
-        return ("WithdrawalReason",)
+        return ("FinalResultNote",)
     if type_code in ANSWER_SIDE:
         return ("ResponseNote",)
     return ()
@@ -253,11 +247,12 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
             row["OfferPeriodElement"] = period_eid
         if result_text:
             row["FinalResultRaw"] = result_text[:1000]
-            row["FinalResultNote"] = summarize_result(result_text)
+            row["FinalResultNote"] = judge_tob_result(result_text)
             row["FinalResultElement"] = result_eid
         apply_holdings(row, facts, fields)
 
     if type_code in WITHDRAW_SIDE or tax_key == "wto":
+        row["FinalResultNote"] = "撤回"
         reason_text, reason_eid = first_fact(facts, fields.get("withdrawal_reason_text", []))
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
         if reason_text:
@@ -374,17 +369,36 @@ def main() -> int:
     parser.add_argument("--only-pending", action="store_true", help="未抽出の書類のみ")
     parser.add_argument("--force-refresh", action="store_true")
     parser.add_argument("--sleep", type=float, default=1.0)
+    parser.add_argument(
+        "--recompute-only",
+        action="store_true",
+        help="APIを使わず、既存の Raw 列から価格要約・成否・案件の買付後割合を再計算する",
+    )
     args = parser.parse_args()
-
-    api_key = os.environ.get("EDINET_API_KEY", "").strip()
-    if not api_key:
-        print("EDINET_API_KEY が必要です", file=sys.stderr)
-        return 1
 
     output_dir = Path(args.output_dir)
     rows = load_all_list_rows(output_dir)
     if not rows:
         print("tob_list.csv がありません。先に fetch_tob.py を実行してください。", file=sys.stderr)
+        return 1
+
+    if args.recompute_only:
+        other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows)
+        list_out, _cases_out = publish_tob_outputs(
+            output_dir,
+            other,
+            cases,
+            self_list_rows=issuer,
+            self_case_rows=issuer_cases,
+        )
+        print("既存Rawから再計算（APIなし）")
+        print(f"他社株: {list_out} ({len(other)} docs / {len(cases)} cases)")
+        print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
+        return 0
+
+    api_key = os.environ.get("EDINET_API_KEY", "").strip()
+    if not api_key:
+        print("EDINET_API_KEY が必要です", file=sys.stderr)
         return 1
 
     other, issuer = partition_issuer_tenders(rows)

@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
 
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
+    CASE_FIELDS,
     LIST_FIELDS,
     assign_case_ids,
     build_cases,
@@ -274,6 +275,145 @@ class MergeAndCaseTests(unittest.TestCase):
         self.assertGreater(LIST_FIELDS.index("DocID"), LIST_FIELDS.index("TargetName"))
         self.assertNotIn("UltimateParentName", LIST_FIELDS)
         self.assertNotIn("UltimateParentNote", LIST_FIELDS)
+        self.assertNotIn("WithdrawalReason", CASE_FIELDS)
+
+    def test_failed_offer_uses_existing_ratio_not_planned_after(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100FILING",
+                    "CaseID": "S100FILING",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2025-01-10 10:00",
+                    "FilerName": "Daiseki",
+                    "FilerEdinetCode": "E04931",
+                    "SubjectEdinetCode": "E33382",
+                    "TargetName": "大阪油化工業株式会社",
+                    "ExistingHoldingRatio": "0%",
+                    "AfterPurchaseRatio": "100%",
+                    "ExtractionStatus": "done",
+                }
+            ),
+            normalize_doc_row(
+                {
+                    "DocID": "S100REPORT",
+                    "CaseID": "S100FILING",
+                    "ParentDocID": "S100FILING",
+                    "DocTypeCode": "270",
+                    "SubmitDateTime": "2025-02-13 11:30",
+                    "FilerName": "Daiseki",
+                    "FilerEdinetCode": "E04931",
+                    "SubjectEdinetCode": "E33382",
+                    "FinalResultRaw": (
+                        "応募株券等の総数(462,165株)が買付予定数の下限(655,300株)に満たなかったため、"
+                        "応募株券等の全部の買付け等を行いません。"
+                    ),
+                    "ExtractionStatus": "done",
+                }
+            ),
+        ]
+        case = build_cases(rows)[0]
+        self.assertEqual(case["FinalResultNote"], "不成立")
+        self.assertEqual(case["AfterPurchaseRatio"], "0%")
+        self.assertNotIn("WithdrawalReason", case)
+
+    def test_withdrawal_sets_final_note_and_keeps_existing_ratio(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100FILING",
+                    "CaseID": "S100FILING",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2025-04-04 10:00",
+                    "FilerName": "Nidec",
+                    "FilerEdinetCode": "E01975",
+                    "SubjectEdinetCode": "E01496",
+                    "ExistingHoldingRatio": "0.0428%",
+                    "AfterPurchaseRatio": "100%",
+                    "ExtractionStatus": "done",
+                }
+            ),
+            normalize_doc_row(
+                {
+                    "DocID": "S100WD",
+                    "CaseID": "S100FILING",
+                    "ParentDocID": "S100FILING",
+                    "DocTypeCode": "260",
+                    "SubmitDateTime": "2025-05-09 10:00",
+                    "FilerName": "Nidec",
+                    "FilerEdinetCode": "E01975",
+                    "SubjectEdinetCode": "E01496",
+                    "WithdrawalReason": "対象者が対応方針を導入したため撤回する。",
+                    "ExtractionStatus": "done",
+                }
+            ),
+        ]
+        case = build_cases(rows)[0]
+        self.assertEqual(case["Status"], "撤回")
+        self.assertEqual(case["FinalResultNote"], "撤回")
+        self.assertEqual(case["AfterPurchaseRatio"], "0.0428%")
+
+    def test_in_progress_does_not_copy_planned_after_ratio(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100FILING",
+                    "CaseID": "S100FILING",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2026-08-01 10:00",
+                    "FilerName": "Buyer KK",
+                    "FilerEdinetCode": "E11111",
+                    "SubjectEdinetCode": "E22222",
+                    "OfferPrice": "1,000円/株",
+                    "ExistingHoldingRatio": "42.3%",
+                    "AfterPurchaseRatio": "100%",
+                    "ExtractionStatus": "done",
+                }
+            )
+        ]
+        case = build_cases(rows)[0]
+        self.assertEqual(case["Status"], "届出中")
+        self.assertEqual(case["FinalResultNote"], "")
+        self.assertEqual(case["AfterPurchaseRatio"], "")
+
+    def test_successful_report_keeps_actual_after_ratio(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100FILING",
+                    "CaseID": "S100FILING",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2025-06-23 10:00",
+                    "FilerName": "NFK",
+                    "FilerEdinetCode": "E01648",
+                    "SubjectEdinetCode": "E33345",
+                    "ExistingHoldingRatio": "29.265%",
+                    "AfterPurchaseRatio": "52.06%",
+                    "ExtractionStatus": "done",
+                }
+            ),
+            normalize_doc_row(
+                {
+                    "DocID": "S100REPORT",
+                    "CaseID": "S100FILING",
+                    "ParentDocID": "S100FILING",
+                    "DocTypeCode": "270",
+                    "SubmitDateTime": "2025-08-05 16:00",
+                    "FilerName": "NFK",
+                    "FilerEdinetCode": "E01648",
+                    "SubjectEdinetCode": "E33345",
+                    "AfterPurchaseRatio": "52.06%",
+                    "FinalResultRaw": (
+                        "応募株券等の総数（979,000株）が買付予定数の下限（457,200株）に達し、"
+                        "かつ、買付予定数の上限（502,500株）を超えたため、あん分比例の方式により決済を行います。"
+                    ),
+                    "ExtractionStatus": "done",
+                }
+            ),
+        ]
+        case = build_cases(rows)[0]
+        self.assertEqual(case["FinalResultNote"], "成立（按分）")
+        self.assertEqual(case["AfterPurchaseRatio"], "52.06%")
 
     def test_normalize_strips_target_heading(self) -> None:
         row = normalize_doc_row(

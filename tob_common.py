@@ -9,7 +9,13 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-from extract_fields import clean_extracted_name, format_pct, normalize_name
+from extract_fields import (
+    clean_extracted_name,
+    format_pct,
+    judge_tob_result,
+    normalize_name,
+    summarize_price,
+)
 
 DOC_TYPE_NAMES = {
     "240": "公開買付届出書",
@@ -140,7 +146,6 @@ CASE_FIELDS = [
     "AfterPurchaseRatio",
     "OpinionStance",
     "FinalResultNote",
-    "WithdrawalReason",
     "FirstFilingDate",
     "LastUpdateDate",
     "HasOpinion",
@@ -483,6 +488,21 @@ def pick_offeror_target(docs: list[dict]) -> tuple[str, str, str, str]:
     )
 
 
+def refresh_derived_list_fields(rows: list[dict]) -> None:
+    """Recompute short price/result columns from stored Raw text (no API)."""
+    for row in rows:
+        raw_price = row.get("OfferPriceRaw") or ""
+        if raw_price:
+            row["OfferPrice"] = summarize_price(raw_price)
+        code = row.get("DocTypeCode") or ""
+        if code in WITHDRAW_SIDE:
+            row["FinalResultNote"] = "撤回"
+        elif code in REPORT_SIDE:
+            raw = row.get("FinalResultRaw") or ""
+            if raw:
+                row["FinalResultNote"] = judge_tob_result(raw)
+
+
 def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
     """Merge document-level extracted fields in filing order."""
     out = {
@@ -494,11 +514,13 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "AfterPurchaseRatio": "",
         "OpinionStance": "",
         "FinalResultNote": "",
-        "WithdrawalReason": "",
         "TargetName": "",
         "LastEnrichedDocID": "",
     }
     last_enriched = ""
+    withdrawn = False
+    result_raw = ""
+    report_after = ""
     for doc in docs_sorted:
         type_code = doc.get("DocTypeCode") or ""
         doc_id = doc.get("DocID") or ""
@@ -508,8 +530,7 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
             last_enriched = doc_id
 
         if type_code in WITHDRAW_SIDE:
-            if doc.get("WithdrawalReason"):
-                out["WithdrawalReason"] = doc["WithdrawalReason"]
+            withdrawn = True
             if doc_id:
                 last_enriched = doc_id
             continue
@@ -525,20 +546,31 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["ExistingHoldingRatio"] = doc["ExistingHoldingRatio"]
             if doc.get("SpecialRelatedHoldingRatio"):
                 out["SpecialRelatedHoldingRatio"] = doc["SpecialRelatedHoldingRatio"]
-            if doc.get("AfterPurchaseRatio") or doc.get("OwnershipRatio"):
-                out["AfterPurchaseRatio"] = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
+            # Filing AfterPurchaseRatio is the *planned* post-offer figure (often 100%).
+            # Cases show the actual outcome instead; do not copy the plan here.
         elif type_code in OPINION_SIDE:
             if doc.get("OpinionStance"):
                 out["OpinionStance"] = doc["OpinionStance"]
         elif type_code in REPORT_SIDE:
-            if doc.get("FinalResultNote"):
-                out["FinalResultNote"] = doc["FinalResultNote"]
+            if doc.get("FinalResultRaw"):
+                result_raw = doc["FinalResultRaw"]
+            elif doc.get("FinalResultNote"):
+                result_raw = doc["FinalResultNote"]
             if doc.get("OfferPeriodStart"):
                 out["OfferPeriodStart"] = doc["OfferPeriodStart"]
             if doc.get("OfferPeriodEnd"):
                 out["OfferPeriodEnd"] = doc["OfferPeriodEnd"]
             if doc.get("AfterPurchaseRatio") or doc.get("OwnershipRatio"):
-                out["AfterPurchaseRatio"] = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
+                report_after = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
+
+    result = judge_tob_result(result_raw, withdrawn=withdrawn)
+    out["FinalResultNote"] = result
+    if result in {"不成立", "撤回"}:
+        out["AfterPurchaseRatio"] = out.get("ExistingHoldingRatio") or ""
+    elif result.startswith("成立"):
+        out["AfterPurchaseRatio"] = report_after
+    else:
+        out["AfterPurchaseRatio"] = ""
 
     out["LastEnrichedDocID"] = last_enriched
     return out
@@ -555,7 +587,6 @@ def compute_case_enrichment_status(case: dict, docs: list[dict]) -> str:
             "OfferPeriodStart",
             "OfferPeriodEnd",
             "ExistingHoldingRatio",
-            "AfterPurchaseRatio",
             "OpinionStance",
             "FinalResultNote",
         )
@@ -630,6 +661,7 @@ def build_cases(rows: list[dict]) -> list[dict]:
 
 def prepare_pipeline_rows(rows: list[dict]) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
     """Split 自社株, assign case IDs, and build both case tables."""
+    refresh_derived_list_fields(rows)
     other, issuer = partition_issuer_tenders(rows)
     assign_case_ids(other)
     assign_case_ids(issuer)
