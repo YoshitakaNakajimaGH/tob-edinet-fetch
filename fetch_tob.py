@@ -8,8 +8,8 @@ EDINET API から TOB（公開買付）関連書類の一覧を取得し、CSV �
   3. 日付を1日ずつ回す
   4. 書類一覧 API を呼ぶ
   5. docTypeCode 240-320 だけ残す
-  6. 既存の output/current/tob_list.csv に DocID で upsert する（抽出列は消さない）
-  7. ParentDocID で案件にまとめ、current と日付付きスナップショットを書き出す
+  6. 既存の他社株・自社株CSVに DocID で upsert する（抽出列は消さない）
+  7. 自社株を分け、他社株は ParentDocID と会社ペアで案件にまとめ、current と日付付きスナップショットを書き出す
 """
 
 from __future__ import annotations
@@ -25,17 +25,15 @@ import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 
-from output_store import LIST_STEM, publish_tob_outputs, resolve_current_csv
+from output_store import load_all_list_rows, publish_tob_outputs
 from tob_common import (
     DEFAULT_DOC_TYPES,
     DEFAULT_RECENT_DAYS,
     DOC_TYPE_NAMES,
     ROLE_HINTS,
-    assign_case_ids,
-    build_cases,
     merge_document_rows,
     normalize_doc_type,
-    read_csv,
+    prepare_pipeline_rows,
     resolve_range,
 )
 
@@ -131,7 +129,6 @@ def main() -> int:
     )
     cache_dir = Path(args.cache_dir)
     output_dir = Path(args.output_dir)
-    out_path = resolve_current_csv(output_dir, LIST_STEM)
 
     days = (end - start).days + 1
     print(f"期間: {start} 〜 {end}（{days} 日, mode={mode}）")
@@ -175,17 +172,21 @@ def main() -> int:
         rows = incoming
         added, updated = len(incoming), 0
     else:
-        existing = read_csv(out_path) if out_path else []
+        existing = load_all_list_rows(output_dir)
         rows, added, updated = merge_document_rows(existing, incoming)
         print(f"既存: {len(existing)} / 追加: {added} / メタデータ更新: {updated}")
 
-    assign_case_ids(rows)
-    rows.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("FilerName") or ""))
-    cases = build_cases(rows)
-    list_path, cases_path = publish_tob_outputs(output_dir, rows, cases)
-    print(f"書類件数: {len(rows)}")
+    other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows)
+    list_path, cases_path = publish_tob_outputs(
+        output_dir,
+        other,
+        cases,
+        self_list_rows=issuer,
+        self_case_rows=issuer_cases,
+    )
+    print(f"他社株 書類: {len(other)} / 案件: {len(cases)}")
+    print(f"自社株 書類: {len(issuer)} / 案件: {len(issuer_cases)}")
     print(f"CSV出力: {list_path}")
-    print(f"案件件数: {len(cases)}")
     print(f"案件CSV出力: {cases_path}")
     return 0
 

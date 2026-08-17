@@ -35,7 +35,7 @@ from extract_fields import (
     parse_period_dates,
     summarize_price,
 )
-from output_store import LIST_STEM, publish_tob_outputs, resolve_current_csv
+from output_store import load_all_list_rows, publish_tob_outputs
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     ANSWER_SIDE,
@@ -45,10 +45,8 @@ from tob_common import (
     REPORT_SIDE,
     WITHDRAW_SIDE,
     apply_name_fallbacks,
-    assign_case_ids,
-    build_cases,
-    normalize_doc_row,
-    read_csv,
+    partition_issuer_tenders,
+    prepare_pipeline_rows,
 )
 
 DOC_API = "https://api.edinet-fsa.go.jp/api/v2/documents/{doc_id}"
@@ -370,7 +368,6 @@ def enrich_documents(
 def main() -> int:
     parser = argparse.ArgumentParser(description="TOB書類CSVをXBRLから詳細化する")
     parser.add_argument("--output-dir", default="output", help="結果フォルダ（current / snapshots）")
-    parser.add_argument("--list", help="(上級) 書類CSVの直接指定。省略時は output/current/tob_list.csv")
     parser.add_argument("--taxonomy-dir", default="taxonomy")
     parser.add_argument("--cache-dir", default="cache/docs")
     parser.add_argument("--doc-limit", type=int, default=0, help="0=全書類")
@@ -385,16 +382,16 @@ def main() -> int:
         return 1
 
     output_dir = Path(args.output_dir)
-    list_path = Path(args.list) if args.list else resolve_current_csv(output_dir, LIST_STEM)
-    if not list_path or not list_path.exists():
+    rows = load_all_list_rows(output_dir)
+    if not rows:
         print("tob_list.csv がありません。先に fetch_tob.py を実行してください。", file=sys.stderr)
         return 1
 
+    other, issuer = partition_issuer_tenders(rows)
+    other.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("DocID") or ""))
     catalog = TaxonomyCatalog(Path(args.taxonomy_dir))
-    rows = [normalize_doc_row(r) for r in read_csv(list_path)]
-    rows.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("DocID") or ""))
     processed = enrich_documents(
-        rows,
+        other,
         catalog,
         api_key,
         Path(args.cache_dir),
@@ -403,12 +400,17 @@ def main() -> int:
         args.only_pending,
         args.doc_limit,
     )
-    assign_case_ids(rows)
-    cases = build_cases(rows)
-    list_out, cases_out = publish_tob_outputs(output_dir, rows, cases)
-    print(f"処理書類: {processed}")
-    print(f"更新: {list_out} ({len(rows)} docs)")
-    print(f"案件再生成: {cases_out} ({len(cases)} cases)")
+    other, cases, issuer, issuer_cases = prepare_pipeline_rows(other + issuer)
+    list_out, cases_out = publish_tob_outputs(
+        output_dir,
+        other,
+        cases,
+        self_list_rows=issuer,
+        self_case_rows=issuer_cases,
+    )
+    print(f"処理書類: {processed}（自社株 {len(issuer)} 件は他社株CSVから除外）")
+    print(f"他社株: {list_out} ({len(other)} docs / {len(cases)} cases)")
+    print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
     return 0
 
 

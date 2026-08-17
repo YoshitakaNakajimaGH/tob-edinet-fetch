@@ -293,11 +293,35 @@ def merge_document_rows(existing: list[dict], incoming: list[dict]) -> tuple[lis
     return rows, added, updated
 
 
+def is_issuer_tender(row: dict) -> bool:
+    """自己株式の公開買付け: 提出者と対象会社の EDINET コードが同じ。"""
+    filer = (row.get("FilerEdinetCode") or "").strip()
+    subject = (row.get("SubjectEdinetCode") or "").strip()
+    return bool(filer and subject and filer == subject)
+
+
+def partition_issuer_tenders(rows: list[dict]) -> tuple[list[dict], list[dict]]:
+    other: list[dict] = []
+    issuer: list[dict] = []
+    for row in rows:
+        if is_issuer_tender(row):
+            issuer.append(row)
+        else:
+            other.append(row)
+    return other, issuer
+
+
+def party_pair(row: dict) -> tuple[str, str]:
+    """Return (offeror EDINET, target EDINET) for grouping."""
+    filer = (row.get("FilerEdinetCode") or "").strip()
+    subject = (row.get("SubjectEdinetCode") or "").strip()
+    if (row.get("DocTypeCode") or "") in OPINION_SIDE | ANSWER_SIDE:
+        return subject, filer
+    return filer, subject
+
+
 def fallback_case_id(row: dict) -> str:
-    offeror = row.get("FilerEdinetCode") or ""
-    target = row.get("SubjectEdinetCode") or ""
-    if row.get("DocTypeCode") in OPINION_SIDE:
-        offeror, target = target, offeror
+    offeror, target = party_pair(row)
     return f"fallback:{offeror}|{target}"
 
 
@@ -354,6 +378,48 @@ def assign_case_ids(rows: list[dict]) -> None:
     memo: dict[str, str] = {}
     for row in rows:
         row["CaseID"] = resolve_case_id(row, by_id, memo)
+    reattach_orphan_opinions(rows)
+
+
+def reattach_orphan_opinions(rows: list[dict]) -> None:
+    """Join 意見表明-only groups onto the matching offeror/target filing case.
+
+    訂正意見表明の親が CSV に無いと ParentDocID だけで案件が割れ、
+    同じ TOB が「意見表明のみ」行になってしまう。
+    """
+    groups: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        groups[row.get("CaseID") or fallback_case_id(row)].append(row)
+
+    filing_by_pair: dict[tuple[str, str], list[tuple[str, str]]] = defaultdict(list)
+    for case_id, docs in groups.items():
+        codes = {d.get("DocTypeCode") for d in docs}
+        if not (codes & OFFEROR_SIDE):
+            continue
+        sample = next((d for d in docs if d.get("DocTypeCode") in OFFEROR_SIDE), docs[0])
+        pair = party_pair(sample)
+        if not pair[0] or not pair[1]:
+            continue
+        first = min((d.get("SubmitDateTime") or "") for d in docs)
+        filing_by_pair[pair].append((case_id, first))
+
+    for case_id, docs in groups.items():
+        codes = {d.get("DocTypeCode") for d in docs}
+        if codes & OFFEROR_SIDE:
+            continue
+        if not (codes & OPINION_SIDE):
+            continue
+        pair = party_pair(docs[0])
+        candidates = filing_by_pair.get(pair) or []
+        if not candidates:
+            continue
+        opinion_time = min((d.get("SubmitDateTime") or "") for d in docs)
+        before = [item for item in candidates if item[1] <= opinion_time]
+        dest = max(before, key=lambda item: item[1])[0] if before else min(candidates, key=lambda item: item[1])[0]
+        if dest == case_id:
+            continue
+        for doc in docs:
+            doc["CaseID"] = dest
 
 
 def latest_doc(docs: list[dict], type_codes: set[str]) -> dict | None:
@@ -514,6 +580,10 @@ def build_cases(rows: list[dict]) -> list[dict]:
 
     cases: list[dict] = []
     for case_id, docs in groups.items():
+        codes = {d.get("DocTypeCode") for d in docs}
+        if not (codes & OFFEROR_SIDE):
+            # 意見表明・対質問だけのグループは案件行にしない。
+            continue
         docs_sorted = sorted(docs, key=lambda d: d.get("SubmitDateTime") or "")
         offeror_name, target_name, offeror_code, target_code = pick_offeror_target(docs_sorted)
         if not offeror_name:
@@ -556,3 +626,13 @@ def build_cases(rows: list[dict]) -> list[dict]:
 
     cases.sort(key=lambda c: (c.get("FirstFilingDate") or "", c.get("CaseID") or ""))
     return cases
+
+
+def prepare_pipeline_rows(rows: list[dict]) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
+    """Split 自社株, assign case IDs, and build both case tables."""
+    other, issuer = partition_issuer_tenders(rows)
+    assign_case_ids(other)
+    assign_case_ids(issuer)
+    other.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("FilerName") or ""))
+    issuer.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("FilerName") or ""))
+    return other, build_cases(other), issuer, build_cases(issuer)
