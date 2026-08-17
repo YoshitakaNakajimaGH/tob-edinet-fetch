@@ -4,15 +4,31 @@ on:
   workflow_dispatch:
     inputs:
       start_year:
-        description: "Start year (YYYY). Empty = current year"
-        required: false
-        default: ""
-        type: string
+        description: "開始年"
+        required: true
+        type: choice
+        default: "2026"
+        options:
+          - "2026"
+          - "2025"
+          - "2024"
+          - "2023"
+          - "2022"
+          - "2021"
+          - "2027"
       end_year:
-        description: "End year (YYYY). Empty = current year (through today)"
-        required: false
-        default: ""
-        type: string
+        description: "終了年（今年を選んだ場合は実行日まで）"
+        required: true
+        type: choice
+        default: "2026"
+        options:
+          - "2026"
+          - "2025"
+          - "2024"
+          - "2023"
+          - "2022"
+          - "2021"
+          - "2027"
   schedule:
     - cron: "0 0 * * 1-5"
 
@@ -35,22 +51,14 @@ jobs:
         env:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
-          START="${{ github.event.inputs.start_year }}"
-          END="${{ github.event.inputs.end_year }}"
           if [ "${{ github.event_name }}" = "schedule" ]; then
             python fetch_tob.py --recent-days 35 --out output/tob_list.csv --cases-out output/tob_cases.csv
           else
-            ARGS=()
-            if [ -n "$START" ]; then
-              ARGS+=(--from-year "$START")
-            fi
-            if [ -n "$END" ]; then
-              ARGS+=(--to-year "$END")
-            fi
-            if [ ${#ARGS[@]} -eq 0 ]; then
-              ARGS+=(--from-year "$(date +%Y)" --to-year "$(date +%Y)")
-            fi
-            python fetch_tob.py "${ARGS[@]}" --out output/tob_list.csv --cases-out output/tob_cases.csv
+            python fetch_tob.py \
+              --from-year "${{ github.event.inputs.start_year }}" \
+              --to-year "${{ github.event.inputs.end_year }}" \
+              --out output/tob_list.csv \
+              --cases-out output/tob_cases.csv
           fi
 
       - name: Commit CSV if changed
