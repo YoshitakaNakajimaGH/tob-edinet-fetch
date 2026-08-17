@@ -28,23 +28,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from extract_fields import (
+    clean_extracted_name,
     compute_holding_ratios,
     format_pct,
-    normalize_name,
     parse_holding_pct_from_text,
-    parse_major_shareholders,
-    parse_parent_from_narrative,
     parse_period_dates,
-    pick_parent_from_shareholders,
     summarize_price,
 )
+from output_store import LIST_STEM, publish_tob_outputs, resolve_current_csv
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     ANSWER_SIDE,
-    CASE_FIELDS,
     DOC_TYPE_TO_TAXONOMY,
     FILING_SIDE,
-    LIST_FIELDS,
     OPINION_SIDE,
     REPORT_SIDE,
     WITHDRAW_SIDE,
@@ -53,7 +49,6 @@ from tob_common import (
     build_cases,
     normalize_doc_row,
     read_csv,
-    write_csv,
 )
 
 DOC_API = "https://api.edinet-fsa.go.jp/api/v2/documents/{doc_id}"
@@ -186,23 +181,9 @@ def apply_names(row: dict, facts: dict[str, list[str]], fields: dict) -> None:
     offeror, _ = first_fact(facts, fields.get("offeror_name", []))
     target, _ = first_fact(facts, fields.get("target_name", []))
     if offeror:
-        row["OfferorName"] = normalize_name(offeror.split("\n")[0])
+        row["OfferorName"] = clean_extracted_name(offeror.split("\n")[0])
     if target:
-        row["TargetName"] = normalize_name(target.split("\n")[0])
-
-    shareholders_text, _ = first_fact(facts, fields.get("major_shareholders_text", []))
-    parent_name, parent_note = pick_parent_from_shareholders(parse_major_shareholders(shareholders_text))
-    if not parent_name:
-        narrative = " ".join(
-            first_fact(facts, fields.get(key, []))[0]
-            for key in ("overview_text", "purposes_text", "corporation_info_text")
-        )
-        parent_name = parse_parent_from_narrative(narrative)
-        if parent_name:
-            parent_note = "本文（親会社・完全子会社の記載）"
-    if parent_name and parent_name != row.get("OfferorName"):
-        row["UltimateParentName"] = parent_name
-        row["UltimateParentNote"] = parent_note
+        row["TargetName"] = clean_extracted_name(target.split("\n")[0])
 
 
 def apply_holdings(row: dict, facts: dict[str, list[str]], fields: dict) -> None:
@@ -388,8 +369,8 @@ def enrich_documents(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="TOB書類CSVをXBRLから詳細化する")
-    parser.add_argument("--list", default="output/tob_list.csv")
-    parser.add_argument("--cases", default="output/tob_cases.csv")
+    parser.add_argument("--output-dir", default="output", help="結果フォルダ（current / snapshots）")
+    parser.add_argument("--list", help="(上級) 書類CSVの直接指定。省略時は output/current/tob_list.csv")
     parser.add_argument("--taxonomy-dir", default="taxonomy")
     parser.add_argument("--cache-dir", default="cache/docs")
     parser.add_argument("--doc-limit", type=int, default=0, help="0=全書類")
@@ -403,9 +384,9 @@ def main() -> int:
         print("EDINET_API_KEY が必要です", file=sys.stderr)
         return 1
 
-    list_path = Path(args.list)
-    cases_path = Path(args.cases)
-    if not list_path.exists():
+    output_dir = Path(args.output_dir)
+    list_path = Path(args.list) if args.list else resolve_current_csv(output_dir, LIST_STEM)
+    if not list_path or not list_path.exists():
         print("tob_list.csv がありません。先に fetch_tob.py を実行してください。", file=sys.stderr)
         return 1
 
@@ -423,12 +404,11 @@ def main() -> int:
         args.doc_limit,
     )
     assign_case_ids(rows)
-    write_csv(list_path, rows, LIST_FIELDS)
     cases = build_cases(rows)
-    write_csv(cases_path, cases, CASE_FIELDS)
+    list_out, cases_out = publish_tob_outputs(output_dir, rows, cases)
     print(f"処理書類: {processed}")
-    print(f"更新: {list_path} ({len(rows)} docs)")
-    print(f"案件再生成: {cases_path} ({len(cases)} cases)")
+    print(f"更新: {list_out} ({len(rows)} docs)")
+    print(f"案件再生成: {cases_out} ({len(cases)} cases)")
     return 0
 
 

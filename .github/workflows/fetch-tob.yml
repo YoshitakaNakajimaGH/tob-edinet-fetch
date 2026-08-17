@@ -52,13 +52,11 @@ jobs:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            python fetch_tob.py --recent-days 35 --out output/tob_list.csv --cases-out output/tob_cases.csv
+            python fetch_tob.py --recent-days 35
           else
             python fetch_tob.py \
               --from-year "${{ github.event.inputs.start_year }}" \
-              --to-year "${{ github.event.inputs.end_year }}" \
-              --out output/tob_list.csv \
-              --cases-out output/tob_cases.csv
+              --to-year "${{ github.event.inputs.end_year }}"
           fi
 
       - name: Commit CSV if changed
@@ -66,7 +64,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p output
-          git add output/tob_list.csv output/tob_cases.csv
+          git add output
           if git diff --staged --quiet; then
             echo "No changes"
           else

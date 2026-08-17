@@ -4,14 +4,30 @@
 
 実行は **あなたのPCではなく GitHub Actions（GitHubのサーバ）** で行います。
 
-## 出力ファイル（2つ）
+## 出力フォルダ
+
+普段見るのは **`output/current/`** です。Fetch / Enrich のたびに、同じ内容を日付付きでも残します。日付は **日本時間** です。
+
+```
+output/
+  current/
+    tob_list.csv          … 最新の書類正本（いま使うファイル）
+    tob_cases.csv         … 最新の案件一覧
+  snapshots/
+    2026/08/tob_list_20260817.csv
+    2026/08/tob_cases_20260817.csv
+    …（種類ごとに直近20日分）
+    trash/                … 21件目以降を移動。さらに古い20件を超えたら削除
+```
 
 | ファイル | 内容 |
 |----------|------|
-| [`output/tob_list.csv`](output/tob_list.csv) | **正本**。書類1件につき1行。メタデータと、その書類から取れた詳細列 |
-| [`output/tob_cases.csv`](output/tob_cases.csv) | **派生**。案件1件につき1行。書類正本から最新状態を再生成 |
+| [`output/current/tob_list.csv`](output/current/tob_list.csv) | **正本**。書類1件につき1行 |
+| [`output/current/tob_cases.csv`](output/current/tob_cases.csv) | **派生**。案件1件につき1行 |
 
-普段の業務確認は `tob_cases.csv`、訂正前後の価格変化など履歴の確認は `tob_list.csv` を使います。
+同じ日に2回更新すると、その日のスナップショットは上書きされます（スロットは増えません）。
+
+普段の業務確認は `current/tob_cases.csv`、過去の時点の確認は `snapshots/`、誤って古くなった分は `snapshots/trash/` を見ます。
 
 ## 初回だけ（管理者）
 
@@ -32,7 +48,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 3. 左の **Fetch TOB** を選ぶ
 4. **Run workflow**
 5. ブランチはマージ後の `master` を選び、**開始年 / 終了年** をドロップダウンから指定（例: `2024` と `2026`）
-6. 完了後、`tob_list.csv` が **DocID 単位で追加・更新** され、`tob_cases.csv` が再生成される
+6. 完了後、`output/current/tob_list.csv` が **DocID 単位で追加・更新** され、`tob_cases.csv` が再生成される。同じ内容が `output/snapshots/年/月/tob_list_YYYYMMDD.csv` にも残る
 
 終了年が今年の場合、取得の終わりは **実行日** までです。既存の詳細列は消しません。
 
@@ -45,7 +61,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 1. **Actions** → **Enrich TOB** → **Run workflow**
 2. 初回: `doc_limit` は `0`（全書類）
 3. 2回目以降: **only pending**（既定オン）で未処理書類だけ更新
-4. 完了後、`tob_list.csv` の書類行に OfferPrice などが入り、`tob_cases.csv` はそこから再生成される
+4. 完了後、`output/current/tob_list.csv` の書類行に OfferPrice などが入り、`tob_cases.csv` はそこから再生成される
 
 所要時間の目安: 全書類で十数分（書類数×API呼び出し）。
 
@@ -56,8 +72,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | 列 | 意味 |
 |----|------|
 | OfferorName | 買付者名（届出書の表紙「届出者の氏名又は名称」） |
-| TargetName | 対象会社名 |
-| UltimateParentName | 買付者の実質的な親会社（大株主50%以上、または本文の「親会社である」） |
+| TargetName | 対象会社名（見出し「（１）【対象者名】」は除去） |
 | Status | 届出中 / 訂正あり / 撤回 / 報告書提出 など |
 | OfferPrice | 買付価格（普通株式1株あたり） |
 | OfferPeriodStart / End | 買付期間。延長があれば延長後 |
@@ -78,7 +93,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | 列 | 意味 |
 |----|------|
 | SubmitDateTime / DocTypeName | 提出日時・書類名 |
-| OfferorName / TargetName / UltimateParentName | 買付者・対象会社・実質親会社 |
+| OfferorName / TargetName | 買付者・対象会社 |
 | OfferPrice / OfferPeriodStart / End | その書類に書かれた価格・期間 |
 | ExistingHoldingRatio | 買付者＋特別関係者の既保有割合 |
 | SpecialRelatedHoldingRatio | 特別関係者の既保有割合 |
@@ -91,8 +106,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 公開買付届出書（240/250）の XBRL CSV から次の要素を使います。
 
 - 買付者名: `FullNameOrNameOfFilerOfNotificationCoverPage`（なければ一覧APIの提出者名）
-- 対象会社名: `NameOfSubjectCompanyTextBlock`
-- 実質親会社: 買付者の「大株主」表で50%以上の株主。なければ「買付け等の目的／概要」の「親会社である」「完全子会社」表現
+- 対象会社名: `NameOfSubjectCompanyTextBlock`（先頭の「（１）【対象者名】」などは除去）
 - 買付価格: `PriceOfPurchaseEtcTextBlock` から「普通株式1株につき金X円」
 - 買付期間: `PeriodOfPurchaseEtcTextBlock`（2021年版は `OriginalPeriodAtFilingTextBlock`）。延長記載があれば最後の自〜至
 - 既保有割合: 議決権数 (d)+(g) を総議決権 (j) で割る。d=買付者、g=特別関係者
@@ -105,6 +119,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 - 他社株TOBタクソノミは 2021年版（2020-11-01）が 2026-04-30 まで続き、2026年版（2025-11-01）は 2026-05-01 以後
 - 訂正書類は提出年ではなく、親書類と同じタクソノミ版を使う
 - Fetch は既存CSVを上書き消去せず、DocID で upsert する
+- 結果は `output/current/` が最新。日付付きコピーは `output/snapshots/` に最大20件。それより古いものは `snapshots/trash/` へ移動
 
 ## ローカルで試す場合（任意）
 
@@ -121,10 +136,11 @@ python -m unittest discover -s tests -t . -v
 
 - `fetch_tob.py` … 一覧取得・既存CSVへの upsert・案件再生成
 - `enrich_tob.py` … 書類単位の XBRL 抽出
-- `extract_fields.py` … 価格・期間・親会社・保有割合の解析
+- `extract_fields.py` … 価格・期間・保有割合の解析、対象者名の見出し除去
 - `tob_common.py` … CSV列定義・案件派生
 - `taxonomy/` … 年版タクソノミの選択、年度別マッピング、公式資料の抜粋
+- `output_store.py` … current / 日付付きスナップショット / ごみ箱
 - `.github/workflows/fetch-tob.yml` … 一覧の手動（年指定）／平日の直近35日
 - `.github/workflows/enrich-tob.yml` … 詳細抽出（手動のみ）
-- `output/tob_list.csv` … 書類正本
-- `output/tob_cases.csv` … 案件の最新状態
+- `output/current/` … 最新の書類正本と案件
+- `output/snapshots/` … 日付付き履歴（直近20件）と `trash/`

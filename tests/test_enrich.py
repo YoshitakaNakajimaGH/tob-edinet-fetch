@@ -11,12 +11,10 @@ if str(ROOT) not in sys.path:
 
 from enrich_tob import parse_opinion_stance
 from extract_fields import (
+    clean_extracted_name,
     compute_holding_ratios,
     format_pct,
-    parse_major_shareholders,
-    parse_parent_from_narrative,
     parse_period_dates,
-    pick_parent_from_shareholders,
     summarize_price,
 )
 
@@ -62,19 +60,20 @@ class ParseHelperTests(unittest.TestCase):
         self.assertEqual(existing, "15%")
         self.assertEqual(special, "5%")
 
-    def test_parent_from_major_shareholders(self) -> None:
-        text = (
-            "氏名又は名称 所有株式数の割合（％）\n"
-            "KKR Japan株式会社 100.00％\n"
+    def test_clean_extracted_name_strips_section_heading(self) -> None:
+        self.assertEqual(
+            clean_extracted_name("（１）【対象者名】株式会社ライトオン"),
+            "株式会社ライトオン",
         )
-        holders = parse_major_shareholders(text)
-        name, note = pick_parent_from_shareholders(holders)
-        self.assertEqual(name, "KKR Japan株式会社")
-        self.assertIn("100%", note)
-
-    def test_parent_from_narrative(self) -> None:
-        text = "公開買付者は、ソフトバンクグループ株式会社の完全子会社です。"
-        self.assertEqual(parse_parent_from_narrative(text), "ソフトバンクグループ株式会社")
+        self.assertEqual(
+            clean_extracted_name("【対象者名】SBI FinTech Solutions株式会社"),
+            "SBI FinTech Solutions株式会社",
+        )
+        self.assertEqual(
+            clean_extracted_name("１【対象者名】ID&Eホールディングス株式会社"),
+            "ID&Eホールディングス株式会社",
+        )
+        self.assertEqual(clean_extracted_name("富士ソフト株式会社"), "富士ソフト株式会社")
 
 
 if __name__ == "__main__":
