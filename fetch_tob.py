@@ -26,6 +26,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 from output_store import load_all_list_rows, publish_tob_outputs
+from edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
 from tob_common import (
     DEFAULT_DOC_TYPES,
     DEFAULT_RECENT_DAYS,
@@ -102,6 +103,11 @@ def main() -> int:
     parser.add_argument("--to-date", help="終了日 YYYY/MM/DD（上級者向け）")
     parser.add_argument("--output-dir", default="output", help="結果フォルダ（current / snapshots）")
     parser.add_argument("--cache-dir", default="cache", help="日次レスポンスのキャッシュ先")
+    parser.add_argument(
+        "--edinet-cache",
+        default=str(DEFAULT_CACHE_PATH),
+        help="EDINET提出者リストCSVのキャッシュ先",
+    )
     parser.add_argument("--sleep", type=float, default=1.2, help="API呼び出し間隔（秒）")
     parser.add_argument("--no-cache", action="store_true", help="キャッシュを使わない")
     parser.add_argument(
@@ -129,6 +135,7 @@ def main() -> int:
     )
     cache_dir = Path(args.cache_dir)
     output_dir = Path(args.output_dir)
+    edinet_list = ensure_edinet_code_list(Path(args.edinet_cache))
 
     days = (end - start).days + 1
     print(f"期間: {start} 〜 {end}（{days} 日, mode={mode}）")
@@ -176,7 +183,7 @@ def main() -> int:
         rows, added, updated = merge_document_rows(existing, incoming)
         print(f"既存: {len(existing)} / 追加: {added} / メタデータ更新: {updated}")
 
-    other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows)
+    other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows, edinet_list)
     list_path, cases_path = publish_tob_outputs(
         output_dir,
         other,

@@ -284,3 +284,70 @@ def parse_holding_pct_from_text(text: str) -> str:
     if percents:
         return format_pct(float(percents[-1]))
     return ""
+
+
+def format_sec_code(raw: str) -> str:
+    """Normalize EDINET/API 5-digit securities codes to a 4-digit ticker."""
+    text = (raw or "").strip()
+    if not text:
+        return ""
+    digits = text.replace("，", ",").replace(",", "")
+    if digits.isdigit() and len(digits) == 5:
+        return digits[:4]
+    return text
+
+
+DELISTING_DONE = "上場廃止済"
+DELISTING_PLANNED = "上場廃止予定"
+LISTING_MAINTAINED = "上場維持"
+
+
+def has_listing_maintain_signal(text: str) -> bool:
+    if not text:
+        return False
+    compact = re.sub(r"\s+", "", strip_html(text))
+    return bool(
+        re.search(
+            r"上場廃止を企図しておらず|上場廃止を企図していない|上場が維持される予定|上場を維持|上場が維持される",
+            compact,
+        )
+    )
+
+
+def has_delisting_planned_signal(text: str) -> bool:
+    if not text:
+        return False
+    compact = re.sub(r"\s+", "", strip_html(text))
+    if has_listing_maintain_signal(compact):
+        return False
+    return bool(
+        re.search(
+            r"上場廃止となる予定|上場廃止を企図|上場廃止となる可能性|上場廃止される|"
+            r"上場廃止となる|非公開化することを企図|株式の非公開化|完全子会社化|完全子会社とする",
+            compact,
+        )
+    )
+
+
+def judge_target_delisting(
+    result_note: str,
+    listing_category: str,
+    texts: list[str],
+) -> str:
+    """Infer whether the target is delisted or expected to delist."""
+    result = (result_note or "").strip()
+    if result in {"不成立", "撤回"}:
+        return ""
+
+    combined = "\n".join(text for text in texts if text)
+    maintain = has_listing_maintain_signal(combined)
+    planned = has_delisting_planned_signal(combined)
+    listing = (listing_category or "").strip()
+
+    if listing == "非上場" and result.startswith("成立"):
+        return DELISTING_DONE
+    if maintain:
+        return LISTING_MAINTAINED
+    if planned:
+        return DELISTING_PLANNED
+    return ""

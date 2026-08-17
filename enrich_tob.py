@@ -37,6 +37,7 @@ from extract_fields import (
     summarize_price,
 )
 from output_store import load_all_list_rows, publish_tob_outputs
+from edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     ANSWER_SIDE,
@@ -365,6 +366,11 @@ def main() -> int:
     parser.add_argument("--output-dir", default="output", help="結果フォルダ（current / snapshots）")
     parser.add_argument("--taxonomy-dir", default="taxonomy")
     parser.add_argument("--cache-dir", default="cache/docs")
+    parser.add_argument(
+        "--edinet-cache",
+        default=str(DEFAULT_CACHE_PATH),
+        help="EDINET提出者リストCSVのキャッシュ先",
+    )
     parser.add_argument("--doc-limit", type=int, default=0, help="0=全書類")
     parser.add_argument("--only-pending", action="store_true", help="未抽出の書類のみ")
     parser.add_argument("--force-refresh", action="store_true")
@@ -377,13 +383,14 @@ def main() -> int:
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
+    edinet_list = ensure_edinet_code_list(Path(args.edinet_cache))
     rows = load_all_list_rows(output_dir)
     if not rows:
         print("tob_list.csv がありません。先に fetch_tob.py を実行してください。", file=sys.stderr)
         return 1
 
     if args.recompute_only:
-        other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows)
+        other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows, edinet_list)
         list_out, _cases_out = publish_tob_outputs(
             output_dir,
             other,
@@ -414,7 +421,7 @@ def main() -> int:
         args.only_pending,
         args.doc_limit,
     )
-    other, cases, issuer, issuer_cases = prepare_pipeline_rows(other + issuer)
+    other, cases, issuer, issuer_cases = prepare_pipeline_rows(other + issuer, edinet_list)
     list_out, cases_out = publish_tob_outputs(
         output_dir,
         other,
