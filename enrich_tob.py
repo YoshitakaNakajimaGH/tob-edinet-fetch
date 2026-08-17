@@ -27,6 +27,17 @@ import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+from extract_fields import (
+    compute_holding_ratios,
+    format_pct,
+    normalize_name,
+    parse_holding_pct_from_text,
+    parse_major_shareholders,
+    parse_parent_from_narrative,
+    parse_period_dates,
+    pick_parent_from_shareholders,
+    summarize_price,
+)
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     ANSWER_SIDE,
@@ -37,6 +48,7 @@ from tob_common import (
     OPINION_SIDE,
     REPORT_SIDE,
     WITHDRAW_SIDE,
+    apply_name_fallbacks,
     assign_case_ids,
     build_cases,
     normalize_doc_row,
@@ -115,31 +127,6 @@ def first_fact(facts: dict[str, list[str]], element_ids: list[str]) -> tuple[str
     return "", ""
 
 
-def parse_period_dates(text: str) -> tuple[str, str]:
-    if not text:
-        return "", ""
-    dates = re.findall(r"(\d{4})年(\d{1,2})月(\d{1,2})日", text)
-    iso = [f"{y}-{int(m):02d}-{int(d):02d}" for y, m, d in dates]
-    if len(iso) >= 2:
-        return iso[0], iso[1]
-    if len(iso) == 1:
-        return iso[0], ""
-    return "", ""
-
-
-def summarize_price(text: str) -> str:
-    if not text:
-        return ""
-    text = re.sub(r"\s+", " ", text.strip())
-    match = re.search(r"普通株式[^。]*?金\s*([\d,]+)\s*円", text)
-    if match:
-        return f"{match.group(1)}円/株"
-    match = re.search(r"金\s*([\d,]+)\s*円", text)
-    if match:
-        return f"{match.group(1)}円"
-    return text[:200]
-
-
 def parse_opinion_stance(text: str) -> str:
     if not text:
         return ""
@@ -169,11 +156,11 @@ def summarize_text(text: str, limit: int = 300) -> str:
 
 def expected_fields_for_type(type_code: str) -> tuple[str, ...]:
     if type_code in FILING_SIDE:
-        return ("OfferPrice", "OfferPeriodStart", "OfferPeriodEnd", "OwnershipRatio")
+        return ("OfferPrice", "OfferPeriodStart", "OfferPeriodEnd", "ExistingHoldingRatio")
     if type_code in OPINION_SIDE:
         return ("OpinionStance",)
     if type_code in REPORT_SIDE:
-        return ("FinalResultNote", "OfferPeriodStart", "OwnershipRatio")
+        return ("FinalResultNote", "OfferPeriodStart", "AfterPurchaseRatio")
     if type_code in WITHDRAW_SIDE:
         return ("WithdrawalReason",)
     if type_code in ANSWER_SIDE:
@@ -195,15 +182,68 @@ def compute_doc_status(row: dict, extracted_ok: bool) -> str:
     return "partial"
 
 
+def apply_names(row: dict, facts: dict[str, list[str]], fields: dict) -> None:
+    offeror, _ = first_fact(facts, fields.get("offeror_name", []))
+    target, _ = first_fact(facts, fields.get("target_name", []))
+    if offeror:
+        row["OfferorName"] = normalize_name(offeror.split("\n")[0])
+    if target:
+        row["TargetName"] = normalize_name(target.split("\n")[0])
+
+    shareholders_text, _ = first_fact(facts, fields.get("major_shareholders_text", []))
+    parent_name, parent_note = pick_parent_from_shareholders(parse_major_shareholders(shareholders_text))
+    if not parent_name:
+        narrative = " ".join(
+            first_fact(facts, fields.get(key, []))[0]
+            for key in ("overview_text", "purposes_text", "corporation_info_text")
+        )
+        parent_name = parse_parent_from_narrative(narrative)
+        if parent_name:
+            parent_note = "本文（親会社・完全子会社の記載）"
+    if parent_name and parent_name != row.get("OfferorName"):
+        row["UltimateParentName"] = parent_name
+        row["UltimateParentNote"] = parent_note
+
+
+def apply_holdings(row: dict, facts: dict[str, list[str]], fields: dict) -> None:
+    offeror_votes, existing_eid = first_fact(facts, fields.get("offeror_voting_rights", []))
+    special_votes, _ = first_fact(facts, fields.get("special_voting_rights", []))
+    total_votes, _ = first_fact(facts, fields.get("total_voting_rights", []))
+    existing, special, _ = compute_holding_ratios(offeror_votes, special_votes, total_votes)
+    if existing:
+        row["ExistingHoldingRatio"] = existing
+        row["ExistingHoldingRatioElement"] = existing_eid
+    if special:
+        row["SpecialRelatedHoldingRatio"] = special
+    if not row.get("ExistingHoldingRatio"):
+        holding_text, holding_eid = first_fact(facts, fields.get("existing_holding_text", []))
+        parsed = parse_holding_pct_from_text(holding_text)
+        if parsed:
+            row["ExistingHoldingRatio"] = parsed
+            row["ExistingHoldingRatioElement"] = holding_eid
+    if not row.get("SpecialRelatedHoldingRatio"):
+        special_text, _ = first_fact(facts, fields.get("special_holding_text", []))
+        parsed = parse_holding_pct_from_text(special_text)
+        if parsed:
+            row["SpecialRelatedHoldingRatio"] = parsed
+    after, after_eid = first_fact(
+        facts,
+        fields.get("after_purchase_ratio", []) or fields.get("ownership_ratio", []),
+    )
+    if after:
+        row["AfterPurchaseRatio"] = format_pct(after)
+        row["AfterPurchaseRatioElement"] = after_eid
+
+
 def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) -> None:
     type_code = row.get("DocTypeCode") or ""
     tax_key = DOC_TYPE_TO_TAXONOMY.get(type_code)
     fields = mapping.get(tax_key, {}) if tax_key else {}
+    apply_names(row, facts, fields)
 
     if type_code in FILING_SIDE or tax_key == "ton":
         price_text, price_eid = first_fact(facts, fields.get("offer_price_text", []))
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
-        ratio, ratio_eid = first_fact(facts, fields.get("ownership_ratio", []))
         start, end = parse_period_dates(period_text)
         if price_text:
             row["OfferPriceRaw"] = price_text[:1000]
@@ -214,9 +254,7 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
             row["OfferPeriodStart"] = start
             row["OfferPeriodEnd"] = end
             row["OfferPeriodElement"] = period_eid
-        if ratio:
-            row["OwnershipRatio"] = ratio
-            row["OwnershipRatioElement"] = ratio_eid
+        apply_holdings(row, facts, fields)
 
     if type_code in OPINION_SIDE or tax_key == "pst":
         opinion_text, opinion_eid = first_fact(facts, fields.get("opinion_text", []))
@@ -228,20 +266,17 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
     if type_code in REPORT_SIDE or tax_key == "tor":
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
         result_text, result_eid = first_fact(facts, fields.get("final_result_text", []))
-        ratio, ratio_eid = first_fact(facts, fields.get("ownership_ratio", []))
         start, end = parse_period_dates(period_text)
         if period_text:
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
             row["OfferPeriodEnd"] = end
             row["OfferPeriodElement"] = period_eid
-        if ratio:
-            row["OwnershipRatio"] = ratio
-            row["OwnershipRatioElement"] = ratio_eid
         if result_text:
             row["FinalResultRaw"] = result_text[:1000]
             row["FinalResultNote"] = summarize_result(result_text)
             row["FinalResultElement"] = result_eid
+        apply_holdings(row, facts, fields)
 
     if type_code in WITHDRAW_SIDE or tax_key == "wto":
         reason_text, reason_eid = first_fact(facts, fields.get("withdrawal_reason_text", []))
@@ -319,6 +354,7 @@ def enrich_document(
     row["TaxonomyDate"] = tax_date or str(mapping.get("taxonomy_date") or "")
     row["TaxonomySource"] = source
     apply_facts_to_row(row, facts, mapping)
+    apply_name_fallbacks(row)
     row["ExtractionStatus"] = compute_doc_status(row, extracted_ok=True)
 
 

@@ -9,6 +9,8 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
+from extract_fields import format_pct, normalize_name
+
 DOC_TYPE_NAMES = {
     "240": "公開買付届出書",
     "250": "訂正公開買付届出書",
@@ -56,6 +58,7 @@ DOC_TYPE_TO_TAXONOMY = {
 
 DEFAULT_RECENT_DAYS = 35
 
+# API metadata only. Fetch upsert overwrites these, and keeps extraction columns.
 METADATA_FIELDS = [
     "SubmitDateTime",
     "DocTypeCode",
@@ -73,61 +76,88 @@ METADATA_FIELDS = [
     "CaseID",
 ]
 
-EXTRACTION_FIELDS = [
+# Human-readable values first, identifiers last.
+LIST_FIELDS = [
+    "SubmitDateTime",
+    "DocTypeName",
+    "OfferorName",
+    "TargetName",
+    "UltimateParentName",
+    "OfferPrice",
+    "OfferPeriodStart",
+    "OfferPeriodEnd",
+    "ExistingHoldingRatio",
+    "SpecialRelatedHoldingRatio",
+    "AfterPurchaseRatio",
+    "OpinionStance",
+    "FinalResultNote",
+    "WithdrawalReason",
+    "ResponseNote",
+    "RoleHint",
+    "DocDescription",
+    "ExtractionStatus",
+    "UltimateParentNote",
+    "FilerName",
+    "FilerSecCode",
+    "FilerEdinetCode",
+    "SubjectEdinetCode",
+    "DocTypeCode",
+    "DocID",
+    "ParentDocID",
+    "CaseID",
+    "PdfFlag",
+    "XbrlFlag",
     "TaxonomyYear",
     "TaxonomyDate",
     "TaxonomySource",
-    "OfferPrice",
     "OfferPriceRaw",
     "OfferPriceElement",
-    "OfferPeriodStart",
-    "OfferPeriodEnd",
     "OfferPeriodRaw",
     "OfferPeriodElement",
-    "OwnershipRatio",
-    "OwnershipRatioElement",
-    "OpinionStance",
+    "ExistingHoldingRatioElement",
+    "AfterPurchaseRatioElement",
     "OpinionRaw",
     "OpinionElement",
-    "FinalResultNote",
     "FinalResultRaw",
     "FinalResultElement",
-    "WithdrawalReason",
     "WithdrawalReasonRaw",
     "WithdrawalReasonElement",
-    "ResponseNote",
     "ResponseRaw",
     "ResponseElement",
-    "ExtractionStatus",
     "ExtractionError",
     "ExtractedAt",
 ]
 
-LIST_FIELDS = METADATA_FIELDS + EXTRACTION_FIELDS
+EXTRACTION_FIELDS = [key for key in LIST_FIELDS if key not in METADATA_FIELDS]
 
 CASE_FIELDS = [
-    "CaseID",
     "OfferorName",
-    "OfferorEdinetCode",
-    "TargetEdinetCode",
-    "FirstFilingDate",
-    "LastUpdateDate",
+    "TargetName",
+    "UltimateParentName",
     "Status",
-    "HasOpinion",
-    "LatestFilingDocID",
-    "LatestOpinionDocID",
-    "LatestReportDocID",
-    "DocCount",
-    "DocIDList",
     "OfferPrice",
     "OfferPeriodStart",
     "OfferPeriodEnd",
-    "OwnershipRatio",
+    "ExistingHoldingRatio",
+    "SpecialRelatedHoldingRatio",
+    "AfterPurchaseRatio",
     "OpinionStance",
     "FinalResultNote",
     "WithdrawalReason",
+    "FirstFilingDate",
+    "LastUpdateDate",
+    "HasOpinion",
+    "DocCount",
     "EnrichmentStatus",
+    "UltimateParentNote",
+    "OfferorEdinetCode",
+    "TargetEdinetCode",
+    "CaseID",
+    "LatestFilingDocID",
+    "LatestOpinionDocID",
+    "LatestReportDocID",
     "LastEnrichedDocID",
+    "DocIDList",
 ]
 
 
@@ -214,7 +244,23 @@ def write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
 
 def normalize_doc_row(row: dict) -> dict:
     out = {key: (row.get(key) or "") for key in LIST_FIELDS}
+    if not out.get("AfterPurchaseRatio") and row.get("OwnershipRatio"):
+        out["AfterPurchaseRatio"] = format_pct(row.get("OwnershipRatio") or "") or (row.get("OwnershipRatio") or "")
+    apply_name_fallbacks(out)
     return out
+
+
+def apply_name_fallbacks(row: dict) -> None:
+    type_code = row.get("DocTypeCode") or ""
+    filer = normalize_name(row.get("FilerName") or "")
+    if not row.get("OfferorName") and type_code in OFFEROR_SIDE | ANSWER_SIDE:
+        row["OfferorName"] = filer
+    if not row.get("TargetName") and type_code in OPINION_SIDE:
+        row["TargetName"] = filer
+    if row.get("OfferorName"):
+        row["OfferorName"] = normalize_name(row["OfferorName"])
+    if row.get("TargetName"):
+        row["TargetName"] = normalize_name(row["TargetName"])
 
 
 def merge_document_rows(existing: list[dict], incoming: list[dict]) -> tuple[list[dict], int, int]:
@@ -343,14 +389,17 @@ def case_status(docs: list[dict]) -> str:
     return "関連書類"
 
 
-def pick_offeror_target(docs: list[dict]) -> tuple[str, str, str]:
-    """Return OfferorName, OfferorEdinetCode, TargetEdinetCode."""
+def pick_offeror_target(docs: list[dict]) -> tuple[str, str, str, str]:
+    """Return OfferorName, TargetName, OfferorEdinetCode, TargetEdinetCode."""
     offeror_docs = [d for d in docs if d.get("DocTypeCode") in OFFEROR_SIDE]
     preferred = sorted(offeror_docs, key=lambda d: d.get("SubmitDateTime") or "")
     if preferred:
         filing_first = earliest_doc(docs, FILING_SIDE) or preferred[0]
+        offeror_name = filing_first.get("OfferorName") or filing_first.get("FilerName") or ""
+        target_name = filing_first.get("TargetName") or ""
         return (
-            filing_first.get("FilerName") or "",
+            offeror_name,
+            target_name,
             filing_first.get("FilerEdinetCode") or "",
             filing_first.get("SubjectEdinetCode") or "",
         )
@@ -358,13 +407,15 @@ def pick_offeror_target(docs: list[dict]) -> tuple[str, str, str]:
     opinion = latest_doc(docs, OPINION_SIDE)
     if opinion:
         return (
-            "",
+            opinion.get("OfferorName") or "",
+            opinion.get("TargetName") or opinion.get("FilerName") or "",
             opinion.get("SubjectEdinetCode") or "",
             opinion.get("FilerEdinetCode") or "",
         )
     first = sorted(docs, key=lambda d: d.get("SubmitDateTime") or "")[0]
     return (
-        first.get("FilerName") or "",
+        first.get("OfferorName") or first.get("FilerName") or "",
+        first.get("TargetName") or "",
         first.get("FilerEdinetCode") or "",
         first.get("SubjectEdinetCode") or "",
     )
@@ -376,16 +427,23 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "OfferPrice": "",
         "OfferPeriodStart": "",
         "OfferPeriodEnd": "",
-        "OwnershipRatio": "",
+        "ExistingHoldingRatio": "",
+        "SpecialRelatedHoldingRatio": "",
+        "AfterPurchaseRatio": "",
         "OpinionStance": "",
         "FinalResultNote": "",
         "WithdrawalReason": "",
+        "TargetName": "",
+        "UltimateParentName": "",
+        "UltimateParentNote": "",
         "LastEnrichedDocID": "",
     }
     last_enriched = ""
     for doc in docs_sorted:
         type_code = doc.get("DocTypeCode") or ""
         doc_id = doc.get("DocID") or ""
+        if doc.get("TargetName"):
+            out["TargetName"] = doc["TargetName"]
         if (doc.get("ExtractionStatus") or "") in {"done", "partial", "skipped"}:
             last_enriched = doc_id
 
@@ -403,8 +461,15 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["OfferPeriodStart"] = doc["OfferPeriodStart"]
             if doc.get("OfferPeriodEnd"):
                 out["OfferPeriodEnd"] = doc["OfferPeriodEnd"]
-            if doc.get("OwnershipRatio"):
-                out["OwnershipRatio"] = doc["OwnershipRatio"]
+            if doc.get("ExistingHoldingRatio"):
+                out["ExistingHoldingRatio"] = doc["ExistingHoldingRatio"]
+            if doc.get("SpecialRelatedHoldingRatio"):
+                out["SpecialRelatedHoldingRatio"] = doc["SpecialRelatedHoldingRatio"]
+            if doc.get("AfterPurchaseRatio") or doc.get("OwnershipRatio"):
+                out["AfterPurchaseRatio"] = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
+            if doc.get("UltimateParentName"):
+                out["UltimateParentName"] = doc["UltimateParentName"]
+                out["UltimateParentNote"] = doc.get("UltimateParentNote") or ""
         elif type_code in OPINION_SIDE:
             if doc.get("OpinionStance"):
                 out["OpinionStance"] = doc["OpinionStance"]
@@ -415,8 +480,8 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["OfferPeriodStart"] = doc["OfferPeriodStart"]
             if doc.get("OfferPeriodEnd"):
                 out["OfferPeriodEnd"] = doc["OfferPeriodEnd"]
-            if doc.get("OwnershipRatio"):
-                out["OwnershipRatio"] = doc["OwnershipRatio"]
+            if doc.get("AfterPurchaseRatio") or doc.get("OwnershipRatio"):
+                out["AfterPurchaseRatio"] = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
 
     out["LastEnrichedDocID"] = last_enriched
     return out
@@ -432,7 +497,8 @@ def compute_case_enrichment_status(case: dict, docs: list[dict]) -> str:
             "OfferPrice",
             "OfferPeriodStart",
             "OfferPeriodEnd",
-            "OwnershipRatio",
+            "ExistingHoldingRatio",
+            "AfterPurchaseRatio",
             "OpinionStance",
             "FinalResultNote",
         )
@@ -458,11 +524,11 @@ def build_cases(rows: list[dict]) -> list[dict]:
     cases: list[dict] = []
     for case_id, docs in groups.items():
         docs_sorted = sorted(docs, key=lambda d: d.get("SubmitDateTime") or "")
-        offeror_name, offeror_code, target_code = pick_offeror_target(docs_sorted)
+        offeror_name, target_name, offeror_code, target_code = pick_offeror_target(docs_sorted)
         if not offeror_name:
             for doc in docs_sorted:
-                if doc.get("DocTypeCode") in OFFEROR_SIDE and doc.get("FilerName"):
-                    offeror_name = doc["FilerName"]
+                if doc.get("DocTypeCode") in OFFEROR_SIDE and (doc.get("OfferorName") or doc.get("FilerName")):
+                    offeror_name = doc.get("OfferorName") or doc["FilerName"]
                     break
 
         first_filing = earliest_doc(docs_sorted, {"240"}) or docs_sorted[0]
@@ -471,11 +537,14 @@ def build_cases(rows: list[dict]) -> list[dict]:
         latest_opinion = latest_doc(docs_sorted, OPINION_SIDE)
         latest_report = latest_doc(docs_sorted, REPORT_SIDE)
         overlay = overlay_case_from_docs(docs_sorted)
+        if overlay.get("TargetName"):
+            target_name = overlay["TargetName"]
         has_opinion = "Yes" if latest_opinion or overlay.get("OpinionStance") else "No"
         doc_ids = [d.get("DocID") or "" for d in docs_sorted if d.get("DocID")]
         case = {
             "CaseID": case_id,
             "OfferorName": offeror_name,
+            "TargetName": target_name,
             "OfferorEdinetCode": offeror_code,
             "TargetEdinetCode": target_code,
             "FirstFilingDate": (first_filing.get("SubmitDateTime") or "")[:10],
@@ -489,6 +558,8 @@ def build_cases(rows: list[dict]) -> list[dict]:
             "DocIDList": ";".join(doc_ids),
             **overlay,
         }
+        case["OfferorName"] = offeror_name
+        case["TargetName"] = overlay.get("TargetName") or target_name
         case["EnrichmentStatus"] = compute_case_enrichment_status(case, docs_sorted)
         cases.append(case)
 

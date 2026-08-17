@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
 
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
+    LIST_FIELDS,
     build_cases,
     merge_document_rows,
     normalize_doc_row,
@@ -153,6 +154,13 @@ class MergeAndCaseTests(unittest.TestCase):
         self.assertEqual(case["HasOpinion"], "Yes")
         self.assertEqual(case["Status"], "訂正あり")
         self.assertEqual(case["EnrichmentStatus"], "done")
+        self.assertEqual(case["OfferorName"], "Buyer KK")
+        self.assertEqual(case["TargetName"], "Target KK")
+
+    def test_human_columns_come_before_ids(self) -> None:
+        self.assertLess(LIST_FIELDS.index("OfferPrice"), LIST_FIELDS.index("DocID"))
+        self.assertLess(LIST_FIELDS.index("ExistingHoldingRatio"), LIST_FIELDS.index("CaseID"))
+        self.assertGreater(LIST_FIELDS.index("DocID"), LIST_FIELDS.index("TargetName"))
 
 
 class TaxonomyCatalogTests(unittest.TestCase):
