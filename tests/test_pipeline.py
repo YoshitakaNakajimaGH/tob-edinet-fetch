@@ -13,9 +13,11 @@ if str(ROOT) not in sys.path:
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     LIST_FIELDS,
+    assign_case_ids,
     build_cases,
     merge_document_rows,
     normalize_doc_row,
+    partition_issuer_tenders,
     resolve_range,
 )
 
@@ -158,6 +160,113 @@ class MergeAndCaseTests(unittest.TestCase):
         self.assertEqual(case["OfferorName"], "Buyer KK")
         self.assertEqual(case["TargetName"], "Target KK")
         self.assertNotIn("UltimateParentName", case)
+
+    def test_issuer_tender_is_split_off(self) -> None:
+        other, issuer = partition_issuer_tenders(
+            [
+                normalize_doc_row(
+                    {
+                        "DocID": "S100SELF",
+                        "DocTypeCode": "240",
+                        "FilerEdinetCode": "E11111",
+                        "SubjectEdinetCode": "E11111",
+                        "FilerName": "Self KK",
+                    }
+                ),
+                normalize_doc_row(
+                    {
+                        "DocID": "S100OTHR",
+                        "DocTypeCode": "240",
+                        "FilerEdinetCode": "E11111",
+                        "SubjectEdinetCode": "E22222",
+                        "FilerName": "Buyer KK",
+                    }
+                ),
+            ]
+        )
+        self.assertEqual([r["DocID"] for r in issuer], ["S100SELF"])
+        self.assertEqual([r["DocID"] for r in other], ["S100OTHR"])
+
+    def test_orphan_opinion_joins_matching_filing_case(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100FILING",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2026-01-10 10:00",
+                    "FilerName": "Buyer KK",
+                    "FilerEdinetCode": "E11111",
+                    "SubjectEdinetCode": "E22222",
+                    "TargetName": "Target KK",
+                    "OfferPrice": "1,000円/株",
+                    "ExtractionStatus": "done",
+                }
+            ),
+            normalize_doc_row(
+                {
+                    "DocID": "S100OPN",
+                    "DocTypeCode": "300",
+                    "SubmitDateTime": "2026-01-21 10:00",
+                    "ParentDocID": "S100MISSING",
+                    "FilerName": "Target KK",
+                    "FilerEdinetCode": "E22222",
+                    "SubjectEdinetCode": "E11111",
+                    "OpinionStance": "賛同",
+                    "ExtractionStatus": "done",
+                }
+            ),
+        ]
+        assign_case_ids(rows)
+        self.assertEqual(rows[0]["CaseID"], rows[1]["CaseID"])
+        cases = build_cases(rows)
+        self.assertEqual(len(cases), 1)
+        self.assertEqual(cases[0]["Status"], "届出中")
+        self.assertEqual(cases[0]["OpinionStance"], "賛同")
+        self.assertEqual(cases[0]["HasOpinion"], "Yes")
+
+    def test_opinion_only_group_is_not_a_case_row(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100OPN",
+                    "CaseID": "S100OPN",
+                    "DocTypeCode": "290",
+                    "FilerName": "Target KK",
+                    "FilerEdinetCode": "E22222",
+                    "SubjectEdinetCode": "E11111",
+                    "OpinionStance": "賛同",
+                }
+            )
+        ]
+        cases = build_cases(rows)
+        self.assertEqual(cases, [])
+
+    def test_two_filings_same_parties_stay_separate(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100ONE",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2025-01-10 10:00",
+                    "FilerEdinetCode": "E11111",
+                    "SubjectEdinetCode": "E22222",
+                    "FilerName": "Buyer KK",
+                }
+            ),
+            normalize_doc_row(
+                {
+                    "DocID": "S100TWO",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2026-06-01 10:00",
+                    "FilerEdinetCode": "E11111",
+                    "SubjectEdinetCode": "E22222",
+                    "FilerName": "Buyer KK",
+                }
+            ),
+        ]
+        assign_case_ids(rows)
+        self.assertNotEqual(rows[0]["CaseID"], rows[1]["CaseID"])
+        self.assertEqual(len(build_cases(rows)), 2)
 
     def test_human_columns_come_before_ids(self) -> None:
         self.assertLess(LIST_FIELDS.index("OfferPrice"), LIST_FIELDS.index("DocID"))

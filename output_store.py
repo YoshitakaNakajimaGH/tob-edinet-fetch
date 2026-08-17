@@ -8,12 +8,14 @@ import shutil
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-from tob_common import CASE_FIELDS, LIST_FIELDS, write_csv
+from tob_common import CASE_FIELDS, LIST_FIELDS, merge_document_rows, read_csv, write_csv
 
 KEEP_SNAPSHOTS = 20
 KEEP_TRASH = 20
 LIST_STEM = "tob_list"
 CASES_STEM = "tob_cases"
+SELF_LIST_STEM = "self_tob_list"
+SELF_CASES_STEM = "self_tob_cases"
 
 try:
     from zoneinfo import ZoneInfo
@@ -134,11 +136,30 @@ def publish_tob_outputs(
     list_rows: list[dict],
     case_rows: list[dict],
     day: date | None = None,
+    self_list_rows: list[dict] | None = None,
+    self_case_rows: list[dict] | None = None,
 ) -> tuple[Path, Path]:
     day = day or japan_today()
     list_path = publish_csv(root, LIST_STEM, list_rows, LIST_FIELDS, day)
     cases_path = publish_csv(root, CASES_STEM, case_rows, CASE_FIELDS, day)
+    if self_list_rows is not None:
+        publish_csv(root, SELF_LIST_STEM, self_list_rows, LIST_FIELDS, day)
+    if self_case_rows is not None:
+        publish_csv(root, SELF_CASES_STEM, self_case_rows, CASE_FIELDS, day)
     return list_path, cases_path
+
+
+def load_all_list_rows(root: Path) -> list[dict]:
+    """Load 他社株 + 自社株 list CSVs and upsert by DocID."""
+    chunks: list[dict] = []
+    for stem in (LIST_STEM, SELF_LIST_STEM):
+        path = resolve_current_csv(root, stem)
+        if path:
+            chunks.extend(read_csv(path))
+    if not chunks:
+        return []
+    rows, _, _ = merge_document_rows([], chunks)
+    return rows
 
 
 def resolve_current_csv(root: Path, stem: str) -> Path | None:
