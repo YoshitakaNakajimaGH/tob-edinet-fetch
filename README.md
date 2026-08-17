@@ -51,45 +51,52 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 
 ## tob_cases.csv の見方
 
+左に人が読む項目、右にID類を置いています。
+
 | 列 | 意味 |
 |----|------|
-| CaseID | 案件キー（多くの場合、最初の公開買付届出書の DocID） |
-| OfferorName | 買付者名 |
-| TargetEdinetCode | 対象会社の EDINET コード |
-| FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |
+| OfferorName | 買付者名（届出書の表紙「届出者の氏名又は名称」） |
+| TargetName | 対象会社名 |
+| UltimateParentName | 買付者の実質的な親会社（大株主50%以上、または本文の「親会社である」） |
 | Status | 届出中 / 訂正あり / 撤回 / 報告書提出 など |
-| HasOpinion | 意見表明の有無 |
-| **OfferPrice** | 買付価格（届出・訂正の最新値） |
-| **OfferPeriodStart / End** | 買付期間（最新値） |
-| **OwnershipRatio** | 買付後の保有比率（最新値） |
-| **OpinionStance** | 賛同 / 反対 / 意見留保 / 要確認 |
-| **FinalResultNote** | 公開買付報告書の結果要約 |
-| **WithdrawalReason** | 撤回理由 |
-| **EnrichmentStatus** | done / partial / failed |
-| Latest*DocID / DocIDList | 関連書類 |
+| OfferPrice | 買付価格（普通株式1株あたり） |
+| OfferPeriodStart / End | 買付期間。延長があれば延長後 |
+| ExistingHoldingRatio | すでに買付者＋特別関係者が持つ株券等所有割合 |
+| SpecialRelatedHoldingRatio | 特別関係者だけの既保有割合 |
+| AfterPurchaseRatio | 買付後の株券等所有割合 |
+| OpinionStance | 賛同 / 反対 / 意見留保 / 要確認 |
+| FinalResultNote | 公開買付報告書の結果要約 |
+| FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |
+| CaseID 以降 | 書類ID・EDINETコードなど |
 
-案件CSVの詳細列は、書類正本を提出日時の古い順に重ねた **最新状態** です。履歴そのものは `tob_list.csv` に残ります。
-
-- 公開買付届出書（240）→ 価格・期間・保有比率を初回セット
-- 訂正届出書（250）→ 同項目を上書き
-- 意見表明（290/300）→ 賛同/反対などをセット
-- 公開買付報告書（270/280）→ 最終結果・期間・比率を反映
-- 撤回（260）→ Status を撤回に
+案件CSVの詳細列は、書類正本を提出日時の古い順に重ねた **最新状態** です。履歴は `tob_list.csv` に残ります。
 
 ## tob_list.csv の見方
 
+書類1件1行です。左側が数値・名称、右側がIDです。
+
 | 列 | 意味 |
 |----|------|
-| SubmitDateTime | 提出日時 |
-| DocTypeName | 書類名 |
-| RoleHint | 買付者側 / 対象会社側 の目安 |
-| FilerName | 提出者 |
-| SubjectEdinetCode | 対象（または意見表明時の相手方）コード |
-| DocID / ParentDocID | 書類ID / 親書類ID |
-| CaseID | 紐づいた案件ID |
-| OfferPrice など | **その書類から取れた値だけ**（他書類の値は混ぜない） |
-| TaxonomyYear / TaxonomySource | 使ったタクソノミ年版と判定方法 |
-| ExtractionStatus | pending / done / partial / failed / skipped |
+| SubmitDateTime / DocTypeName | 提出日時・書類名 |
+| OfferorName / TargetName / UltimateParentName | 買付者・対象会社・実質親会社 |
+| OfferPrice / OfferPeriodStart / End | その書類に書かれた価格・期間 |
+| ExistingHoldingRatio | 買付者＋特別関係者の既保有割合 |
+| SpecialRelatedHoldingRatio | 特別関係者の既保有割合 |
+| AfterPurchaseRatio | 買付後所有割合 |
+| OpinionStance / FinalResultNote など | その書類から取れた値だけ |
+| DocID / ParentDocID / CaseID | 書類ID類（右寄り） |
+
+## 抜き出しロジック（Enrich）
+
+公開買付届出書（240/250）の XBRL CSV から次の要素を使います。
+
+- 買付者名: `FullNameOrNameOfFilerOfNotificationCoverPage`（なければ一覧APIの提出者名）
+- 対象会社名: `NameOfSubjectCompanyTextBlock`
+- 実質親会社: 買付者の「大株主」表で50%以上の株主。なければ「買付け等の目的／概要」の「親会社である」「完全子会社」表現
+- 買付価格: `PriceOfPurchaseEtcTextBlock` から「普通株式1株につき金X円」
+- 買付期間: `PeriodOfPurchaseEtcTextBlock`（2021年版は `OriginalPeriodAtFilingTextBlock`）。延長記載があれば最後の自〜至
+- 既保有割合: 議決権数 (d)+(g) を総議決権 (j) で割る。d=買付者、g=特別関係者
+- 買付後割合: `HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc`
 
 ## 技術メモ（メンテ担当向け）
 
@@ -114,6 +121,7 @@ python -m unittest discover -s tests -t . -v
 
 - `fetch_tob.py` … 一覧取得・既存CSVへの upsert・案件再生成
 - `enrich_tob.py` … 書類単位の XBRL 抽出
+- `extract_fields.py` … 価格・期間・親会社・保有割合の解析
 - `tob_common.py` … CSV列定義・案件派生
 - `taxonomy/` … 年版タクソノミの選択、年度別マッピング、公式資料の抜粋
 - `.github/workflows/fetch-tob.yml` … 一覧の手動（年指定）／平日の直近35日

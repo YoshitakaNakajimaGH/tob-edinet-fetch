@@ -3,6 +3,12 @@
   "taxonomy_date": "2020-11-01",
   "note": "Element IDs confirmed from sample filings S100XEKS, S100XELY, S100XMO3. Fallback IDs include 2026 names.",
   "ton": {
+    "offeror_name": [
+      "jptoo-ton_cor:FullNameOrNameOfFilerOfNotificationCoverPage"
+    ],
+    "target_name": [
+      "jptoo-ton_cor:NameOfSubjectCompanyTextBlock"
+    ],
     "offer_price_text": [
       "jptoo-ton_cor:PriceOfPurchaseEtcTextBlock"
     ],
@@ -10,28 +16,73 @@
       "jptoo-ton_cor:OriginalPeriodAtFilingTextBlock",
       "jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock"
     ],
-    "ownership_ratio": [
+    "after_purchase_ratio": [
       "jptoo-ton_cor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc"
+    ],
+    "offeror_voting_rights": [
+      "jptoo-ton_cor:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedByTenderOfferorD"
+    ],
+    "special_voting_rights": [
+      "jptoo-ton_cor:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedBySpecialInterestPartiesG"
+    ],
+    "total_voting_rights": [
+      "jptoo-ton_cor:NumberNumberOfVotingRightsOwnedByAllShareholdersEtcOfSubjectCompanyJ"
+    ],
+    "existing_holding_text": [
+      "jptoo-ton_cor:TotalHoldingOfShareCertificatesEtcByTenderOfferorAndSpecialInterestPartiesTextBlock"
+    ],
+    "special_holding_text": [
+      "jptoo-ton_cor:TotalHoldingOfShareCertificatesEtcBySpecialInterestPartiesTextBlock"
+    ],
+    "major_shareholders_text": [
+      "jptoo-ton_cor:MajorShareholdersInformationAboutTenderOfferorTextBlock"
+    ],
+    "overview_text": [
+      "jptoo-ton_cor:OverviewOfPurchaseEtcTextBlock"
+    ],
+    "purposes_text": [
+      "jptoo-ton_cor:PurposesOfPurchaseEtcTextBlock"
+    ],
+    "corporation_info_text": [
+      "jptoo-ton_cor:InformationAboutCorporationTextBlock"
     ]
   },
   "pst": {
+    "offeror_name": [
+      "jptoo-pst_cor:NameAndResidentialAddressOrLocationOfTenderOfferorTextBlock"
+    ],
+    "target_name": [
+      "jptoo-pst_cor:NameOfFilerCoverPage"
+    ],
     "opinion_text": [
       "jptoo-pst_cor:OpinionAndBasisAndReasonOfOpinionRegardingSaidTenderOfferTextBlock",
       "jptoo-pst_cor:OpinionRegardingSaidTenderOfferAndBasisAndReasonsEtcTextBlock"
     ]
   },
   "tor": {
+    "offeror_name": [
+      "jptoo-tor_cor:FullNameOrNameOfFilerCoverPage"
+    ],
+    "target_name": [
+      "jptoo-tor_cor:NameOfSubjectCompanyTextBlock"
+    ],
     "period_text": [
       "jptoo-tor_cor:TenderOfferPeriodTextBlock"
     ],
     "final_result_text": [
       "jptoo-tor_cor:SuccessOrFailureOfTenderOfferTextBlock"
     ],
-    "ownership_ratio": [
+    "after_purchase_ratio": [
       "jptoo-tor_cor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc"
     ]
   },
   "wto": {
+    "offeror_name": [
+      "jptoo-wto_cor:FullNameOrNameOfFilerOfNotificationCoverPage"
+    ],
+    "target_name": [
+      "jptoo-wto_cor:NameOfSubjectCompanyTextBlock"
+    ],
     "period_text": [
       "jptoo-wto_cor:TenderOfferPeriodTextBlock"
     ],
@@ -40,6 +91,12 @@
     ]
   },
   "toa": {
+    "offeror_name": [
+      "jptoo-toa_cor:FullNameOrNameOfFilerCoverPage"
+    ],
+    "target_name": [
+      "jptoo-toa_cor:NameOfSubjectCompanyTextBlock"
+    ],
     "response_text": [
       "jptoo-toa_cor:ResponsesToInquiriesTextBlock"
     ]
