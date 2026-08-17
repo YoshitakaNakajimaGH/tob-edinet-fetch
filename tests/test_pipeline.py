@@ -110,6 +110,7 @@ class MergeAndCaseTests(unittest.TestCase):
                     "SubjectEdinetCode": "E22222",
                     "OfferPrice": "1,000円/株",
                     "OfferPeriodStart": "2026-01-11",
+                    "TargetName": "（１）【対象者名】Target KK",
                     "ExtractionStatus": "done",
                 }
             ),
@@ -156,11 +157,26 @@ class MergeAndCaseTests(unittest.TestCase):
         self.assertEqual(case["EnrichmentStatus"], "done")
         self.assertEqual(case["OfferorName"], "Buyer KK")
         self.assertEqual(case["TargetName"], "Target KK")
+        self.assertNotIn("UltimateParentName", case)
 
     def test_human_columns_come_before_ids(self) -> None:
         self.assertLess(LIST_FIELDS.index("OfferPrice"), LIST_FIELDS.index("DocID"))
         self.assertLess(LIST_FIELDS.index("ExistingHoldingRatio"), LIST_FIELDS.index("CaseID"))
         self.assertGreater(LIST_FIELDS.index("DocID"), LIST_FIELDS.index("TargetName"))
+        self.assertNotIn("UltimateParentName", LIST_FIELDS)
+        self.assertNotIn("UltimateParentNote", LIST_FIELDS)
+
+    def test_normalize_strips_target_heading(self) -> None:
+        row = normalize_doc_row(
+            {
+                "DocID": "S100AAAA",
+                "DocTypeCode": "240",
+                "TargetName": "（１）【対象者名】株式会社ライトオン",
+                "FilerName": "Buyer KK",
+            }
+        )
+        self.assertEqual(row["TargetName"], "株式会社ライトオン")
+        self.assertNotIn("UltimateParentName", row)
 
 
 class TaxonomyCatalogTests(unittest.TestCase):

@@ -56,8 +56,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | 列 | 意味 |
 |----|------|
 | OfferorName | 買付者名（届出書の表紙「届出者の氏名又は名称」） |
-| TargetName | 対象会社名 |
-| UltimateParentName | 買付者の実質的な親会社（大株主50%以上、または本文の「親会社である」） |
+| TargetName | 対象会社名（見出し「（１）【対象者名】」は除去） |
 | Status | 届出中 / 訂正あり / 撤回 / 報告書提出 など |
 | OfferPrice | 買付価格（普通株式1株あたり） |
 | OfferPeriodStart / End | 買付期間。延長があれば延長後 |
@@ -78,7 +77,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | 列 | 意味 |
 |----|------|
 | SubmitDateTime / DocTypeName | 提出日時・書類名 |
-| OfferorName / TargetName / UltimateParentName | 買付者・対象会社・実質親会社 |
+| OfferorName / TargetName | 買付者・対象会社 |
 | OfferPrice / OfferPeriodStart / End | その書類に書かれた価格・期間 |
 | ExistingHoldingRatio | 買付者＋特別関係者の既保有割合 |
 | SpecialRelatedHoldingRatio | 特別関係者の既保有割合 |
@@ -91,8 +90,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 公開買付届出書（240/250）の XBRL CSV から次の要素を使います。
 
 - 買付者名: `FullNameOrNameOfFilerOfNotificationCoverPage`（なければ一覧APIの提出者名）
-- 対象会社名: `NameOfSubjectCompanyTextBlock`
-- 実質親会社: 買付者の「大株主」表で50%以上の株主。なければ「買付け等の目的／概要」の「親会社である」「完全子会社」表現
+- 対象会社名: `NameOfSubjectCompanyTextBlock`（先頭の「（１）【対象者名】」などは除去）
 - 買付価格: `PriceOfPurchaseEtcTextBlock` から「普通株式1株につき金X円」
 - 買付期間: `PeriodOfPurchaseEtcTextBlock`（2021年版は `OriginalPeriodAtFilingTextBlock`）。延長記載があれば最後の自〜至
 - 既保有割合: 議決権数 (d)+(g) を総議決権 (j) で割る。d=買付者、g=特別関係者
@@ -121,7 +119,7 @@ python -m unittest discover -s tests -t . -v
 
 - `fetch_tob.py` … 一覧取得・既存CSVへの upsert・案件再生成
 - `enrich_tob.py` … 書類単位の XBRL 抽出
-- `extract_fields.py` … 価格・期間・親会社・保有割合の解析
+- `extract_fields.py` … 価格・期間・保有割合の解析、対象者名の見出し除去
 - `tob_common.py` … CSV列定義・案件派生
 - `taxonomy/` … 年版タクソノミの選択、年度別マッピング、公式資料の抜粋
 - `.github/workflows/fetch-tob.yml` … 一覧の手動（年指定）／平日の直近35日

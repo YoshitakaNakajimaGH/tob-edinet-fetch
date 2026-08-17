@@ -5,9 +5,6 @@ from __future__ import annotations
 
 import html
 import re
-from dataclasses import dataclass
-
-COMPANY_SUFFIX = r"(?:株式会社|合同会社|有限会社|合資会社|合名会社|一般社団法人|投資事業有限責任組合|有限責任事業組合)"
 
 
 def strip_html(text: str) -> str:
@@ -30,6 +27,28 @@ def normalize_name(text: str) -> str:
     text = strip_html(text)
     text = re.sub(r"\s+", " ", text).strip(" 　\n\r\t「」『』")
     text = text.replace("㈱", "株式会社")
+    return text[:120]
+
+
+HEADING_PREFIX = re.compile(
+    r"^(?:[(（]?\s*[0-9０-９一二三四五六七八九十]+\s*[)）.．]?\s*)?【[^】]+】\s*"
+)
+LABEL_PREFIX = re.compile(
+    r"^(?:対象者名|届出者の氏名又は名称|公開買付者の氏名又は名称)\s*[:：]?\s*"
+)
+
+
+def clean_extracted_name(text: str) -> str:
+    """Strip XBRL section headings such as '（１）【対象者名】' from a company name."""
+    text = normalize_name(text)
+    if not text:
+        return ""
+    for _ in range(3):
+        cleaned = HEADING_PREFIX.sub("", text).strip()
+        cleaned = LABEL_PREFIX.sub("", cleaned).strip()
+        if cleaned == text:
+            break
+        text = cleaned
     return text[:120]
 
 
@@ -130,65 +149,6 @@ def summarize_price(text: str) -> str:
         amount = match.group(1).replace("，", ",")
         return f"{amount}円"
     return text[:200]
-
-
-@dataclass
-class Shareholder:
-    name: str
-    pct: float
-
-
-def parse_major_shareholders(text: str) -> list[Shareholder]:
-    text = strip_html(text)
-    if not text:
-        return []
-    holders: list[Shareholder] = []
-    pattern = re.compile(
-        rf"((?:{COMPANY_SUFFIX})?[^\n。、]{{1,80}}(?:{COMPANY_SUFFIX}|Inc\.|INC\.|Ltd\.|L\.P\.|LP))"
-        rf".{{0,80}}?(\d+(?:\.\d+)?)\s*[%％]"
-    )
-    for name, pct in pattern.findall(text):
-        name = normalize_name(name)
-        if not name or "発行済" in name or "所有株式" in name:
-            continue
-        holders.append(Shareholder(name=name, pct=float(pct)))
-    if holders:
-        return holders
-    for name, pct in re.findall(r"([^\n]{2,80})\s+(\d+(?:\.\d+)?)\s*[%％]", text):
-        name = normalize_name(name)
-        if re.search(COMPANY_SUFFIX, name):
-            holders.append(Shareholder(name=name, pct=float(pct)))
-    return holders
-
-
-def pick_parent_from_shareholders(holders: list[Shareholder]) -> tuple[str, str]:
-    if not holders:
-        return "", ""
-    top = max(holders, key=lambda h: h.pct)
-    if top.pct >= 50:
-        return top.name, f"大株主 {format_pct(top.pct)}"
-    return "", ""
-
-
-def parse_parent_from_narrative(text: str) -> str:
-    if not text:
-        return ""
-    text = strip_html(text)
-    patterns = [
-        r"最終親会社(?:である|は)\s*([^\s。、]{2,80})",
-        r"実質的な親会社(?:である|は)\s*([^\s。、]{2,80})",
-        r"親会社(?:である|は)\s*([^\s。、]{2,80})",
-        r"([^\s。、]{2,80}?)が発行済株式の全部を所有",
-        r"([^\s。、]{2,80}?)の(?:完全|間接)?子会社",
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, text)
-        if match:
-            name = normalize_name(match.group(1))
-            name = re.sub(r"(?:であり|である|です|します)$", "", name)
-            if name and name not in {"当社", "公開買付者", "対象者"}:
-                return name
-    return ""
 
 
 def compute_holding_ratios(

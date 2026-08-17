@@ -28,14 +28,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from extract_fields import (
+    clean_extracted_name,
     compute_holding_ratios,
     format_pct,
-    normalize_name,
     parse_holding_pct_from_text,
-    parse_major_shareholders,
-    parse_parent_from_narrative,
     parse_period_dates,
-    pick_parent_from_shareholders,
     summarize_price,
 )
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
@@ -186,23 +183,9 @@ def apply_names(row: dict, facts: dict[str, list[str]], fields: dict) -> None:
     offeror, _ = first_fact(facts, fields.get("offeror_name", []))
     target, _ = first_fact(facts, fields.get("target_name", []))
     if offeror:
-        row["OfferorName"] = normalize_name(offeror.split("\n")[0])
+        row["OfferorName"] = clean_extracted_name(offeror.split("\n")[0])
     if target:
-        row["TargetName"] = normalize_name(target.split("\n")[0])
-
-    shareholders_text, _ = first_fact(facts, fields.get("major_shareholders_text", []))
-    parent_name, parent_note = pick_parent_from_shareholders(parse_major_shareholders(shareholders_text))
-    if not parent_name:
-        narrative = " ".join(
-            first_fact(facts, fields.get(key, []))[0]
-            for key in ("overview_text", "purposes_text", "corporation_info_text")
-        )
-        parent_name = parse_parent_from_narrative(narrative)
-        if parent_name:
-            parent_note = "本文（親会社・完全子会社の記載）"
-    if parent_name and parent_name != row.get("OfferorName"):
-        row["UltimateParentName"] = parent_name
-        row["UltimateParentNote"] = parent_note
+        row["TargetName"] = clean_extracted_name(target.split("\n")[0])
 
 
 def apply_holdings(row: dict, facts: dict[str, list[str]], fields: dict) -> None:

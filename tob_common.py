@@ -9,7 +9,7 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-from extract_fields import format_pct, normalize_name
+from extract_fields import clean_extracted_name, format_pct, normalize_name
 
 DOC_TYPE_NAMES = {
     "240": "公開買付届出書",
@@ -82,7 +82,6 @@ LIST_FIELDS = [
     "DocTypeName",
     "OfferorName",
     "TargetName",
-    "UltimateParentName",
     "OfferPrice",
     "OfferPeriodStart",
     "OfferPeriodEnd",
@@ -96,7 +95,6 @@ LIST_FIELDS = [
     "RoleHint",
     "DocDescription",
     "ExtractionStatus",
-    "UltimateParentNote",
     "FilerName",
     "FilerSecCode",
     "FilerEdinetCode",
@@ -133,7 +131,6 @@ EXTRACTION_FIELDS = [key for key in LIST_FIELDS if key not in METADATA_FIELDS]
 CASE_FIELDS = [
     "OfferorName",
     "TargetName",
-    "UltimateParentName",
     "Status",
     "OfferPrice",
     "OfferPeriodStart",
@@ -149,7 +146,6 @@ CASE_FIELDS = [
     "HasOpinion",
     "DocCount",
     "EnrichmentStatus",
-    "UltimateParentNote",
     "OfferorEdinetCode",
     "TargetEdinetCode",
     "CaseID",
@@ -258,9 +254,9 @@ def apply_name_fallbacks(row: dict) -> None:
     if not row.get("TargetName") and type_code in OPINION_SIDE:
         row["TargetName"] = filer
     if row.get("OfferorName"):
-        row["OfferorName"] = normalize_name(row["OfferorName"])
+        row["OfferorName"] = clean_extracted_name(row["OfferorName"])
     if row.get("TargetName"):
-        row["TargetName"] = normalize_name(row["TargetName"])
+        row["TargetName"] = clean_extracted_name(row["TargetName"])
 
 
 def merge_document_rows(existing: list[dict], incoming: list[dict]) -> tuple[list[dict], int, int]:
@@ -434,8 +430,6 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "FinalResultNote": "",
         "WithdrawalReason": "",
         "TargetName": "",
-        "UltimateParentName": "",
-        "UltimateParentNote": "",
         "LastEnrichedDocID": "",
     }
     last_enriched = ""
@@ -467,9 +461,6 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["SpecialRelatedHoldingRatio"] = doc["SpecialRelatedHoldingRatio"]
             if doc.get("AfterPurchaseRatio") or doc.get("OwnershipRatio"):
                 out["AfterPurchaseRatio"] = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
-            if doc.get("UltimateParentName"):
-                out["UltimateParentName"] = doc["UltimateParentName"]
-                out["UltimateParentNote"] = doc.get("UltimateParentNote") or ""
         elif type_code in OPINION_SIDE:
             if doc.get("OpinionStance"):
                 out["OpinionStance"] = doc["OpinionStance"]
