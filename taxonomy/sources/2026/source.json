@@ -1,0 +1,10 @@
+{
+  "year": 2026,
+  "retrieved_at": "2026-08-17",
+  "source_page": "https://www.fsa.go.jp/search/20251111.html",
+  "source_url": "https://www.fsa.go.jp/search/20251111/1e_ElementList.xlsx",
+  "filename": "1e_ElementList.xlsx",
+  "sha256": "562a11130e6b3a865c2bf94a9caad977eb5a743cee14accfc99af8eb64419a8a",
+  "bytes": 2477237,
+  "note": "公式要素リストのうち他社株公開買付（jptoo-ton/pst/wto/tor/toa）だけを jptoo_elements.csv に抜粋した。"
+}
