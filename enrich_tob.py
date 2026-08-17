@@ -35,13 +35,12 @@ from extract_fields import (
     parse_period_dates,
     summarize_price,
 )
+from output_store import LIST_STEM, publish_tob_outputs, resolve_current_csv
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     ANSWER_SIDE,
-    CASE_FIELDS,
     DOC_TYPE_TO_TAXONOMY,
     FILING_SIDE,
-    LIST_FIELDS,
     OPINION_SIDE,
     REPORT_SIDE,
     WITHDRAW_SIDE,
@@ -50,7 +49,6 @@ from tob_common import (
     build_cases,
     normalize_doc_row,
     read_csv,
-    write_csv,
 )
 
 DOC_API = "https://api.edinet-fsa.go.jp/api/v2/documents/{doc_id}"
@@ -371,8 +369,8 @@ def enrich_documents(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="TOB書類CSVをXBRLから詳細化する")
-    parser.add_argument("--list", default="output/tob_list.csv")
-    parser.add_argument("--cases", default="output/tob_cases.csv")
+    parser.add_argument("--output-dir", default="output", help="結果フォルダ（current / snapshots）")
+    parser.add_argument("--list", help="(上級) 書類CSVの直接指定。省略時は output/current/tob_list.csv")
     parser.add_argument("--taxonomy-dir", default="taxonomy")
     parser.add_argument("--cache-dir", default="cache/docs")
     parser.add_argument("--doc-limit", type=int, default=0, help="0=全書類")
@@ -386,9 +384,9 @@ def main() -> int:
         print("EDINET_API_KEY が必要です", file=sys.stderr)
         return 1
 
-    list_path = Path(args.list)
-    cases_path = Path(args.cases)
-    if not list_path.exists():
+    output_dir = Path(args.output_dir)
+    list_path = Path(args.list) if args.list else resolve_current_csv(output_dir, LIST_STEM)
+    if not list_path or not list_path.exists():
         print("tob_list.csv がありません。先に fetch_tob.py を実行してください。", file=sys.stderr)
         return 1
 
@@ -406,12 +404,11 @@ def main() -> int:
         args.doc_limit,
     )
     assign_case_ids(rows)
-    write_csv(list_path, rows, LIST_FIELDS)
     cases = build_cases(rows)
-    write_csv(cases_path, cases, CASE_FIELDS)
+    list_out, cases_out = publish_tob_outputs(output_dir, rows, cases)
     print(f"処理書類: {processed}")
-    print(f"更新: {list_path} ({len(rows)} docs)")
-    print(f"案件再生成: {cases_path} ({len(cases)} cases)")
+    print(f"更新: {list_out} ({len(rows)} docs)")
+    print(f"案件再生成: {cases_out} ({len(cases)} cases)")
     return 0
 
 

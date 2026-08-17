@@ -8,8 +8,8 @@ EDINET API から TOB（公開買付）関連書類の一覧を取得し、CSV �
   3. 日付を1日ずつ回す
   4. 書類一覧 API を呼ぶ
   5. docTypeCode 240-320 だけ残す
-  6. 既存の output/tob_list.csv に DocID で upsert する（抽出列は消さない）
-  7. ParentDocID で案件にまとめ output/tob_cases.csv を再生成する
+  6. 既存の output/current/tob_list.csv に DocID で upsert する（抽出列は消さない）
+  7. ParentDocID で案件にまとめ、current と日付付きスナップショットを書き出す
 """
 
 from __future__ import annotations
@@ -25,12 +25,11 @@ import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 
+from output_store import LIST_STEM, publish_tob_outputs, resolve_current_csv
 from tob_common import (
-    CASE_FIELDS,
     DEFAULT_DOC_TYPES,
     DEFAULT_RECENT_DAYS,
     DOC_TYPE_NAMES,
-    LIST_FIELDS,
     ROLE_HINTS,
     assign_case_ids,
     build_cases,
@@ -38,7 +37,6 @@ from tob_common import (
     normalize_doc_type,
     read_csv,
     resolve_range,
-    write_csv,
 )
 
 API_BASE = "https://api.edinet-fsa.go.jp/api/v2/documents.json"
@@ -104,8 +102,7 @@ def main() -> int:
     )
     parser.add_argument("--from-date", help="開始日 YYYY/MM/DD（上級者向け）")
     parser.add_argument("--to-date", help="終了日 YYYY/MM/DD（上級者向け）")
-    parser.add_argument("--out", default="output/tob_list.csv", help="書類一覧CSVパス")
-    parser.add_argument("--cases-out", default="output/tob_cases.csv", help="案件一覧CSVパス")
+    parser.add_argument("--output-dir", default="output", help="結果フォルダ（current / snapshots）")
     parser.add_argument("--cache-dir", default="cache", help="日次レスポンスのキャッシュ先")
     parser.add_argument("--sleep", type=float, default=1.2, help="API呼び出し間隔（秒）")
     parser.add_argument("--no-cache", action="store_true", help="キャッシュを使わない")
@@ -133,8 +130,8 @@ def main() -> int:
         recent_days=args.recent_days,
     )
     cache_dir = Path(args.cache_dir)
-    out_path = Path(args.out)
-    cases_path = Path(args.cases_out)
+    output_dir = Path(args.output_dir)
+    out_path = resolve_current_csv(output_dir, LIST_STEM)
 
     days = (end - start).days + 1
     print(f"期間: {start} 〜 {end}（{days} 日, mode={mode}）")
@@ -178,18 +175,16 @@ def main() -> int:
         rows = incoming
         added, updated = len(incoming), 0
     else:
-        existing = read_csv(out_path)
+        existing = read_csv(out_path) if out_path else []
         rows, added, updated = merge_document_rows(existing, incoming)
         print(f"既存: {len(existing)} / 追加: {added} / メタデータ更新: {updated}")
 
     assign_case_ids(rows)
     rows.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("FilerName") or ""))
-    write_csv(out_path, rows, LIST_FIELDS)
-    print(f"書類件数: {len(rows)}")
-    print(f"CSV出力: {out_path}")
-
     cases = build_cases(rows)
-    write_csv(cases_path, cases, CASE_FIELDS)
+    list_path, cases_path = publish_tob_outputs(output_dir, rows, cases)
+    print(f"書類件数: {len(rows)}")
+    print(f"CSV出力: {list_path}")
     print(f"案件件数: {len(cases)}")
     print(f"案件CSV出力: {cases_path}")
     return 0

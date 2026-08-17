@@ -4,14 +4,30 @@
 
 実行は **あなたのPCではなく GitHub Actions（GitHubのサーバ）** で行います。
 
-## 出力ファイル（2つ）
+## 出力フォルダ
+
+普段見るのは **`output/current/`** です。Fetch / Enrich のたびに、同じ内容を日付付きでも残します。日付は **日本時間** です。
+
+```
+output/
+  current/
+    tob_list.csv          … 最新の書類正本（いま使うファイル）
+    tob_cases.csv         … 最新の案件一覧
+  snapshots/
+    2026/08/tob_list_20260817.csv
+    2026/08/tob_cases_20260817.csv
+    …（種類ごとに直近20日分）
+    trash/                … 21件目以降を移動。さらに古い20件を超えたら削除
+```
 
 | ファイル | 内容 |
 |----------|------|
-| [`output/tob_list.csv`](output/tob_list.csv) | **正本**。書類1件につき1行。メタデータと、その書類から取れた詳細列 |
-| [`output/tob_cases.csv`](output/tob_cases.csv) | **派生**。案件1件につき1行。書類正本から最新状態を再生成 |
+| [`output/current/tob_list.csv`](output/current/tob_list.csv) | **正本**。書類1件につき1行 |
+| [`output/current/tob_cases.csv`](output/current/tob_cases.csv) | **派生**。案件1件につき1行 |
 
-普段の業務確認は `tob_cases.csv`、訂正前後の価格変化など履歴の確認は `tob_list.csv` を使います。
+同じ日に2回更新すると、その日のスナップショットは上書きされます（スロットは増えません）。
+
+普段の業務確認は `current/tob_cases.csv`、過去の時点の確認は `snapshots/`、誤って古くなった分は `snapshots/trash/` を見ます。
 
 ## 初回だけ（管理者）
 
@@ -32,7 +48,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 3. 左の **Fetch TOB** を選ぶ
 4. **Run workflow**
 5. ブランチはマージ後の `master` を選び、**開始年 / 終了年** をドロップダウンから指定（例: `2024` と `2026`）
-6. 完了後、`tob_list.csv` が **DocID 単位で追加・更新** され、`tob_cases.csv` が再生成される
+6. 完了後、`output/current/tob_list.csv` が **DocID 単位で追加・更新** され、`tob_cases.csv` が再生成される。同じ内容が `output/snapshots/年/月/tob_list_YYYYMMDD.csv` にも残る
 
 終了年が今年の場合、取得の終わりは **実行日** までです。既存の詳細列は消しません。
 
@@ -45,7 +61,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 1. **Actions** → **Enrich TOB** → **Run workflow**
 2. 初回: `doc_limit` は `0`（全書類）
 3. 2回目以降: **only pending**（既定オン）で未処理書類だけ更新
-4. 完了後、`tob_list.csv` の書類行に OfferPrice などが入り、`tob_cases.csv` はそこから再生成される
+4. 完了後、`output/current/tob_list.csv` の書類行に OfferPrice などが入り、`tob_cases.csv` はそこから再生成される
 
 所要時間の目安: 全書類で十数分（書類数×API呼び出し）。
 
@@ -103,6 +119,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 - 他社株TOBタクソノミは 2021年版（2020-11-01）が 2026-04-30 まで続き、2026年版（2025-11-01）は 2026-05-01 以後
 - 訂正書類は提出年ではなく、親書類と同じタクソノミ版を使う
 - Fetch は既存CSVを上書き消去せず、DocID で upsert する
+- 結果は `output/current/` が最新。日付付きコピーは `output/snapshots/` に最大20件。それより古いものは `snapshots/trash/` へ移動
 
 ## ローカルで試す場合（任意）
 
@@ -122,7 +139,8 @@ python -m unittest discover -s tests -t . -v
 - `extract_fields.py` … 価格・期間・保有割合の解析、対象者名の見出し除去
 - `tob_common.py` … CSV列定義・案件派生
 - `taxonomy/` … 年版タクソノミの選択、年度別マッピング、公式資料の抜粋
+- `output_store.py` … current / 日付付きスナップショット / ごみ箱
 - `.github/workflows/fetch-tob.yml` … 一覧の手動（年指定）／平日の直近35日
 - `.github/workflows/enrich-tob.yml` … 詳細抽出（手動のみ）
-- `output/tob_list.csv` … 書類正本
-- `output/tob_cases.csv` … 案件の最新状態
+- `output/current/` … 最新の書類正本と案件
+- `output/snapshots/` … 日付付き履歴（直近20件）と `trash/`
