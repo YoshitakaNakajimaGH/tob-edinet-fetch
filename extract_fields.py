@@ -131,24 +131,130 @@ def parse_period_dates(text: str) -> tuple[str, str]:
     return "", ""
 
 
+def _comma_number(raw: str) -> str:
+    return raw.replace("，", ",")
+
+
 def summarize_price(text: str) -> str:
+    """Summarize consideration as yen/share, won/share, or share-for-share."""
     if not text:
         return ""
-    text = strip_html(text)
-    text = re.sub(r"\s+", " ", text)
-    match = re.search(r"普通株式[^。]{0,40}?金\s*([\d,，]+)\s*円", text)
+    compact = re.sub(r"\s+", "", strip_html(text))
+    match = re.search(
+        r"普通株式[1１]株につき、?(?:公開買付者(?:の)?)?普通株式([0-9]+(?:\.[0-9]+)?)株",
+        compact,
+    )
     if match:
-        amount = match.group(1).replace("，", ",")
-        return f"{amount}円/株"
-    match = re.search(r"(?:公開買付価格|買付け等の価格)[^。]{0,40}?金\s*([\d,，]+)\s*円", text)
+        return f"株式対価 {match.group(1)}株"
+    match = re.search(r"[1１]株につき、?金?([\d,，]+)ウォン", compact)
     if match:
-        amount = match.group(1).replace("，", ",")
-        return f"{amount}円/株"
-    match = re.search(r"金\s*([\d,，]+)\s*円", text)
+        return f"{_comma_number(match.group(1))}ウォン/株"
+    match = re.search(r"普通株式[1１]株につき、?金?([\d,，]+)円", compact)
     if match:
-        amount = match.group(1).replace("，", ",")
-        return f"{amount}円"
-    return text[:200]
+        return f"{_comma_number(match.group(1))}円/株"
+    match = re.search(r"[1１]株につき、?金?([\d,，]+)円", compact)
+    if match:
+        return f"{_comma_number(match.group(1))}円/株"
+    match = re.search(r"普通株式[^。]{0,40}?金([\d,，]+)円", compact)
+    if match:
+        return f"{_comma_number(match.group(1))}円/株"
+    match = re.search(r"(?:公開買付価格|買付け等の価格)[^。]{0,40}?金([\d,，]+)円", compact)
+    if match:
+        return f"{_comma_number(match.group(1))}円/株"
+    match = re.search(r"金([\d,，]+)円", compact)
+    if match:
+        return f"{_comma_number(match.group(1))}円"
+    return compact[:200]
+
+
+RESULT_SUCCESS = "成立"
+RESULT_SUCCESS_PRORATA = "成立（按分）"
+RESULT_FAILURE = "不成立"
+RESULT_WITHDRAWN = "撤回"
+
+def _parse_int(raw: str | None) -> int | None:
+    if not raw:
+        return None
+    digits = raw.replace(",", "").replace("，", "")
+    if not digits.isdigit():
+        return None
+    return int(digits)
+
+
+def parse_tob_result_counts(text: str) -> tuple[int | None, int | None, int | None]:
+    """Return (tendered, minimum, maximum) share/unit counts from the result text."""
+    if not text:
+        return None, None, None
+    compact = re.sub(r"\s+", "", strip_html(text))
+    tendered = None
+    for pattern in (
+        r"応募(?:株券等|投資口|株式|新株予約権)(?:の(?:総数|合計|数の合計))?[（(]([\d,，]+)(?:株|口|個)",
+        r"応募(?:株券等|投資口|株式)の(?:総数|合計|数の合計)は([\d,，]+)(?:株|口)",
+        r"総数[（(]([\d,，]+)(?:株|口)",
+    ):
+        match = re.search(pattern, compact)
+        if match:
+            tendered = _parse_int(match.group(1))
+            break
+    if tendered is None and re.search(r"応募[^.。]{0,40}ありませんでした|応募株券等はありませんでした", compact):
+        tendered = 0
+
+    no_floor = bool(re.search(r"下限(?:及び上限)?[をは]?(?:設定して|定めて)おりません", compact))
+    no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", compact))
+    floor = None if no_floor else _last_bound(compact, "下限")
+    cap = None if no_cap else _last_bound(compact, "上限")
+    return tendered, floor, cap
+
+
+def _last_bound(compact: str, label: str) -> int | None:
+    matches = re.findall(rf"{label}[（(]([\d,，]+)(?:株|口|個)", compact)
+    if matches:
+        return _parse_int(matches[-1])
+    return None
+
+
+def judge_tob_result(text: str, *, withdrawn: bool = False) -> str:
+    """Classify a TOB as 成立 / 成立（按分） / 不成立 / 撤回 from the report text."""
+    if withdrawn:
+        return RESULT_WITHDRAWN
+    if not text or not str(text).strip():
+        return ""
+    compact = re.sub(r"\s+", "", strip_html(text))
+
+    prorata = "あん分比例" in compact or "按分比例" in compact or (
+        "上限を超えた" in compact and "超えなかった" not in compact
+    )
+    buy_none = "全部の買付け等を行いません" in compact and "超える部分" not in compact
+    buy_all = "全部の買付け等を行います" in compact or "全部の買付けを行います" in compact
+    below_min = bool(re.search(r"下限.{0,80}満たなかった", compact)) or bool(
+        re.search(r"下限.{0,80}満たないため", compact)
+    )
+    tender_none = bool(
+        re.search(
+            r"応募(?:された)?(?:対象者)?(?:普通株式|株券等|投資口|株式)[^.。]{0,30}ありませんでした"
+            r"|応募株券等はありませんでした"
+            r"|買付け等の対象となる株券等はありません",
+            compact,
+        )
+    )
+
+    if below_min or (buy_none and not prorata):
+        return RESULT_FAILURE
+    if tender_none and not buy_all:
+        return RESULT_FAILURE
+    if prorata:
+        return RESULT_SUCCESS_PRORATA
+    if buy_all:
+        return RESULT_SUCCESS
+
+    tendered, floor, cap = parse_tob_result_counts(compact)
+    if tendered is not None:
+        if floor is not None and tendered < floor:
+            return RESULT_FAILURE
+        if cap is not None and tendered > cap:
+            return RESULT_SUCCESS_PRORATA
+        return RESULT_SUCCESS
+    return ""
 
 
 def compute_holding_ratios(

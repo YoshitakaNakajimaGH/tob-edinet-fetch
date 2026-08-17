@@ -86,9 +86,9 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | OfferPeriodStart / End | 買付期間。延長があれば延長後 |
 | ExistingHoldingRatio | すでに買付者＋特別関係者が持つ株券等所有割合 |
 | SpecialRelatedHoldingRatio | 特別関係者だけの既保有割合 |
-| AfterPurchaseRatio | 買付後の株券等所有割合 |
+| AfterPurchaseRatio | 買付後の実際の株券等所有割合。届出書の予定値（100%など）は使わない。不成立・撤回なら既保有と同じ。実施中は空 |
 | OpinionStance | 賛同 / 反対 / 意見留保 / 要確認 |
-| FinalResultNote | 公開買付報告書の結果要約 |
+| FinalResultNote | `成立` / `成立（按分）` / `不成立` / `撤回`。報告書の成否本文から判定。撤回届出があれば撤回 |
 | FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |
 | CaseID 以降 | 書類ID・EDINETコードなど |
 
@@ -105,8 +105,8 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | OfferPrice / OfferPeriodStart / End | その書類に書かれた価格・期間 |
 | ExistingHoldingRatio | 買付者＋特別関係者の既保有割合 |
 | SpecialRelatedHoldingRatio | 特別関係者の既保有割合 |
-| AfterPurchaseRatio | 買付後所有割合 |
-| OpinionStance / FinalResultNote など | その書類から取れた値だけ |
+| AfterPurchaseRatio | その書類に書かれた買付後所有割合（届出書は予定値） |
+| OpinionStance / FinalResultNote など | その書類から取れた値だけ。案件の成否は `tob_cases.csv` を見る |
 | DocID / ParentDocID / CaseID | 書類ID類（右寄り） |
 
 ## 抜き出しロジック（Enrich）
@@ -115,10 +115,11 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 
 - 買付者名: `FullNameOrNameOfFilerOfNotificationCoverPage`（なければ一覧APIの提出者名）
 - 対象会社名: `NameOfSubjectCompanyTextBlock`（先頭の「（１）【対象者名】」などは除去）
-- 買付価格: `PriceOfPurchaseEtcTextBlock` から「普通株式1株につき金X円」
+- 買付価格: `PriceOfPurchaseEtcTextBlock` から普通株式1株あたり（円・ウォン・株式対価）
 - 買付期間: `PeriodOfPurchaseEtcTextBlock`（2021年版は `OriginalPeriodAtFilingTextBlock`）。延長記載があれば最後の自〜至
 - 既保有割合: 議決権数 (d)+(g) を総議決権 (j) で割る。d=買付者、g=特別関係者
-- 買付後割合: `HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc`
+- 買付後割合（書類）: `HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc`（届出書は予定。案件行では使わない）
+- 成否: 公開買付報告書の `SuccessOrFailureOfTenderOfferTextBlock` から、応募数と下限・上限を読んで `成立` / `成立（按分）` / `不成立`。撤回届出書があれば `撤回`
 
 ## 技術メモ（メンテ担当向け）
 
@@ -139,6 +140,7 @@ python fetch_tob.py --from-year 2025 --to-year 2026
 python fetch_tob.py --recent-days 35
 python enrich_tob.py --doc-limit 10
 python enrich_tob.py --only-pending
+python enrich_tob.py --recompute-only
 python -m unittest discover -s tests -t . -v
 ```
 

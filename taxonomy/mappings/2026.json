@@ -20,6 +20,9 @@
     "after_purchase_ratio": [
       "jptoo-ton_cor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc"
     ],
+    "intended_purchase_text": [
+      "jptoo-ton_cor:NumberOfShareCertificatesEtcIntendedToPurchaseTextBlock"
+    ],
     "offeror_voting_rights": [
       "jptoo-ton_cor:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedByTenderOfferorD"
     ],
@@ -75,6 +78,9 @@
     ],
     "after_purchase_ratio": [
       "jptoo-tor_cor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc"
+    ],
+    "acquired_shares_text": [
+      "jptoo-tor_cor:NumberOfShareCertificatesEtcAcquiredByPurchaseEtcTextBlock"
     ]
   },
   "wto": {
