@@ -80,6 +80,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | 列 | 意味 |
 |----|------|
 | OfferorName | 買付者名（届出書の表紙「届出者の氏名又は名称」） |
+| TargetSecCode | 対象会社の証券コード（4桁。意見表明書の提出者コード、または EDINET 提出者リストから補完） |
 | TargetName | 対象会社名（見出し「（１）【対象者名】」は除去） |
 | Status | 届出中 / 訂正あり / 撤回 / 報告書提出 など |
 | OfferPrice | 買付価格（普通株式1株あたり） |
@@ -89,6 +90,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | AfterPurchaseRatio | 買付後の実際の株券等所有割合。届出書の予定値（100%など）は使わない。不成立・撤回なら既保有と同じ。実施中は空 |
 | OpinionStance | 賛同 / 反対 / 意見留保 / 要確認 |
 | FinalResultNote | `成立` / `成立（按分）` / `不成立` / `撤回`。報告書の成否本文から判定。撤回届出があれば撤回 |
+| TargetDelistingNote | 対象会社の上場廃止状況。`上場廃止済` / `上場廃止予定` / `上場維持`（意見表明本文と EDINET 提出者リストの上場区分から推定） |
 | FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |
 | CaseID 以降 | 書類ID・EDINETコードなど |
 
@@ -101,7 +103,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | 列 | 意味 |
 |----|------|
 | SubmitDateTime / DocTypeName | 提出日時・書類名 |
-| OfferorName / TargetName | 買付者・対象会社 |
+| OfferorName / TargetSecCode / TargetName | 買付者・対象会社の証券コード・対象会社名 |
 | OfferPrice / OfferPeriodStart / End | その書類に書かれた価格・期間 |
 | ExistingHoldingRatio | 買付者＋特別関係者の既保有割合 |
 | SpecialRelatedHoldingRatio | 特別関係者の既保有割合 |
@@ -120,6 +122,8 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 - 既保有割合: 議決権数 (d)+(g) を総議決権 (j) で割る。d=買付者、g=特別関係者
 - 買付後割合（書類）: `HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc`（届出書は予定。案件行では使わない）
 - 成否: 公開買付報告書の `SuccessOrFailureOfTenderOfferTextBlock` から、応募数と下限・上限を読んで `成立` / `成立（按分）` / `不成立`。撤回届出書があれば `撤回`
+- 対象証券コード: 意見表明書（290/300）の `secCode`、または EDINET 提出者リストの証券コード列
+- 上場廃止: 意見表明本文の「上場廃止予定」等の記載と、EDINET 提出者リストの上場区分（成立後に `非上場` なら `上場廃止済`）
 
 ## 技術メモ（メンテ担当向け）
 
@@ -148,7 +152,7 @@ python -m unittest discover -s tests -t . -v
 
 - `fetch_tob.py` … 一覧取得・既存CSVへの upsert・案件再生成
 - `enrich_tob.py` … 書類単位の XBRL 抽出
-- `extract_fields.py` … 価格・期間・保有割合の解析、対象者名の見出し除去
+- `edinet_code_list.py` … EDINET 提出者リスト（証券コード・上場区分）の取得とキャッシュ
 - `tob_common.py` … CSV列定義・案件派生
 - `taxonomy/` … 年版タクソノミの選択、年度別マッピング、公式資料の抜粋
 - `output_store.py` … current / 日付付きスナップショット / ごみ箱

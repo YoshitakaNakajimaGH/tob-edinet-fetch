@@ -271,8 +271,11 @@ class MergeAndCaseTests(unittest.TestCase):
 
     def test_human_columns_come_before_ids(self) -> None:
         self.assertLess(LIST_FIELDS.index("OfferPrice"), LIST_FIELDS.index("DocID"))
+        self.assertLess(LIST_FIELDS.index("TargetSecCode"), LIST_FIELDS.index("TargetName"))
         self.assertLess(LIST_FIELDS.index("ExistingHoldingRatio"), LIST_FIELDS.index("CaseID"))
         self.assertGreater(LIST_FIELDS.index("DocID"), LIST_FIELDS.index("TargetName"))
+        self.assertLess(CASE_FIELDS.index("TargetSecCode"), CASE_FIELDS.index("TargetName"))
+        self.assertLess(CASE_FIELDS.index("FinalResultNote"), CASE_FIELDS.index("TargetDelistingNote"))
         self.assertNotIn("UltimateParentName", LIST_FIELDS)
         self.assertNotIn("UltimateParentNote", LIST_FIELDS)
         self.assertNotIn("WithdrawalReason", CASE_FIELDS)

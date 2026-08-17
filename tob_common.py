@@ -12,10 +12,13 @@ from pathlib import Path
 from extract_fields import (
     clean_extracted_name,
     format_pct,
+    format_sec_code,
+    judge_target_delisting,
     judge_tob_result,
     normalize_name,
     summarize_price,
 )
+from edinet_code_list import EdinetCodeList, ensure_edinet_code_list
 
 DOC_TYPE_NAMES = {
     "240": "公開買付届出書",
@@ -87,6 +90,7 @@ LIST_FIELDS = [
     "SubmitDateTime",
     "DocTypeName",
     "OfferorName",
+    "TargetSecCode",
     "TargetName",
     "OfferPrice",
     "OfferPeriodStart",
@@ -136,6 +140,7 @@ EXTRACTION_FIELDS = [key for key in LIST_FIELDS if key not in METADATA_FIELDS]
 
 CASE_FIELDS = [
     "OfferorName",
+    "TargetSecCode",
     "TargetName",
     "Status",
     "OfferPrice",
@@ -146,6 +151,7 @@ CASE_FIELDS = [
     "AfterPurchaseRatio",
     "OpinionStance",
     "FinalResultNote",
+    "TargetDelistingNote",
     "FirstFilingDate",
     "LastUpdateDate",
     "HasOpinion",
@@ -488,6 +494,54 @@ def pick_offeror_target(docs: list[dict]) -> tuple[str, str, str, str]:
     )
 
 
+def resolve_target_edinet_code(row: dict) -> str:
+    """Return the target company's EDINET code for a document row."""
+    type_code = row.get("DocTypeCode") or ""
+    if type_code in OPINION_SIDE | ANSWER_SIDE:
+        return (row.get("FilerEdinetCode") or "").strip()
+    if is_issuer_tender(row):
+        return (row.get("FilerEdinetCode") or "").strip()
+    return (row.get("SubjectEdinetCode") or "").strip()
+
+
+def apply_target_sec_code(row: dict, edinet_list: EdinetCodeList | None = None) -> None:
+    type_code = row.get("DocTypeCode") or ""
+    sec = ""
+    if type_code in OPINION_SIDE or is_issuer_tender(row):
+        sec = row.get("FilerSecCode") or ""
+    if not sec and edinet_list is not None:
+        sec = edinet_list.sec_code(resolve_target_edinet_code(row))
+    row["TargetSecCode"] = format_sec_code(sec)
+
+
+def refresh_target_metadata(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> None:
+    for row in rows:
+        apply_target_sec_code(row, edinet_list)
+
+
+def resolve_case_target_sec_code(
+    docs: list[dict],
+    target_edinet: str,
+    edinet_list: EdinetCodeList | None = None,
+) -> str:
+    for doc in docs:
+        sec = (doc.get("TargetSecCode") or "").strip()
+        if sec:
+            return sec
+    if edinet_list is not None and target_edinet:
+        return format_sec_code(edinet_list.sec_code(target_edinet))
+    return ""
+
+
+def collect_delisting_source_texts(docs: list[dict]) -> list[str]:
+    texts: list[str] = []
+    for doc in docs:
+        raw = (doc.get("OpinionRaw") or "").strip()
+        if raw:
+            texts.append(raw)
+    return texts
+
+
 def refresh_derived_list_fields(rows: list[dict]) -> None:
     """Recompute short price/result columns from stored Raw text (no API)."""
     for row in rows:
@@ -603,7 +657,7 @@ def compute_case_enrichment_status(case: dict, docs: list[dict]) -> str:
     return "failed"
 
 
-def build_cases(rows: list[dict]) -> list[dict]:
+def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> list[dict]:
     groups: dict[str, list[dict]] = defaultdict(list)
     for row in rows:
         case_id = row.get("CaseID") or fallback_case_id(row)
@@ -631,6 +685,13 @@ def build_cases(rows: list[dict]) -> list[dict]:
         overlay = overlay_case_from_docs(docs_sorted)
         if overlay.get("TargetName"):
             target_name = overlay["TargetName"]
+        overlay["TargetSecCode"] = resolve_case_target_sec_code(docs_sorted, target_code, edinet_list)
+        listing = edinet_list.listing_category(target_code) if edinet_list is not None else ""
+        overlay["TargetDelistingNote"] = judge_target_delisting(
+            overlay.get("FinalResultNote") or "",
+            listing,
+            collect_delisting_source_texts(docs_sorted),
+        )
         has_opinion = "Yes" if latest_opinion or overlay.get("OpinionStance") else "No"
         doc_ids = [d.get("DocID") or "" for d in docs_sorted if d.get("DocID")]
         case = {
@@ -659,12 +720,16 @@ def build_cases(rows: list[dict]) -> list[dict]:
     return cases
 
 
-def prepare_pipeline_rows(rows: list[dict]) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
+def prepare_pipeline_rows(
+    rows: list[dict],
+    edinet_list: EdinetCodeList | None = None,
+) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
     """Split 自社株, assign case IDs, and build both case tables."""
     refresh_derived_list_fields(rows)
+    refresh_target_metadata(rows, edinet_list)
     other, issuer = partition_issuer_tenders(rows)
     assign_case_ids(other)
     assign_case_ids(issuer)
     other.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("FilerName") or ""))
     issuer.sort(key=lambda r: (r.get("SubmitDateTime") or "", r.get("DocTypeCode") or "", r.get("FilerName") or ""))
-    return other, build_cases(other), issuer, build_cases(issuer)
+    return other, build_cases(other, edinet_list), issuer, build_cases(issuer, edinet_list)
