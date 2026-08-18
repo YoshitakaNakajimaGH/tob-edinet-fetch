@@ -27,26 +27,28 @@ class TaxonomyCatalog:
     def available_years(self) -> list[int]:
         return sorted(int(y) for y in self.versions)
 
-    def mapping_for_year(self, year: str | int) -> dict:
+    def mapping_for_year(self, year: str | int, *, issuer: bool = False) -> dict:
         year_key = str(year)
-        if year_key in self._mapping_cache:
-            return self._mapping_cache[year_key]
+        cache_key = f"{year_key}:{'issuer' if issuer else 'other'}"
+        if cache_key in self._mapping_cache:
+            return self._mapping_cache[cache_key]
         item = self.versions.get(year_key)
         if not item:
             raise KeyError(f"未登録のタクソノミ年です: {year}")
         if item.get("inherits"):
-            mapping = dict(self.mapping_for_year(item["inherits"]))
+            mapping = dict(self.mapping_for_year(item["inherits"], issuer=issuer))
             mapping["year"] = int(year_key)
             mapping["inherits"] = str(item["inherits"])
             mapping["note"] = item.get("note") or mapping.get("note", "")
-            self._mapping_cache[year_key] = mapping
+            self._mapping_cache[cache_key] = mapping
             return mapping
-        rel = item.get("mapping")
+        rel_key = "issuer_mapping" if issuer else "mapping"
+        rel = item.get(rel_key)
         if not rel:
-            raise KeyError(f"{year} の mapping パスがありません")
+            raise KeyError(f"{year} の {rel_key} パスがありません")
         path = self.taxonomy_dir / rel
         mapping = json.loads(path.read_text(encoding="utf-8"))
-        self._mapping_cache[year_key] = mapping
+        self._mapping_cache[cache_key] = mapping
         return mapping
 
     def estimate_year(self, submit_day: date | None) -> str:
@@ -70,9 +72,10 @@ class TaxonomyCatalog:
         years = self.available_years()
         return str(years[0] if years else "2021")
 
-    def detect_from_facts(self, facts: dict[str, list[str]]) -> str | None:
+    def detect_from_facts(self, facts: dict[str, list[str]], *, issuer: bool = False) -> str | None:
         names = set(facts)
-        markers = self.manifest.get("detection_markers") or {}
+        key = "issuer_detection_markers" if issuer else "detection_markers"
+        markers = self.manifest.get(key) or {}
         for year, element_ids in markers.items():
             if any(eid in names for eid in element_ids):
                 return str(year)
@@ -114,11 +117,12 @@ def resolve_taxonomy_year(
     facts: dict[str, list[str]] | None = None,
     zip_text: str = "",
     is_amendment: bool = False,
+    issuer: bool = False,
 ) -> tuple[str, str, str]:
     """Return (year, taxonomy_date, source). source is detected/parent/estimated."""
     detected = None
     if facts:
-        detected = catalog.detect_from_facts(facts)
+        detected = catalog.detect_from_facts(facts, issuer=issuer)
     if not detected and zip_text:
         detected = catalog.detect_from_text(zip_text)
     if detected:

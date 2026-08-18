@@ -1,0 +1,64 @@
+name: Enrich Self TOB
+
+on:
+  workflow_dispatch:
+    inputs:
+      doc_limit:
+        description: "Max self-tender documents to enrich (0 = all)"
+        required: false
+        default: "0"
+        type: string
+      only_pending:
+        description: "Only documents without done/partial/skipped extraction"
+        required: false
+        default: true
+        type: boolean
+      force_refresh:
+        description: "Re-download XBRL even if cached"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  enrich-self:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Enrich self-tender TOB documents from XBRL
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+        run: |
+          ARGS=()
+          LIMIT="${{ github.event.inputs.doc_limit }}"
+          if [ -n "$LIMIT" ] && [ "$LIMIT" != "0" ]; then
+            ARGS+=(--doc-limit "$LIMIT")
+          fi
+          if [ "${{ github.event.inputs.only_pending }}" != "false" ]; then
+            ARGS+=(--only-pending)
+          fi
+          if [ "${{ github.event.inputs.force_refresh }}" = "true" ]; then
+            ARGS+=(--force-refresh)
+          fi
+          python enrich_self_tob.py "${ARGS[@]}"
+
+      - name: Commit enriched CSV if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Enrich self-tender TOB documents from XBRL $(date -u +%Y-%m-%d)"
+            git push
+          fi
