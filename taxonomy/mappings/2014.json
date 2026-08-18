@@ -1,0 +1,79 @@
+{
+  "year": 2014,
+  "taxonomy_date": "2014-03-31",
+  "note": "2014年版届出書（jptoo-ton）。2021年版との主な差分は OriginalPeriodAtFiling 非使用。_cor なし名前はフォールバック。",
+  "ton": {
+    "offeror_name": [
+      "jptoo-ton_cor:FullNameOrNameOfFilerOfNotificationCoverPage",
+      "jptoo-ton:FullNameOrNameOfFilerOfNotificationCoverPage"
+    ],
+    "target_name": [
+      "jptoo-ton_cor:NameOfSubjectCompanyTextBlock",
+      "jptoo-ton:NameOfSubjectCompanyTextBlock"
+    ],
+    "offer_price_text": [
+      "jptoo-ton_cor:PriceOfPurchaseEtcTextBlock",
+      "jptoo-ton:PriceOfPurchaseEtcTextBlock"
+    ],
+    "period_text": [
+      "jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock",
+      "jptoo-ton:PeriodOfPurchaseEtcTextBlock"
+    ],
+    "after_purchase_ratio": [
+      "jptoo-ton_cor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc",
+      "jptoo-ton:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc"
+    ],
+    "intended_purchase_text": [
+      "jptoo-ton_cor:NumberOfShareCertificatesEtcIntendedToPurchaseTextBlock",
+      "jptoo-ton:NumberOfShareCertificatesEtcIntendedToPurchaseTextBlock"
+    ],
+    "fund_text": [
+      "jptoo-ton_cor:FundEtcForPurchaseEtcTextBlock",
+      "jptoo-ton:FundEtcForPurchaseEtcTextBlock"
+    ],
+    "application_text": [
+      "jptoo-ton_cor:HowToAcceptTextBlock",
+      "jptoo-ton:HowToAcceptTextBlock"
+    ],
+    "agent_name": [
+      "jptoo-ton_cor:NameOfLegalRepresentativeCoverPage",
+      "jptoo-ton:NameOfLegalRepresentativeCoverPage"
+    ],
+    "offeror_voting_rights": [
+      "jptoo-ton_cor:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedByTenderOfferorD",
+      "jptoo-ton:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedByTenderOfferorD"
+    ],
+    "special_voting_rights": [
+      "jptoo-ton_cor:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedBySpecialInterestPartiesG",
+      "jptoo-ton:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedBySpecialInterestPartiesG"
+    ],
+    "total_voting_rights": [
+      "jptoo-ton_cor:NumberNumberOfVotingRightsOwnedByAllShareholdersEtcOfSubjectCompanyJ",
+      "jptoo-ton:NumberNumberOfVotingRightsOwnedByAllShareholdersEtcOfSubjectCompanyJ"
+    ],
+    "existing_holding_text": [
+      "jptoo-ton_cor:TotalHoldingOfShareCertificatesEtcByTenderOfferorAndSpecialInterestPartiesTextBlock",
+      "jptoo-ton:TotalHoldingOfShareCertificatesEtcByTenderOfferorAndSpecialInterestPartiesTextBlock"
+    ],
+    "special_holding_text": [
+      "jptoo-ton_cor:TotalHoldingOfShareCertificatesEtcBySpecialInterestPartiesTextBlock",
+      "jptoo-ton:TotalHoldingOfShareCertificatesEtcBySpecialInterestPartiesTextBlock"
+    ],
+    "major_shareholders_text": [
+      "jptoo-ton_cor:MajorShareholdersInformationAboutTenderOfferorTextBlock",
+      "jptoo-ton:MajorShareholdersInformationAboutTenderOfferorTextBlock"
+    ],
+    "overview_text": [
+      "jptoo-ton_cor:OverviewOfPurchaseEtcTextBlock",
+      "jptoo-ton:OverviewOfPurchaseEtcTextBlock"
+    ],
+    "purposes_text": [
+      "jptoo-ton_cor:PurposesOfPurchaseEtcTextBlock",
+      "jptoo-ton:PurposesOfPurchaseEtcTextBlock"
+    ],
+    "corporation_info_text": [
+      "jptoo-ton_cor:InformationAboutCorporationTextBlock",
+      "jptoo-ton:InformationAboutCorporationTextBlock"
+    ]
+  }
+}

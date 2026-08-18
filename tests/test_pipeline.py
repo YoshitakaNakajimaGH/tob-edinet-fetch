@@ -519,6 +519,38 @@ class TaxonomyCatalogTests(unittest.TestCase):
         self.assertEqual(self.catalog.estimate_year(date(2026, 4, 30)), "2021")
         self.assertEqual(self.catalog.estimate_year(date(2026, 5, 1)), "2026")
 
+    def test_estimate_2018_filing_uses_2014(self) -> None:
+        self.assertEqual(
+            self.catalog.estimate_year_for_doc(date(2018, 6, 1), "240"),
+            "2014",
+        )
+
+    def test_estimate_2018_opinion_uses_2013(self) -> None:
+        self.assertEqual(
+            self.catalog.estimate_year_for_doc(date(2018, 6, 1), "290"),
+            "2013",
+        )
+
+    def test_estimate_2018_issuer_uses_2014(self) -> None:
+        self.assertEqual(
+            self.catalog.estimate_year_for_doc(date(2018, 6, 1), "240", issuer=True),
+            "2014",
+        )
+
+    def test_merged_mapping_includes_2014_fallback_for_2021_filing(self) -> None:
+        mapping = self.catalog.merged_mapping_for_doc("2021", "240")
+        period_ids = mapping["ton"]["period_text"]
+        self.assertEqual(period_ids[0], "jptoo-ton_cor:OriginalPeriodAtFilingTextBlock")
+        self.assertIn("jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock", period_ids)
+        self.assertEqual(mapping.get("merged_fallback_years"), ["2014"])
+
+    def test_2014_mapping_period_has_no_original_at_filing(self) -> None:
+        mapping = self.catalog.mapping_for_year(2014)
+        self.assertNotIn(
+            "jptoo-ton_cor:OriginalPeriodAtFilingTextBlock",
+            mapping["ton"]["period_text"],
+        )
+
     def test_detect_from_2026_element_ids(self) -> None:
         facts = {"jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock": ["2026年5月1日から"]}
         self.assertEqual(self.catalog.detect_from_facts(facts), "2026")

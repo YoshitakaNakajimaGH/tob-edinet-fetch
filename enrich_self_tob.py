@@ -200,8 +200,9 @@ def enrich_issuer_document(
         zip_text=zip_text,
         is_amendment=type_code in AMENDMENT_TYPES,
         issuer=True,
+        doc_type_code=type_code,
     )
-    mapping = catalog.mapping_for_year(year, issuer=True)
+    mapping = catalog.merged_mapping_for_doc(year, type_code, issuer=True)
     row["TaxonomyYear"] = year
     row["TaxonomyDate"] = tax_date or str(mapping.get("taxonomy_date") or "")
     row["TaxonomySource"] = source

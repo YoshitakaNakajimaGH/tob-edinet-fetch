@@ -1,0 +1,77 @@
+{
+  "year": 2013,
+  "taxonomy_date": "2013-08-31",
+  "note": "2013年版（報告・意見・撤回・回答 jptoo-pst/tor/wto/toa）。届出書は 2014.json を使用。",
+  "pst": {
+    "offeror_name": [
+      "jptoo-pst_cor:NameAndResidentialAddressOrLocationOfTenderOfferorTextBlock",
+      "jptoo-pst:NameAndResidentialAddressOrLocationOfTenderOfferorTextBlock"
+    ],
+    "target_name": [
+      "jptoo-pst_cor:NameOfFilerCoverPage",
+      "jptoo-pst:NameOfFilerCoverPage"
+    ],
+    "opinion_text": [
+      "jptoo-pst_cor:OpinionAndBasisAndReasonOfOpinionRegardingSaidTenderOfferTextBlock",
+      "jptoo-pst:OpinionAndBasisAndReasonOfOpinionRegardingSaidTenderOfferTextBlock"
+    ]
+  },
+  "tor": {
+    "offeror_name": [
+      "jptoo-tor_cor:FullNameOrNameOfFilerCoverPage",
+      "jptoo-tor:FullNameOrNameOfFilerCoverPage"
+    ],
+    "target_name": [
+      "jptoo-tor_cor:NameOfSubjectCompanyTextBlock",
+      "jptoo-tor:NameOfSubjectCompanyTextBlock"
+    ],
+    "period_text": [
+      "jptoo-tor_cor:TenderOfferPeriodTextBlock",
+      "jptoo-tor:TenderOfferPeriodTextBlock"
+    ],
+    "final_result_text": [
+      "jptoo-tor_cor:SuccessOrFailureOfTenderOfferTextBlock",
+      "jptoo-tor:SuccessOrFailureOfTenderOfferTextBlock"
+    ],
+    "after_purchase_ratio": [
+      "jptoo-tor_cor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc",
+      "jptoo-tor:HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc"
+    ],
+    "acquired_shares_text": [
+      "jptoo-tor_cor:NumberOfShareCertificatesEtcAcquiredByPurchaseEtcTextBlock",
+      "jptoo-tor:NumberOfShareCertificatesEtcAcquiredByPurchaseEtcTextBlock"
+    ]
+  },
+  "wto": {
+    "offeror_name": [
+      "jptoo-wto_cor:FullNameOrNameOfFilerOfNotificationCoverPage",
+      "jptoo-wto:FullNameOrNameOfFilerOfNotificationCoverPage"
+    ],
+    "target_name": [
+      "jptoo-wto_cor:NameOfSubjectCompanyTextBlock",
+      "jptoo-wto:NameOfSubjectCompanyTextBlock"
+    ],
+    "period_text": [
+      "jptoo-wto_cor:TenderOfferPeriodTextBlock",
+      "jptoo-wto:TenderOfferPeriodTextBlock"
+    ],
+    "withdrawal_reason_text": [
+      "jptoo-wto_cor:ReasonForWithdrawalEtcTextBlock",
+      "jptoo-wto:ReasonForWithdrawalEtcTextBlock"
+    ]
+  },
+  "toa": {
+    "offeror_name": [
+      "jptoo-toa_cor:FullNameOrNameOfFilerCoverPage",
+      "jptoo-toa:FullNameOrNameOfFilerCoverPage"
+    ],
+    "target_name": [
+      "jptoo-toa_cor:NameOfSubjectCompanyTextBlock",
+      "jptoo-toa:NameOfSubjectCompanyTextBlock"
+    ],
+    "response_text": [
+      "jptoo-toa_cor:ResponsesToInquiriesTextBlock",
+      "jptoo-toa:ResponsesToInquiriesTextBlock"
+    ]
+  }
+}

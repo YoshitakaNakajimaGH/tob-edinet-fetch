@@ -405,8 +405,9 @@ def enrich_document(
         facts=facts,
         zip_text=zip_text,
         is_amendment=type_code in AMENDMENT_TYPES,
+        doc_type_code=type_code,
     )
-    mapping = catalog.mapping_for_year(year)
+    mapping = catalog.merged_mapping_for_doc(year, type_code)
     row["TaxonomyYear"] = year
     row["TaxonomyDate"] = tax_date or str(mapping.get("taxonomy_date") or "")
     row["TaxonomySource"] = source

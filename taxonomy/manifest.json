@@ -23,6 +23,27 @@
   },
   "versions": [
     {
+      "year": 2013,
+      "taxonomy_date": "2013-08-31",
+      "status": "canonical",
+      "applies_from": "2013-09-01",
+      "applies_to": "2020-12-31",
+      "doc_types": ["260", "270", "280", "290", "300", "310", "320"],
+      "mapping": "mappings/2013.json",
+      "note": "2013年版。報告・意見・撤回・回答は2020年提出分までこの版が使われることが多い。"
+    },
+    {
+      "year": 2014,
+      "taxonomy_date": "2014-03-31",
+      "status": "canonical",
+      "applies_from": "2014-04-01",
+      "applies_to": "2020-12-31",
+      "doc_types": ["240", "250"],
+      "mapping": "mappings/2014.json",
+      "issuer_mapping": "mappings/issuer_2014.json",
+      "note": "2014年版届出書。他社株240/250は2020年提出分まで。自社株は2014-07-31版（issuer_2014）を2020年まで。"
+    },
+    {
       "year": 2021,
       "taxonomy_date": "2020-11-01",
       "status": "canonical",
