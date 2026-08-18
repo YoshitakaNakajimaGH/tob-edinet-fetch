@@ -28,6 +28,11 @@ on:
         required: false
         default: false
         type: boolean
+      sleep_seconds:
+        description: "API呼び出し間隔（秒）。429等が出たら1.0に増やす"
+        required: false
+        default: "0.5"
+        type: string
 
 permissions:
   contents: write
@@ -66,6 +71,7 @@ jobs:
           if [ "${{ github.event.inputs.recompute_only }}" = "true" ]; then
             ARGS+=(--recompute-only)
           fi
+          ARGS+=(--sleep "${{ github.event.inputs.sleep_seconds }}")
           python -m tob.enrich_self_tob "${ARGS[@]}"
 
       - name: Commit enriched CSV if changed
