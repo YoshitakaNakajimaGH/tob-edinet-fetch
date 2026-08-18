@@ -1,202 +1,216 @@
 # EDINET TOB 一覧・案件取得
 
-金融庁 EDINET API から、公開買付（TOB）関連書類を取得します。
+金融庁 EDINET API から公開買付（TOB）関連書類（docTypeCode 240〜320）を取得し、CSV にまとめるリポジトリです。
 
-実行は **あなたのPCではなく GitHub Actions（GitHubのサーバ）** で行います。
+**実行場所:** あなたの PC ではなく **GitHub Actions**（GitHub のサーバ）  
+**普段見るファイル:** `output/current/tob_cases.csv`（他社株の案件一覧）
 
-## 出力フォルダ
+---
 
-普段見るのは **`output/current/`** です。Fetch / Enrich のたびに、同じ内容を取得範囲ラベル付きスナップショットとしても残します。
+## 初回セットアップ（管理者）
+
+1. リポジトリ **Settings → Secrets and variables → Actions**
+2. **New repository secret** → Name: `EDINET_API_KEY`
+3. [EDINET API キー](https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1) を登録
+
+---
+
+## 3 つのアクション（GitHub Actions）
+
+Actions タブ → 左のワークフロー名 → **Run workflow** → ブランチ `master` を選んで実行します。  
+完了すると `output/` 以下が更新され、変更があれば自動 commit されます。
+
+### 実行の順番（推奨）
 
 ```
-output/
-  current/
-    tob_list.csv          … 最新の他社株・書類正本
-    tob_cases.csv         … 最新の他社株・案件（業務確認はここ）
-    self_tob_list.csv     … 自己株式の公開買付け（書類）
-    self_tob_cases.csv    … 自己株式の公開買付け（案件）
-    fetch_meta.json       … 直近 Fetch の取得範囲（Enrich が参照）
-  snapshots/
-    tob_list_202001-202012_0001.csv
-    tob_cases_202001-202012_0001.csv
-    self_tob_list_202001-202012_0001.csv
-    self_tob_cases_202001-202012_0001.csv
-    …（取得範囲ごと・種類ごとに直近20件）
-    trash/                … 21件目以降を移動。さらに古い20件を超えたら削除
+1. Fetch TOB        … 書類一覧の取得・更新（必須・最初に実行）
+2. Enrich TOB       … 他社株 TOB の XBRL 詳細抽出
+3. Enrich Self TOB  … 自社株 TOB の XBRL 詳細抽出（必要な場合のみ）
 ```
+
+Fetch を実行しないと Enrich は `fetch_meta.json` が無くて失敗します。
+
+---
+
+### 1. Fetch TOB — 書類一覧の取得
+
+**役割:** EDINET から TOB 関連書類のメタデータ（提出日・書類種別・DocID など）を取得し、CSV に upsert する。案件 CSV も再生成する。
+
+| トリガー | 内容 |
+|----------|------|
+| **手動 Run workflow** | 開始年・終了年を指定してその期間を取得 |
+| **平日スケジュール**（自動） | 直近 35 日だけ再取得してマージ |
+
+**手動実行の入力**
+
+| 入力 | 意味 |
+|------|------|
+| 開始年 / 終了年 | 取得する暦年。終了年が今年なら **実行日まで** |
+
+**出力ファイル**
 
 | ファイル | 内容 |
 |----------|------|
-| [`output/current/tob_list.csv`](output/current/tob_list.csv) | 他社株の書類正本。1件1行 |
-| [`output/current/tob_cases.csv`](output/current/tob_cases.csv) | 他社株の案件。1件1行 |
-| [`output/current/self_tob_list.csv`](output/current/self_tob_list.csv) | 自社株TOBの書類。提出者コード＝対象会社コード |
-| [`output/current/self_tob_cases.csv`](output/current/self_tob_cases.csv) | 自社株TOBの案件 |
+| `output/current/tob_list.csv` | 他社株・書類 1 件 1 行 |
+| `output/current/tob_cases.csv` | 他社株・案件 1 件 1 行 |
+| `output/current/self_tob_list.csv` | 自社株 TOB・書類 |
+| `output/current/self_tob_cases.csv` | 自社株 TOB・案件 |
+| `output/current/fetch_meta.json` | 取得範囲（Enrich が参照） |
+| `output/snapshots/tob_list_YYYYMM-YYYYMM_0001.csv` など | 上記と同内容の履歴（範囲ごと最大 20 件） |
 
-意見表明報告書は独立した案件行にはしません。同じ買付者・対象会社の届出／報告書の行に `OpinionStance`（賛同／反対）を載せます。
+**ポイント**
 
-同じ取得範囲で同じ日（日本時間）に2回以上更新すると、スナップショット末尾の連番が `_0002`、`_0003` … と増えます。別の取得範囲（例: `202001-202012` と `202401-202412`）は別ファイルとして保持されます。
+- 既存行の **詳細列（Enrich で埋めた列）は消さない**。DocID 単位で upsert。
+- 同じ取得範囲で同日に再実行するとスナップショット連番が `_0002`, `_0003` … と増える。
 
-普段の業務確認は `current/tob_cases.csv`、過去の時点の確認は `snapshots/`、誤って古くなった分は `snapshots/trash/` を見ます。
+---
 
-## 初回だけ（管理者）
+### 2. Enrich TOB — 他社株 TOB の詳細抽出
 
-1. このリポジトリの **Settings → Secrets and variables → Actions**
-2. **New repository secret**
-3. Name: `EDINET_API_KEY`
-4. Value: EDINET で発行した APIキー
-5. 保存
+**役割:** `tob_list.csv` の各行について EDINET から XBRL（type=5）を取得し、価格・期間・スポンサー候補などを列に書く。完了後 `tob_cases.csv` を再生成する。
 
-APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
+**入力（Run workflow 時）**
 
-## 日常の使い方（自分・後継者）
+| 入力 | 既定 | 意味 |
+|------|------|------|
+| `doc_limit` | `0` | 処理する書類数の上限。`0` = 全件 |
+| `only_pending` | **ON** | `done` / `partial` / `skipped` 済みの書類をスキップ |
+| `force_refresh` | OFF | ON にするとキャッシュ済み XBRL も再ダウンロード |
+| `fields` | `all` | 更新する列グループ（下表）。例: `valuation,fund` |
+| `recompute_only` | OFF | ON なら **API 不使用**。既存 Raw 列から再計算のみ |
 
-### 1. 一覧を更新する（Fetch TOB）
+**`fields` で選べるグループ（他社株）**
 
-1. このリポジトリを開く
-2. **Actions** タブ
-3. 左の **Fetch TOB** を選ぶ
-4. **Run workflow**
-5. ブランチはマージ後の `master` を選び、**開始年 / 終了年** をドロップダウンから指定（例: `2024` と `2026`）
-6. 完了後、`output/current/tob_list.csv` が **DocID 単位で追加・更新** され、`tob_cases.csv` が再生成される。同じ内容が `output/snapshots/tob_list_YYYYMM-YYYYMM_0001.csv` にも残る
+| グループ | 主な列 |
+|----------|--------|
+| `all` | すべて |
+| `basic` | 価格・期間・名称・成否・Taxonomy など |
+| `valuation` | 評価レンジ（市場株価法・DCF 等）、PurposesRaw |
+| `planned_shares` | 買付予定株数 |
+| `fund` | 買付代金 |
+| `sponsor` | SponsorHint、IsMBO |
+| `agent` | TenderOfferAgent |
+| `holdings` | 既保有・買付後割合 |
+| `opinion` | OpinionStance |
+| `result` | FinalResultNote、報告書関連 Raw（書類 CSV 用） |
 
-終了年が今年の場合、取得の終わりは **実行日** までです。既存の詳細列は消しません。
+**出力:** Fetch と同じ 4 CSV + スナップショット。Enrich 済みの列が `tob_list.csv` に入り、案件は `tob_cases.csv` に集約される。
 
-平日の定期実行は、今年の全年ではなく **直近35日** だけを再取得して既存CSVへマージします。
+**所要時間の目安:** 未処理が数百〜千件あると **数十分〜数時間**（1 書類あたり API + 待機時間）。2 回目以降は `only_pending: ON` のままがおすすめ。
 
-### 2. 詳細を埋める（Enrich TOB）
+---
 
-一覧だけでは価格・期間などは空です。**Enrich TOB** で各書類の XBRL から、その書類が持つ項目だけを列に書きます。
+### 3. Enrich Self TOB — 自社株 TOB の詳細抽出
 
-1. **Actions** → **Enrich TOB** → **Run workflow**
-2. 初回: `doc_limit` は `0`（全書類）
-3. 2回目以降: **only pending**（既定オン）で未処理書類だけ更新
-4. 完了後、`output/current/tob_list.csv` の書類行に OfferPrice などが入り、`tob_cases.csv` はそこから再生成される
+**役割:** `self_tob_list.csv` だけを対象に、自社株向けタクソノミ（`jptoi_cor`）から詳細を抽出する。
 
-所要時間の目安: 全書類で十数分（書類数×API呼び出し）。
+**入力:** Enrich TOB と同様（`fields` のグループ名だけ異なる）。
 
-**他社株TOBのみ**対象です。自社株TOBは下記の **Enrich Self TOB** を使います。
+**`fields` グループ（自社株）:** `all` / `basic` / `planned_shares` / `fund` / `agent` / `result`
 
-### 3. 自社株TOBの詳細を埋める（Enrich Self TOB）
+| 書類 | 抽出する主な項目 |
+|------|------------------|
+| 届出 240/250 | 買付期間・価格・買付予定数・代理人・買付代金 |
+| 報告 270/280 | 買付期間・按分の有無（`ProrataUsed`、書類 CSV のみ） |
+| 撤回 260 | 撤回理由・期間 |
 
-`self_tob_list.csv` は提出者＝対象会社の自己株式公開買付です。**Enrich Self TOB** で `jptoi_cor` タクソノミから次を抽出します。
+自社株の案件 CSV には他社株向け列（保有比率・SponsorHint・FinalResultNote 等）は **載せません**。
 
-| 書類 | 抽出項目 |
+**出力:** 4 CSV すべて更新（他社株 CSV は中身はほぼ変更なし）。
+
+---
+
+## 出力フォルダの構造
+
+```
+output/
+  current/          … 常に最新（ここを見る）
+    tob_list.csv
+    tob_cases.csv
+    self_tob_list.csv
+    self_tob_cases.csv
+    fetch_meta.json
+  snapshots/        … 履歴（tob_list_202001-202012_0001.csv 形式）
+  snapshots/trash/  … 古い履歴
+```
+
+---
+
+## どの CSV を見るか
+
+| 目的 | ファイル |
 |------|----------|
-| 届出書 240/250 | 買付期間、普通株式の買付価格、合計の買付予定数、§6(1)①公開買付代理人、§7 買付代金 |
-| 報告書 270/280 | 応募数（ApplicationCount）、買付数（PurchaseCount）、按分の有無（ProrataUsed） |
+| 案件単位で一覧確認（**メイン**） | `tob_cases.csv` |
+| 1 書類ずつ詳細・Raw テキスト | `tob_list.csv` |
+| 自社株 TOB の案件 | `self_tob_cases.csv` |
+| 自社株 TOB の書類 | `self_tob_list.csv` |
 
-1. **Actions** → **Enrich Self TOB** → **Run workflow**
-2. 初回: `doc_limit` は `0`（全書類）
-3. 2回目以降: **only pending**（既定オン）で未処理書類だけ更新
+意見表明報告書（290/300）だけのグループは **案件行を作りません**。同じ買付者・対象会社の届出案件に `OpinionStance` を載せます。
 
-`ApplicationCount` / `PurchaseCount` / `ProrataUsed` は報告書の「買付け等を行った上場株券等の数」および按分計算ブロックから判定します。応募数が買付数を上回った場合も按分とみなします。
+---
 
-## tob_cases.csv の見方
+## 案件 CSV（`tob_cases.csv`）の主な列
 
-左に人が読む項目、右にID類を置いています。
+左から人が読む項目、右端付近が ID 類です。
 
 | 列 | 意味 |
 |----|------|
-| OfferorName | 買付者名（届出書の表紙「届出者の氏名又は名称」） |
-| TargetSecCode | 対象会社の証券コード（4桁。意見表明書の提出者コード、または EDINET 提出者リストから補完） |
-| TargetName | 対象会社名（見出し「（１）【対象者名】」は除去） |
-| Status | 届出中 / 訂正あり / 撤回 / 報告書提出 など |
-| OfferPrice | 買付価格（普通株式1株あたり） |
-| OfferPeriodStart / End | 買付期間。延長があれば延長後 |
-| ExistingHoldingRatio | すでに買付者＋特別関係者が持つ株券等所有割合 |
-| SpecialRelatedHoldingRatio | 特別関係者だけの既保有割合 |
-| AfterPurchaseRatio | 買付後の実際の株券等所有割合。届出書の予定値（100%など）は使わない。不成立・撤回なら既保有と同じ。実施中は空 |
-| SponsorHint | 届出書「買付け等の目的」の（１）本公開買付の概要・二段落目先頭の「Xは、」から取ったスポンサー候補（**案件CSVの2列目**） |
-| IsMBO | 本文に MBO / マネジメント・バイアウト等の記載があれば `Yes` |
-| ValuationMarketMin / Max など | 第1部§4(2)「算定の基礎」の市場株価法・類似上場会社比較法・DCF法の1株当たり株式価値レンジ（円） |
-| PlannedSharesMin / Max | 第1部§4(3)「買付予定の株券等の数」の**合計**行の下限・上限（株数） |
-| PlannedSharesPlanned | 合計行に上限・下限がなく、買付予定数だけ書かれている場合の株数 |
-| PurchaseConsideration | 第1部§8「買付け等に要する資金」の買付代金（a）（単位付き。例: `38,234,567,890円`） |
-| TenderOfferAgent | 第1部§7(1)①公開買付代理人（なければ表紙の代理人名称）。住所は除き会社名のみ |
-| LatestFilingUrl / LatestOutcomeUrl | EDINET 閲覧画面へのリンク（届出書／報告書または撤回書）。APIキー不要 |
-| OpinionStance | 賛同 / 反対 / 意見留保 / 要確認 |
-| FinalResultNote | `成立` / `成立（按分）` / `不成立` / `撤回`。報告書の成否本文から判定。撤回届出があれば撤回 |
-| TargetDelistingNote | 対象会社の上場廃止状況。`上場廃止済` / `上場廃止予定` / `上場維持`（意見表明本文と EDINET 提出者リストの上場区分から推定） |
+| OfferorName | 買付者名 |
+| **SponsorHint** | スポンサー候補（2 列目） |
+| TargetSecCode / TargetName | 対象会社 |
+| Status | 届出中 / 訂正あり / 報告書提出 / 撤回 など |
+| OfferPrice / OfferPeriodStart / End | 価格・期間 |
+| ExistingHoldingRatio など | 既保有・買付後割合 |
+| IsMBO / Valuation* / PlannedShares* | MBO フラグ・評価レンジ・買付予定株数 |
+| PurchaseConsideration / TenderOfferAgent | 買付代金・公開買付代理人（会社名のみ） |
+| OpinionStance | 賛同 / 反対 など |
+| **FinalResultNote** | `成立` / `成立（按分）` / `不成立` / `撤回` |
+| TargetDelistingNote | 上場廃止関連 |
+| **LatestFilingUrl** | 届出書（240/250 の最新・訂正含む）の EDINET 閲覧 URL |
+| **LatestOutcomeUrl** | 報告書（270/280）または撤回書（260）の最新の EDINET 閲覧 URL |
 | FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |
-| CaseID 以降 | 書類ID・EDINETコードなど |
+| CaseID / LatestFilingDocID など | 内部 ID |
 
-案件CSVの詳細列は、書類正本を提出日時の古い順に重ねた **最新状態** です。履歴は `tob_list.csv` に残ります。
+**案件 CSV に載せないもの:** `ApplicationCount` / `PurchaseCount` / `ProrataUsed`  
+按分の有無は **`FinalResultNote` が `成立（按分）` かどうか** で判断します。応募数・買付数の詳細が必要なときは `tob_list.csv` の報告書行（または EDINET リンク）を参照してください。
 
-## tob_list.csv の見方
+**URL 形式:** `https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?{DocID}`（API キー不要。提出から約 10 年以内が目安）
 
-書類1件1行です。左側が数値・名称、右側がIDです。
+---
+
+## 書類 CSV（`tob_list.csv` / `self_tob_list.csv`）の主な列
 
 | 列 | 意味 |
 |----|------|
-| SubmitDateTime / DocTypeName | 提出日時・書類名 |
-| EdinetDocUrl | EDINET 閲覧画面 URL（クリックで提出書類を確認） |
-| OfferorName / TargetSecCode / TargetName | 買付者・対象会社の証券コード・対象会社名 |
-| OfferPrice / OfferPeriodStart / End | その書類に書かれた価格・期間 |
-| ExistingHoldingRatio | 買付者＋特別関係者の既保有割合 |
-| SpecialRelatedHoldingRatio | 特別関係者の既保有割合 |
-| AfterPurchaseRatio | その書類に書かれた買付後所有割合（届出書は予定値） |
-| OpinionStance / FinalResultNote など | その書類から取れた値だけ。案件の成否は `tob_cases.csv` を見る |
-| DocID / ParentDocID / CaseID | 書類ID類（右寄り） |
+| DocTypeName | 書類種別名 |
+| **EdinetDocUrl** | その行の書類への EDINET 閲覧 URL |
+| OfferorName / TargetName など | 抽出済みの値 |
+| FinalResultNote / ApplicationCount など | その **書類** から取れた値（報告書行のみ数値あり） |
+| DocID / CaseID | 書類 ID |
 
-## 抜き出しロジック（Enrich）
+`self_tob_list.csv` にも **EdinetDocUrl** があります。自社株案件 CSV にも **LatestFilingUrl / LatestOutcomeUrl** があります。
 
-公開買付届出書（240/250）の XBRL CSV から次の要素を使います。
+---
 
-- 買付者名: `FullNameOrNameOfFilerOfNotificationCoverPage`（なければ一覧APIの提出者名）
-- 対象会社名: `NameOfSubjectCompanyTextBlock`（先頭の「（１）【対象者名】」などは除去）
-- 買付価格: `PriceOfPurchaseEtcTextBlock` から普通株式1株あたり（円・ウォン・株式対価）。同ブロック内「算定の基礎」から評価レンジも抽出
-- 買付期間: `PeriodOfPurchaseEtcTextBlock`（2021年版は `OriginalPeriodAtFilingTextBlock`）。延長記載があれば最後の自〜至
-- 買付予定株数: `NumberOfShareCertificatesEtcIntendedToPurchaseTextBlock` から**合計**行の下限・上限、または単独の買付予定数
-- 買付代金: `FundEtcForPurchaseEtcTextBlock` から 買付代金（a）
-- 公開買付代理人: `HowToAcceptTextBlock` の ①公開買付代理人（なければ表紙 `NameOfLegalRepresentativeCoverPage`）
-- スポンサー候補: `PurposesOfPurchaseEtcTextBlock`（または `OverviewOfPurchaseEtcTextBlock`）の本公開買付の概要・二段落目
-- MBO: 目的・概要・意見表明本文から MBO / マネジメント・バイアウト等を検索
-- 既保有割合: 議決権数 (d)+(g) を総議決権 (j) で割る。d=買付者、g=特別関係者
-- 買付後割合（書類）: `HoldingRatioOfShareCertificatesEtcAfterPurchaseEtc`（届出書は予定。案件行では使わない）
-- 成否: 公開買付報告書の `SuccessOrFailureOfTenderOfferTextBlock` から、応募数と下限・上限を読んで `成立` / `成立（按分）` / `不成立`。撤回届出書があれば `撤回`
-- 対象証券コード: 意見表明書（290/300）の `secCode`、または EDINET 提出者リストの証券コード列
-- 上場廃止: 意見表明本文の「上場廃止予定」等の記載と、EDINET 提出者リストの上場区分（成立後に `非上場` なら `上場廃止済`）
-
-## 技術メモ（メンテ担当向け）
-
-- 詳細抽出は **書類取得 API type=5**（XBRL ZIP 内の CSV）を使用
-- 要素IDの対応は [`taxonomy/`](taxonomy/) に年版ごと保存
-- 他社株TOBタクソノミは 2021年版（2020-11-01）が 2026-04-30 まで続き、2026年版（2025-11-01）は 2026-05-01 以後
-- 訂正書類は提出年ではなく、親書類と同じタクソノミ版を使う
-- Fetch は既存CSVを上書き消去せず、DocID で upsert する
-- 自己株式の公開買付けは `self_tob_*.csv` に分け、他社株の `tob_cases.csv` からは外す
-- 意見表明だけの行は作らず、同じ会社ペアの届出案件に賛同／反対を載せる
-- 結果は `output/current/` が最新。取得範囲ラベル付きコピーは `output/snapshots/` に範囲ごと最大20件。それより古いものは `snapshots/trash/` へ移動
-
-### OfferPriceRaw の文字数上限について
-
-EDINET から取得した「買付け等の価格」の**原文**を CSV に保存する列が `OfferPriceRaw` です。届出書の価格欄は非常に長く（算定の基礎・プレミアム率の説明など）、そのまま全部を CSV に入れるとファイルが巨大になったり、Excel で扱いにくくなったりします。
-
-そのため、**先頭から一定文字数だけ**を `OfferPriceRaw` に保存しています（現在は 5000 文字）。一方、CSV に書き込む前の**全文**からは `OfferPrice`（1株あたり価格）や評価レンジ（市場株価法・DCF など）を抽出するので、Enrich 実行時点では後半に書かれた数値も取りこぼしません。
-
-既存 CSV を `--recompute-only` で再計算する場合は、保存済みの `OfferPriceRaw`（短い断片）しか見えないため、5000 文字を超える後半の情報は再抽出できません。全件を埋めるには Enrich TOB の再実行が必要です。
-
-## ローカルで試す場合（任意）
+## ローカル実行（任意）
 
 ```bash
 export EDINET_API_KEY=あなたのキー
-python fetch_tob.py --from-year 2025 --to-year 2026
-python fetch_tob.py --recent-days 35
-python enrich_tob.py --doc-limit 10
+python fetch_tob.py --from-year 2024 --to-year 2026
 python enrich_tob.py --only-pending
+python enrich_tob.py --fields valuation,fund
 python enrich_tob.py --recompute-only
-python -m unittest discover -s tests -t . -v
+python enrich_self_tob.py --only-pending
+python -m unittest discover -s tests -v
 ```
 
-## ファイル構成
+---
 
-- `fetch_tob.py` … 一覧取得・既存CSVへの upsert・案件再生成
-- `enrich_tob.py` … 書類単位の XBRL 抽出
-- `edinet_code_list.py` … EDINET 提出者リスト（証券コード・上場区分）の取得とキャッシュ
-- `tob_common.py` … CSV列定義・案件派生
-- `taxonomy/` … 年版タクソノミの選択、年度別マッピング、公式資料の抜粋
-- `output_store.py` … current / 取得範囲別スナップショット / ごみ箱
-- `.github/workflows/fetch-tob.yml` … 一覧の手動（年指定）／平日の直近35日
-- `.github/workflows/enrich-tob.yml` … 詳細抽出（手動のみ）
-- `output/current/` … 最新の他社株・自社株CSV
-- `output/snapshots/` … 取得範囲ラベル付き履歴（範囲ごと直近20件）と `trash/`
+## 技術メモ（メンテ向け）
+
+- XBRL 取得: 書類 API `type=5`（ZIP 内 CSV）
+- タクソノミ: [`taxonomy/`](taxonomy/)（2021 年版 / 2026 年版）
+- Fetch: DocID upsert。Enrich 列は保持
+- `OfferPriceRaw` は先頭 5000 文字のみ CSV 保存（抽出時は全文使用）。古い CSV を `--recompute-only` だけでは再抽出しきれない場合あり
+
+**主なスクリプト:** `fetch_tob.py` / `enrich_tob.py` / `enrich_self_tob.py` / `tob_common.py` / `output_store.py`
