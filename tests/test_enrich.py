@@ -9,8 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from enrich_tob import parse_opinion_stance
-from extract_fields import (
+from tob.enrich_tob import parse_opinion_stance
+from tob.extract_fields import (
     clean_extracted_name,
     compute_holding_ratios,
     format_pct,

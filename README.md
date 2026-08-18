@@ -62,6 +62,7 @@ Fetch を実行しないと Enrich は `fetch_meta.json` が無くて失敗し�
 
 - 既存行の **詳細列（Enrich で埋めた列）は消さない**。DocID 単位で upsert。
 - 同じ取得範囲で同日に再実行するとスナップショット連番が `_0002`, `_0003` … と増える。
+- **API 間隔:** 未キャッシュの日だけ `--sleep` 秒待機（既定 **0.5 秒**）。8 年分の初回取得では日数 × 0.5 秒が下限。429 等が出たら Actions 入力で 1.0〜2.0 に増やす。キャッシュ済みの日は待機しない。
 
 ---
 
@@ -196,21 +197,34 @@ output/
 
 ```bash
 export EDINET_API_KEY=あなたのキー
-python fetch_tob.py --from-year 2024 --to-year 2026
-python enrich_tob.py --only-pending
-python enrich_tob.py --fields valuation,fund
-python enrich_tob.py --recompute-only
-python enrich_self_tob.py --only-pending
+python -m tob.fetch_tob --from-year 2024 --to-year 2026
+python -m tob.fetch_tob --from-year 2017 --to-year 2020 --sleep 0.5
+python -m tob.enrich_tob --only-pending
+python -m tob.enrich_tob --fields valuation,fund
+python -m tob.enrich_tob --recompute-only
+python -m tob.enrich_self_tob --only-pending
 python -m unittest discover -s tests -v
 ```
+
+---
+
+## リポジトリ構成
+
+| パス | 内容 |
+|------|------|
+| [`tob/`](tob/) | TOB パイプライン（Fetch / Enrich / タクソノミ / 抽出ロジック） |
+| [`edinet/`](edinet/) | EDINET 提出者リスト等の共有ユーティリティ |
+| [`stock_swap/`](stock_swap/) | 株式交換パイプライン（将来追加予定） |
+| `output/` | CSV 出力（`current/` と `snapshots/`） |
+| `cache/` | 日次 API レスポンス・XBRL ZIP のキャッシュ |
 
 ---
 
 ## 技術メモ（メンテ向け）
 
 - XBRL 取得: 書類 API `type=5`（ZIP 内 CSV）
-- タクソノミ: [`taxonomy/`](taxonomy/)（2021 年版 / 2026 年版）
+- タクソノミ: [`tob/taxonomy/`](tob/taxonomy/)（2013 / 2014 / 2021 / 2026 年版）
 - Fetch: DocID upsert。Enrich 列は保持
 - `OfferPriceRaw` は先頭 5000 文字のみ CSV 保存（抽出時は全文使用）。古い CSV を `--recompute-only` だけでは再抽出しきれない場合あり
 
-**主なスクリプト:** `fetch_tob.py` / `enrich_tob.py` / `enrich_self_tob.py` / `tob_common.py` / `output_store.py`
+**主なモジュール:** `tob/fetch_tob.py` / `tob/enrich_tob.py` / `tob/enrich_self_tob.py` / `tob/tob_common.py` / `tob/output_store.py`

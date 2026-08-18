@@ -9,15 +9,15 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from edinet_code_list import load_edinet_code_list
-from extract_fields import (
+from edinet.edinet_code_list import load_edinet_code_list
+from tob.extract_fields import (
     DELISTING_DONE,
     DELISTING_PLANNED,
     LISTING_MAINTAINED,
     format_sec_code,
     judge_target_delisting,
 )
-from tob_common import build_cases, normalize_doc_row, refresh_target_metadata
+from tob.tob_common import build_cases, normalize_doc_row, refresh_target_metadata
 
 
 class TargetMetadataTests(unittest.TestCase):

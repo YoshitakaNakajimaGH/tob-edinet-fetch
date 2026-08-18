@@ -66,7 +66,7 @@ jobs:
           if [ "${{ github.event.inputs.recompute_only }}" = "true" ]; then
             ARGS+=(--recompute-only)
           fi
-          python enrich_self_tob.py "${ARGS[@]}"
+          python -m tob.enrich_self_tob "${ARGS[@]}"
 
       - name: Commit enriched CSV if changed
         run: |

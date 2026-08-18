@@ -10,8 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
-from tob_common import (
+from tob.taxonomy import TaxonomyCatalog, resolve_taxonomy_year
+from tob.tob_common import (
     CASE_FIELDS,
     LIST_FIELDS,
     SELF_CASE_FIELDS,
@@ -505,7 +505,7 @@ class MergeAndCaseTests(unittest.TestCase):
 
 class TaxonomyCatalogTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.catalog = TaxonomyCatalog(ROOT / "taxonomy")
+        self.catalog = TaxonomyCatalog(ROOT / "tob" / "taxonomy")
 
     def test_2022_inherits_2021_mapping(self) -> None:
         mapping = self.catalog.mapping_for_year(2022)

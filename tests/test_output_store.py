@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from output_store import (
+from tob.output_store import (
     KEEP_SNAPSHOTS,
     format_range_label,
     list_range_snapshot_files,
