@@ -14,6 +14,8 @@ from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     CASE_FIELDS,
     LIST_FIELDS,
+    SELF_CASE_FIELDS,
+    SELF_LIST_FIELDS,
     assign_case_ids,
     build_cases,
     edinet_view_url,
@@ -278,7 +280,14 @@ class MergeAndCaseTests(unittest.TestCase):
         self.assertLess(LIST_FIELDS.index("ExistingHoldingRatio"), LIST_FIELDS.index("CaseID"))
         self.assertGreater(LIST_FIELDS.index("DocID"), LIST_FIELDS.index("TargetName"))
         self.assertEqual(CASE_FIELDS[1], "SponsorHint")
-        self.assertLess(CASE_FIELDS.index("TargetSecCode"), CASE_FIELDS.index("TargetName"))
+        self.assertLess(CASE_FIELDS.index("LatestFilingUrl"), CASE_FIELDS.index("FirstFilingDate"))
+        self.assertLess(CASE_FIELDS.index("LatestOutcomeUrl"), CASE_FIELDS.index("FirstFilingDate"))
+        self.assertNotIn("ApplicationCount", CASE_FIELDS)
+        self.assertNotIn("PurchaseCount", CASE_FIELDS)
+        self.assertNotIn("ProrataUsed", CASE_FIELDS)
+        self.assertIn("LatestFilingUrl", SELF_CASE_FIELDS)
+        self.assertIn("LatestOutcomeUrl", SELF_CASE_FIELDS)
+        self.assertIn("EdinetDocUrl", SELF_LIST_FIELDS)
         self.assertLess(CASE_FIELDS.index("FinalResultNote"), CASE_FIELDS.index("TargetDelistingNote"))
         self.assertNotIn("UltimateParentName", LIST_FIELDS)
         self.assertNotIn("UltimateParentNote", LIST_FIELDS)

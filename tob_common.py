@@ -435,9 +435,6 @@ CASE_FIELDS = [
     "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
-    "ApplicationCount",
-    "PurchaseCount",
-    "ProrataUsed",
     "TargetDelistingNote",
     "LatestFilingUrl",
     "LatestOutcomeUrl",
@@ -466,8 +463,6 @@ _SELF_CASE_EXCLUDE = frozenset(
         "IsMBO",
         "OpinionStance",
         "FinalResultNote",
-        "ApplicationCount",
-        "PurchaseCount",
         "HasOpinion",
         "LatestOpinionDocID",
     }
@@ -971,9 +966,6 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "TenderOfferAgent": "",
         "OpinionStance": "",
         "FinalResultNote": "",
-        "ApplicationCount": "",
-        "PurchaseCount": "",
-        "ProrataUsed": "",
         "TargetName": "",
         "LastEnrichedDocID": "",
     }
@@ -1041,9 +1033,6 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 acquired_raw = doc["AcquiredSharesRaw"]
             if doc.get("ProrataCalculationRaw"):
                 prorata_raw = doc["ProrataCalculationRaw"]
-            for key in ("ApplicationCount", "PurchaseCount", "ProrataUsed"):
-                if doc.get(key):
-                    out[key] = doc[key]
             if doc.get("OfferPeriodStart"):
                 out["OfferPeriodStart"] = doc["OfferPeriodStart"]
             if doc.get("OfferPeriodEnd"):
@@ -1053,8 +1042,6 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
 
     if acquired_raw or prorata_raw:
         result = judge_self_tob_result(acquired_raw, prorata_raw, withdrawn=withdrawn)
-        if not out.get("ApplicationCount") and not out.get("PurchaseCount"):
-            out.update(parse_self_tob_report_counts(acquired_raw, prorata_raw))
     else:
         result = judge_tob_result(result_raw, withdrawn=withdrawn)
     out["FinalResultNote"] = result
@@ -1082,8 +1069,6 @@ def compute_case_enrichment_status(case: dict, docs: list[dict]) -> str:
             "ExistingHoldingRatio",
             "OpinionStance",
             "FinalResultNote",
-            "ApplicationCount",
-            "PurchaseCount",
         )
         if case.get(key)
     )
