@@ -560,14 +560,18 @@ def _is_dash_count(token: str) -> bool:
     return token in {"―", "－", "-", "—", "－", "―(株)", "－(株)"}
 
 
+_SHARE_UNIT = r"(?:株|口|個)"
+_SHARE_PAREN = rf"(?:\({_SHARE_UNIT}\)|（{_SHARE_UNIT}）)"
+
+
 def _parse_total_row_counts(section: str) -> tuple[int | None, int | None, int | None]:
     """Parse 合計 row in XBRL table layout: 合計2,517,495(株)―(株)―(株)."""
-    match = re.search(r"合計([\d,，]+)\(株\)(.*)", section)
+    match = re.search(rf"合計([\d,，]+){_SHARE_PAREN}(.*)", section)
     if not match:
         return None, None, None
     planned = _parse_int(match.group(1))
     rest = match.group(2)[:160]
-    tokens = re.findall(r"([\d,，]+|―|－|-)\(株\)", rest)
+    tokens = re.findall(rf"([\d,，]+|―|－|-){_SHARE_PAREN}", rest)
     floor = None
     cap = None
     if tokens:
@@ -603,7 +607,7 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
 
     planned = ""
     if floor is None and cap is None:
-        match = re.search(r"買付予定数[（(]?([\d,，]+)(?:株|口|個)", section)
+        match = re.search(rf"買付予定数[（(]?([\d,，]+){_SHARE_PAREN}", section)
         if match:
             value = _parse_int(match.group(1))
             if value is not None:
@@ -631,6 +635,7 @@ def parse_purchase_consideration(text: str) -> str:
     compact = re.sub(r"\s+", " ", strip_html(text))
     patterns = (
         r"買付代金\(円\)\([ａaAＡ]\)([\d,，]+)",
+        r"買付代金（円）\([ａaAＡ]\)([\d,，]+)",
         r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(円|ウォン|ドル|USD|米ドル)",
         r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(?:円|ウォン|ドル|USD|米ドル)",
     )
