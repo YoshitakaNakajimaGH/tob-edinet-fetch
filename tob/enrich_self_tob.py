@@ -254,7 +254,7 @@ def main() -> int:
     parser.add_argument("--doc-limit", type=int, default=0, help="0=全書類")
     parser.add_argument("--only-pending", action="store_true", help="未抽出の書類のみ")
     parser.add_argument("--force-refresh", action="store_true")
-    parser.add_argument("--sleep", type=float, default=1.0)
+    parser.add_argument("--sleep", type=float, default=0.5, help="API呼び出し間隔（秒）。429等が出たら1.0に増やす")
     parser.add_argument(
         "--recompute-only",
         action="store_true",
