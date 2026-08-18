@@ -10,6 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from tob.extract_fields import (
+    EXPLICIT_EMPTY,
     detect_mbo,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
@@ -92,6 +93,45 @@ class ValuationRangeTests(unittest.TestCase):
         self.assertEqual(parsed["ValuationMarketMin"], "1,420")
         self.assertEqual(parsed["ValuationDCFMax"], "2,100")
 
+    def test_parses_kijun_hijun_method_labels(self) -> None:
+        text = (
+            "市場株価基準方式：1,083円から1,258円 "
+            "類似会社比準方式：1,110円から1,223円 "
+            "ＤＣＦ方式：1,243円から1,522円"
+        )
+        parsed = parse_valuation_ranges(text)
+        self.assertEqual(parsed["ValuationMarketMin"], "1,083")
+        self.assertEqual(parsed["ValuationComparableMax"], "1,223")
+        self.assertEqual(parsed["ValuationDCFMax"], "1,522")
+
+    def test_prefers_special_committee_third_party_valuation(self) -> None:
+        purposes = (
+            "③　対象者における独立したファイナンシャル・アドバイザー及び第三者算定機関からの"
+            "株式価値算定書の取得（ⅱ）対象者株式に係る算定の概要 "
+            "ＰｗＣは市場株価基準方式：1,083円から1,258円 "
+            "類似会社比準方式：1,110円から1,223円 "
+            "ＤＣＦ方式：1,243円から1,522円 "
+            "⑤　特別委員会における独立した第三者算定機関からの株式価値算定書及び"
+            "フェアネス・オピニオンの取得 "
+            "プルータスは市場株価法：1,083円から1,258円 "
+            "ＤＣＦ方式：1,106円から1,615円"
+        )
+        parsed = parse_valuation_from_sources("", purposes)
+        self.assertEqual(parsed["ValuationMarketMin"], "1,083")
+        self.assertEqual(parsed["ValuationDCFMin"], "1,106")
+        self.assertEqual(parsed["ValuationDCFMax"], "1,615")
+        self.assertEqual(parsed["ValuationComparableMin"], "")
+
+    def test_falls_back_to_independent_advisor_when_price_empty(self) -> None:
+        purposes = (
+            "③　対象者における独立したファイナンシャル・アドバイザー及び第三者算定機関"
+            "（ⅱ）対象者株式に係る算定の概要 "
+            "市場株価基準方式：900円から1,000円 ＤＣＦ方式：1,100円から1,200円"
+        )
+        parsed = parse_valuation_from_sources("", purposes)
+        self.assertEqual(parsed["ValuationMarketMin"], "900")
+        self.assertEqual(parsed["ValuationDCFMax"], "1,200")
+
     def test_extract_valuation_from_purposes_finds_keyword_window(self) -> None:
         text = (
             "背景説明が長く続きます。" * 20
@@ -116,6 +156,12 @@ class EnrichFieldGroupTests(unittest.TestCase):
 
 
 class PlannedPurchaseTests(unittest.TestCase):
+    def test_unparsed_text_stays_blank(self) -> None:
+        parsed = parse_planned_purchase_counts("公開買付の概要のみ")
+        self.assertEqual(parsed["PlannedSharesMin"], "")
+        self.assertEqual(parsed["PlannedSharesMax"], "")
+        self.assertEqual(parsed["PlannedSharesPlanned"], "")
+
     def test_parses_floor_and_cap_from_total_row(self) -> None:
         text = (
             "普通株式 上限（100株）下限（50株）"
@@ -139,6 +185,8 @@ class PlannedPurchaseTests(unittest.TestCase):
         )
         parsed = parse_planned_purchase_counts(text)
         self.assertEqual(parsed["PlannedSharesPlanned"], "2,517,495")
+        self.assertEqual(parsed["PlannedSharesMin"], EXPLICIT_EMPTY)
+        self.assertEqual(parsed["PlannedSharesMax"], EXPLICIT_EMPTY)
 
     def test_parses_fullwidth_share_parentheses(self) -> None:
         text = (
@@ -148,6 +196,7 @@ class PlannedPurchaseTests(unittest.TestCase):
         )
         parsed = parse_planned_purchase_counts(text)
         self.assertEqual(parsed["PlannedSharesPlanned"], "2,448,692")
+        self.assertEqual(parsed["PlannedSharesMin"], EXPLICIT_EMPTY)
 
     def test_parses_xbrl_table_with_floor_only(self) -> None:
         text = (
@@ -156,7 +205,7 @@ class PlannedPurchaseTests(unittest.TestCase):
         )
         parsed = parse_planned_purchase_counts(text)
         self.assertEqual(parsed["PlannedSharesMin"], "4,297,400")
-        self.assertEqual(parsed["PlannedSharesMax"], "")
+        self.assertEqual(parsed["PlannedSharesMax"], EXPLICIT_EMPTY)
         self.assertEqual(parsed["PlannedSharesPlanned"], "20,252,536")
 
     def test_parses_all_three_from_total_row(self) -> None:
@@ -181,7 +230,7 @@ class PlannedPurchaseTests(unittest.TestCase):
         parsed = parse_planned_purchase_counts(text)
         self.assertEqual(parsed["PlannedSharesPlanned"], "41,650,969")
         self.assertEqual(parsed["PlannedSharesMin"], "12,133,398")
-        self.assertEqual(parsed["PlannedSharesMax"], "")
+        self.assertEqual(parsed["PlannedSharesMax"], EXPLICIT_EMPTY)
 
 
 class PurchaseConsiderationTests(unittest.TestCase):
