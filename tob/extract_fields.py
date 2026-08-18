@@ -653,34 +653,20 @@ def parse_valuation_ranges(text: str) -> dict[str, str]:
     return parsed
 
 
-def parse_valuation_from_sources(*texts: str) -> dict[str, str]:
-    """Try price/basis first, then 買付け等の目的 passages that mention valuation methods."""
-    for text in texts:
-        if not text:
-            continue
-        parsed = parse_valuation_ranges(text)
-        if any(parsed.values()):
-            return parsed
-    for text in texts:
-        if not text:
-            continue
-        section = extract_valuation_from_purposes(text)
-        if not section:
-            continue
-        parsed = parse_valuation_ranges(section)
-        if any(parsed.values()):
-            return parsed
-    return _empty_valuation_ranges()
-
-
 def _parse_valuation_ranges_from_text(text: str) -> dict[str, str]:
     compact = re.sub(r"\s+", " ", text)
-    market_min, market_max = _parse_yen_range(r"市場株価(?:平均法|法)", compact)
-    comparable_min, comparable_max = _parse_yen_range(
-        r"類似(?:上場)?(?:会社)?比較法",
+    market_min, market_max = _parse_yen_range(
+        r"市場株価(?:平均法|基準方式|法)",
         compact,
     )
-    dcf_min, dcf_max = _parse_yen_range(r"(?:DCF|ＤＣＦ|DC|ＤＣ)[FＦ]?法", compact)
+    comparable_min, comparable_max = _parse_yen_range(
+        r"類似(?:上場)?(?:会社)?比(?:較|準)(?:法|方式)",
+        compact,
+    )
+    dcf_min, dcf_max = _parse_yen_range(
+        r"(?:DCF|ＤＣＦ|DC|ＤＣ)[FＦ]?(?:法|方式)",
+        compact,
+    )
     return {
         "ValuationMarketMin": market_min,
         "ValuationMarketMax": market_max,
@@ -689,6 +675,89 @@ def _parse_valuation_ranges_from_text(text: str) -> dict[str, str]:
         "ValuationDCFMin": dcf_min,
         "ValuationDCFMax": dcf_max,
     }
+
+
+def extract_special_committee_valuation(text: str, *, limit: int = 8000) -> str:
+    """Section ⑤: 特別委員会の第三者算定機関による株式価値算定（優先ソース）。"""
+    if not text:
+        return ""
+    plain = strip_html(text)
+    section_patterns = (
+        r"⑤[^\n]{0,240}特別委員会[^\n]{0,240}第三者算定",
+        r"特別委員会における独立した第三者算定機関",
+        r"⑤\s*特別委員会",
+        r"フェアネス・オピニオン[^。\n]{0,120}算定",
+        r"独立した第三者算定機関からの株式価値算定書及びフェアネス",
+    )
+    for pattern in section_patterns:
+        match = re.search(pattern, plain)
+        if not match:
+            continue
+        chunk = plain[match.start() : match.start() + limit]
+        if any(marker in chunk for marker in _VALUATION_PURPOSE_MARKERS):
+            return chunk[:limit]
+    return ""
+
+
+def extract_independent_advisor_valuation(text: str, *, limit: int = 8000) -> str:
+    """Section ③: 対象者側 FA / 第三者算定機関の算定概要（フォールバック）。"""
+    if not text:
+        return ""
+    plain = strip_html(text)
+    section_patterns = (
+        r"③[^\n]{0,240}独立したファイナンシャル・アドバイザー",
+        r"独立したファイナンシャル・アドバイザー及び第三者算定機関",
+        r"（ⅱ）対象者株式に係る算定の概要",
+        r"対象者における独立したファイナンシャル",
+        r"対象者株式に係る算定の概要",
+    )
+    for pattern in section_patterns:
+        match = re.search(pattern, plain)
+        if not match:
+            continue
+        chunk = plain[match.start() : match.start() + limit]
+        if any(marker in chunk for marker in _VALUATION_PURPOSE_MARKERS):
+            return chunk[:limit]
+    return ""
+
+
+def parse_valuation_from_sources(*texts: str) -> dict[str, str]:
+    """Try third-party ⑤, price basis, purposes, then FA ③ passages."""
+    for text in texts:
+        if not text:
+            continue
+        section = extract_special_committee_valuation(text)
+        if section:
+            parsed = _parse_valuation_ranges_from_text(section)
+            if any(parsed.values()):
+                return parsed
+
+    for text in texts:
+        if not text:
+            continue
+        parsed = parse_valuation_ranges(text)
+        if any(parsed.values()):
+            return parsed
+
+    for text in texts:
+        if not text:
+            continue
+        section = extract_valuation_from_purposes(text)
+        if section:
+            parsed = _parse_valuation_ranges_from_text(section)
+            if any(parsed.values()):
+                return parsed
+
+    for text in texts:
+        if not text:
+            continue
+        section = extract_independent_advisor_valuation(text)
+        if section:
+            parsed = _parse_valuation_ranges_from_text(section)
+            if any(parsed.values()):
+                return parsed
+
+    return _empty_valuation_ranges()
 
 
 def _is_dash_count(token: str) -> bool:
@@ -703,6 +772,30 @@ _SHARE_UNIT = r"(?:株|口|個)"
 _SHARE_PAREN = rf"(?:\({_SHARE_UNIT}\)|（{_SHARE_UNIT}）)"
 _SHARE_SUFFIX = rf"(?:{_SHARE_PAREN}|{_SHARE_UNIT})?"
 _DASH_CHARS = "―－—-−‑ー"
+EXPLICIT_EMPTY = "-"
+
+
+def _planned_table_found(section: str) -> bool:
+    if re.search(rf"合計[\d,，]+{_SHARE_SUFFIX}?", section):
+        return True
+    if re.search(r"合計.{0,40}(?:上限|下限|買付予定数)", section):
+        return True
+    return bool("買付予定の株券等の数" in section and "合計" in section)
+
+
+def _format_planned_field(
+    value: int | None,
+    *,
+    table_found: bool,
+    explicit_none: bool = False,
+) -> str:
+    if not table_found:
+        return ""
+    if value is not None:
+        return f"{value:,}"
+    if explicit_none:
+        return EXPLICIT_EMPTY
+    return ""
 
 
 def _extract_planned_purchase_section(compact: str) -> str:
@@ -732,11 +825,13 @@ def _extract_planned_purchase_section(compact: str) -> str:
     return tail[:1200]
 
 
-def _parse_total_row_counts(section: str) -> tuple[int | None, int | None, int | None]:
-    """Parse 合計 row in XBRL table layout: 合計16,280,645（株）13,615,600（株）16,280,645（株）."""
+def _parse_total_row_counts(
+    section: str,
+) -> tuple[int | None, int | None, int | None, bool, bool]:
+    """Parse 合計 row; return (planned, floor, cap, floor_is_dash, cap_is_dash)."""
     match = re.search(rf"合計([\d,，]+){_SHARE_SUFFIX}(.*)", section)
     if not match:
-        return None, None, None
+        return None, None, None, False, False
     planned = _parse_int(match.group(1))
     rest = re.split(r"(?:\(注|（注|４【|4【)", match.group(2), maxsplit=1)[0][:200]
     tokens = re.findall(
@@ -745,16 +840,26 @@ def _parse_total_row_counts(section: str) -> tuple[int | None, int | None, int |
     )
     floor = None
     cap = None
+    floor_dash = False
+    cap_dash = False
     if tokens:
-        if not _is_dash_count(tokens[0]):
+        if _is_dash_count(tokens[0]):
+            floor_dash = True
+        else:
             floor = _parse_int(tokens[0])
-        if len(tokens) > 1 and not _is_dash_count(tokens[1]):
-            cap = _parse_int(tokens[1])
-    return planned, floor, cap
+        if len(tokens) > 1:
+            if _is_dash_count(tokens[1]):
+                cap_dash = True
+            else:
+                cap = _parse_int(tokens[1])
+    return planned, floor, cap, floor_dash, cap_dash
 
 
 def parse_planned_purchase_counts(text: str) -> dict[str, str]:
-    """Return planned share counts from the 合計 row in section 4(3)."""
+    """Return planned share counts from the 合計 row in section 4(3).
+
+    Blank = could not extract (no table). ``-`` = extracted but explicitly empty in filing.
+    """
     empty = {
         "PlannedSharesMin": "",
         "PlannedSharesMax": "",
@@ -764,21 +869,23 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
         return empty
     compact = re.sub(r"\s+", "", strip_html(text))
     section = _extract_planned_purchase_section(compact)
+    table_found = _planned_table_found(section)
+    if not table_found:
+        return empty
 
     no_floor = bool(re.search(r"下限(?:及び上限)?[をは]?(?:設定して|定めて)おりません", section))
     no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", section))
 
-    table_planned, table_floor, table_cap = _parse_total_row_counts(section)
+    table_planned, table_floor, table_cap, floor_dash, cap_dash = _parse_total_row_counts(section)
 
-    floor = None if no_floor else table_floor
-    cap = None if no_cap else table_cap
+    floor_val = None if no_floor else table_floor
+    cap_val = None if no_cap else table_cap
 
-    # Legacy 上限（xxx株） layout — only when table columns did not provide bounds.
     table_tail = section.split("合計")[-1] if "合計" in section else section
-    if floor is None and not no_floor:
-        floor = _last_bound(table_tail, "下限")
-    if cap is None and not no_cap:
-        cap = _last_bound(table_tail, "上限")
+    if floor_val is None and not no_floor and not floor_dash:
+        floor_val = _last_bound(table_tail, "下限")
+    if cap_val is None and not no_cap and not cap_dash:
+        cap_val = _last_bound(table_tail, "上限")
 
     planned_val = table_planned
     if planned_val is None:
@@ -794,9 +901,17 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
                     break
 
     return {
-        "PlannedSharesMin": f"{floor:,}" if floor is not None else "",
-        "PlannedSharesMax": f"{cap:,}" if cap is not None else "",
-        "PlannedSharesPlanned": f"{planned_val:,}" if planned_val is not None else "",
+        "PlannedSharesMin": _format_planned_field(
+            floor_val,
+            table_found=table_found,
+            explicit_none=no_floor or floor_dash,
+        ),
+        "PlannedSharesMax": _format_planned_field(
+            cap_val,
+            table_found=table_found,
+            explicit_none=no_cap or cap_dash,
+        ),
+        "PlannedSharesPlanned": _format_planned_field(planned_val, table_found=table_found),
     }
 
 
