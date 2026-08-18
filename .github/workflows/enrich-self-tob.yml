@@ -18,6 +18,16 @@ on:
         required: false
         default: false
         type: boolean
+      fields:
+        description: "Column groups to enrich (default all). e.g. planned_shares, fund, result"
+        required: false
+        default: "all"
+        type: string
+      recompute_only:
+        description: "Re-parse existing Raw columns without EDINET API calls"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -48,6 +58,13 @@ jobs:
           fi
           if [ "${{ github.event.inputs.force_refresh }}" = "true" ]; then
             ARGS+=(--force-refresh)
+          fi
+          FIELDS="${{ github.event.inputs.fields }}"
+          if [ -n "$FIELDS" ]; then
+            ARGS+=(--fields "$FIELDS")
+          fi
+          if [ "${{ github.event.inputs.recompute_only }}" = "true" ]; then
+            ARGS+=(--recompute-only)
           fi
           python enrich_self_tob.py "${ARGS[@]}"
 
