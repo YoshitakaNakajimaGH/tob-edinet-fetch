@@ -607,11 +607,17 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
 
     planned = ""
     if floor is None and cap is None:
-        match = re.search(rf"買付予定数[（(]?([\d,，]+){_SHARE_PAREN}", section)
-        if match:
-            value = _parse_int(match.group(1))
-            if value is not None:
-                planned = f"{value:,}"
+        for pattern in (
+            rf"買付予定数[（(]?([\d,，]+){_SHARE_PAREN}",
+            r"買付予定数[（(]([\d,，]+)(?:株|口|個)[)）]",
+            r"買付予定数[（(]?([\d,，]+)(?:株|口|個)",
+        ):
+            match = re.search(pattern, section)
+            if match:
+                value = _parse_int(match.group(1))
+                if value is not None:
+                    planned = f"{value:,}"
+                    break
         if not planned and table_planned is not None:
             planned = f"{table_planned:,}"
 
