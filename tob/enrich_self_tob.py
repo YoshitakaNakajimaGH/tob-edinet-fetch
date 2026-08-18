@@ -39,7 +39,7 @@ from tob.extract_fields import (
     summarize_price,
 )
 from tob.output_store import load_all_list_rows, publish_context_from_meta, publish_tob_outputs
-from tob.taxonomy import TaxonomyCatalog, resolve_taxonomy_year
+from tob.taxonomy import DEFAULT_TAXONOMY_DIR, TaxonomyCatalog, resolve_taxonomy_year
 from tob.tob_common import (
     DOC_TYPE_TO_TAXONOMY,
     FILING_SIDE,
@@ -244,7 +244,11 @@ def enrich_issuer_documents(
 def main() -> int:
     parser = argparse.ArgumentParser(description="自社株TOB書類CSVをXBRLから詳細化する")
     parser.add_argument("--output-dir", default="output", help="結果フォルダ（current / snapshots）")
-    parser.add_argument("--taxonomy-dir", default="taxonomy")
+    parser.add_argument(
+        "--taxonomy-dir",
+        default=str(DEFAULT_TAXONOMY_DIR),
+        help="taxonomy manifest のフォルダ",
+    )
     parser.add_argument("--cache-dir", default="cache/docs")
     parser.add_argument(
         "--edinet-cache",
