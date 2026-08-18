@@ -13,12 +13,14 @@ from extract_fields import (
     clean_extracted_name,
     detect_mbo,
     extract_sponsor_from_purposes,
+    extract_tender_offer_agent,
     format_pct,
     format_sec_code,
     judge_target_delisting,
     judge_tob_result,
     normalize_name,
-    parse_planned_purchase_bounds,
+    parse_planned_purchase_counts,
+    parse_purchase_consideration,
     parse_valuation_ranges,
     summarize_price,
 )
@@ -112,6 +114,9 @@ LIST_FIELDS = [
     "ValuationDCFMax",
     "PlannedSharesMin",
     "PlannedSharesMax",
+    "PlannedSharesPlanned",
+    "PurchaseConsideration",
+    "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
     "WithdrawalReason",
@@ -143,6 +148,10 @@ LIST_FIELDS = [
     "ValuationBasisRaw",
     "IntendedPurchaseRaw",
     "IntendedPurchaseElement",
+    "FundRaw",
+    "FundElement",
+    "ApplicationRaw",
+    "ApplicationElement",
     "ExistingHoldingRatioElement",
     "AfterPurchaseRatioElement",
     "OpinionRaw",
@@ -180,6 +189,9 @@ CASE_FIELDS = [
     "ValuationDCFMax",
     "PlannedSharesMin",
     "PlannedSharesMax",
+    "PlannedSharesPlanned",
+    "PurchaseConsideration",
+    "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
     "TargetDelistingNote",
@@ -590,9 +602,13 @@ def refresh_derived_list_fields(rows: list[dict]) -> None:
         row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, opinion_raw])
         intended_raw = row.get("IntendedPurchaseRaw") or ""
         if intended_raw:
-            floor, cap = parse_planned_purchase_bounds(intended_raw)
-            row["PlannedSharesMin"] = floor
-            row["PlannedSharesMax"] = cap
+            row.update(parse_planned_purchase_counts(intended_raw))
+        fund_raw = row.get("FundRaw") or ""
+        if fund_raw:
+            row["PurchaseConsideration"] = parse_purchase_consideration(fund_raw)
+        application_raw = row.get("ApplicationRaw") or ""
+        if application_raw:
+            row["TenderOfferAgent"] = extract_tender_offer_agent(application_raw)
         code = row.get("DocTypeCode") or ""
         if code in WITHDRAW_SIDE:
             row["FinalResultNote"] = "撤回"
@@ -621,6 +637,9 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "ValuationDCFMax": "",
         "PlannedSharesMin": "",
         "PlannedSharesMax": "",
+        "PlannedSharesPlanned": "",
+        "PurchaseConsideration": "",
+        "TenderOfferAgent": "",
         "OpinionStance": "",
         "FinalResultNote": "",
         "TargetName": "",
@@ -666,6 +685,9 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 "ValuationDCFMax",
                 "PlannedSharesMin",
                 "PlannedSharesMax",
+                "PlannedSharesPlanned",
+                "PurchaseConsideration",
+                "TenderOfferAgent",
             ):
                 if doc.get(key):
                     out[key] = doc[key]

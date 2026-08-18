@@ -32,12 +32,14 @@ from extract_fields import (
     compute_holding_ratios,
     detect_mbo,
     extract_sponsor_from_purposes,
+    extract_tender_offer_agent,
     extract_valuation_basis_section,
     format_pct,
     judge_tob_result,
     parse_holding_pct_from_text,
     parse_period_dates,
-    parse_planned_purchase_bounds,
+    parse_planned_purchase_counts,
+    parse_purchase_consideration,
     parse_valuation_ranges,
     summarize_price,
 )
@@ -226,6 +228,9 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
         purposes_text, purposes_eid = first_fact(facts, fields.get("purposes_text", []))
         overview_text, overview_eid = first_fact(facts, fields.get("overview_text", []))
         intended_text, intended_eid = first_fact(facts, fields.get("intended_purchase_text", []))
+        fund_text, fund_eid = first_fact(facts, fields.get("fund_text", []))
+        application_text, application_eid = first_fact(facts, fields.get("application_text", []))
+        agent_name, agent_eid = first_fact(facts, fields.get("agent_name", []))
         start, end = parse_period_dates(period_text)
         if price_text:
             row["OfferPriceRaw"] = price_text[:5000]
@@ -251,11 +256,18 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
             row["SponsorHint"] = extract_sponsor_from_purposes(sponsor_source)
         row["IsMBO"] = detect_mbo([purposes_text, overview_text])
         if intended_text:
-            row["IntendedPurchaseRaw"] = intended_text[:1500]
+            row["IntendedPurchaseRaw"] = intended_text[:2000]
             row["IntendedPurchaseElement"] = intended_eid
-            floor, cap = parse_planned_purchase_bounds(intended_text)
-            row["PlannedSharesMin"] = floor
-            row["PlannedSharesMax"] = cap
+            row.update(parse_planned_purchase_counts(intended_text))
+        if fund_text:
+            row["FundRaw"] = fund_text[:2000]
+            row["FundElement"] = fund_eid
+            row["PurchaseConsideration"] = parse_purchase_consideration(fund_text)
+        if application_text or agent_name:
+            if application_text:
+                row["ApplicationRaw"] = application_text[:1500]
+                row["ApplicationElement"] = application_eid
+            row["TenderOfferAgent"] = extract_tender_offer_agent(application_text, agent_name)
         apply_holdings(row, facts, fields)
 
     if type_code in OPINION_SIDE or tax_key == "pst":

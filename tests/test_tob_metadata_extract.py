@@ -12,7 +12,9 @@ if str(ROOT) not in sys.path:
 from extract_fields import (
     detect_mbo,
     extract_sponsor_from_purposes,
-    parse_planned_purchase_bounds,
+    extract_tender_offer_agent,
+    parse_planned_purchase_counts,
+    parse_purchase_consideration,
     parse_valuation_ranges,
 )
 
@@ -69,14 +71,42 @@ class ValuationRangeTests(unittest.TestCase):
 
 
 class PlannedPurchaseTests(unittest.TestCase):
-    def test_parses_floor_and_cap(self) -> None:
+    def test_parses_floor_and_cap_from_total_row(self) -> None:
         text = (
-            "（３）【買付予定の株券等の数】"
-            "買付予定数の下限（5,467,100株）及び上限（8,718,072株）"
+            "普通株式 上限（100株）下限（50株）"
+            "合計 上限（5,467,100株）下限（5,467,100株）"
         )
-        floor, cap = parse_planned_purchase_bounds(text)
-        self.assertEqual(floor, "5,467,100")
-        self.assertEqual(cap, "8,718,072")
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesMin"], "5,467,100")
+        self.assertEqual(parsed["PlannedSharesMax"], "5,467,100")
+        self.assertEqual(parsed["PlannedSharesPlanned"], "")
+
+    def test_parses_single_planned_count_on_total(self) -> None:
+        text = "普通株式 上限（100株）合計 買付予定数（2,000,000株）"
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesPlanned"], "2,000,000")
+
+
+class PurchaseConsiderationTests(unittest.TestCase):
+    def test_parses_yen_amount(self) -> None:
+        text = "８【買付け等に要する資金】 買付代金（a） 38,234,567,890円 借入金（b）"
+        self.assertEqual(parse_purchase_consideration(text), "38,234,567,890円")
+
+    def test_parses_won_amount(self) -> None:
+        text = "買付代金(a) 120,000,000ウォン"
+        self.assertEqual(parse_purchase_consideration(text), "120,000,000ウォン")
+
+
+class TenderOfferAgentTests(unittest.TestCase):
+    def test_prefers_cover_page_name(self) -> None:
+        self.assertEqual(
+            extract_tender_offer_agent("", "野村證券株式会社"),
+            "野村證券株式会社",
+        )
+
+    def test_parses_application_section(self) -> None:
+        text = "（１）【応募の方法】 ①公開買付代理人 名称 みずほ証券株式会社 所在地"
+        self.assertEqual(extract_tender_offer_agent(text), "みずほ証券株式会社")
 
 
 if __name__ == "__main__":

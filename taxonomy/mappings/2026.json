@@ -23,6 +23,15 @@
     "intended_purchase_text": [
       "jptoo-ton_cor:NumberOfShareCertificatesEtcIntendedToPurchaseTextBlock"
     ],
+    "fund_text": [
+      "jptoo-ton_cor:FundEtcForPurchaseEtcTextBlock"
+    ],
+    "application_text": [
+      "jptoo-ton_cor:HowToAcceptTextBlock"
+    ],
+    "agent_name": [
+      "jptoo-ton_cor:NameOfLegalRepresentativeCoverPage"
+    ],
     "offeror_voting_rights": [
       "jptoo-ton_cor:NumberNumberOfVotingRightsRepresentedByShareCertificatesEtcOwnedByTenderOfferorD"
     ],

@@ -91,7 +91,10 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | SponsorHint | 届出書「買付け等の目的」の（１）本公開買付の概要・二段落目先頭の「Xは、」から取ったスポンサー候補（補助情報） |
 | IsMBO | 本文に MBO / マネジメント・バイアウト等の記載があれば `Yes` |
 | ValuationMarketMin / Max など | 第1部§4(2)「算定の基礎」の市場株価法・類似上場会社比較法・DCF法の1株当たり株式価値レンジ（円） |
-| PlannedSharesMin / Max | 第1部§4(3)「買付予定の株券等の数」の下限・上限（株数） |
+| PlannedSharesMin / Max | 第1部§4(3)「買付予定の株券等の数」の**合計**行の下限・上限（株数） |
+| PlannedSharesPlanned | 合計行に上限・下限がなく、買付予定数だけ書かれている場合の株数 |
+| PurchaseConsideration | 第1部§8「買付け等に要する資金」の買付代金（a）（単位付き。例: `38,234,567,890円`） |
+| TenderOfferAgent | 第1部§7(1)①公開買付代理人（なければ表紙の代理人名称） |
 | OpinionStance | 賛同 / 反対 / 意見留保 / 要確認 |
 | FinalResultNote | `成立` / `成立（按分）` / `不成立` / `撤回`。報告書の成否本文から判定。撤回届出があれば撤回 |
 | TargetDelistingNote | 対象会社の上場廃止状況。`上場廃止済` / `上場廃止予定` / `上場維持`（意見表明本文と EDINET 提出者リストの上場区分から推定） |
@@ -123,7 +126,9 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 - 対象会社名: `NameOfSubjectCompanyTextBlock`（先頭の「（１）【対象者名】」などは除去）
 - 買付価格: `PriceOfPurchaseEtcTextBlock` から普通株式1株あたり（円・ウォン・株式対価）。同ブロック内「算定の基礎」から評価レンジも抽出
 - 買付期間: `PeriodOfPurchaseEtcTextBlock`（2021年版は `OriginalPeriodAtFilingTextBlock`）。延長記載があれば最後の自〜至
-- 買付予定株数: `NumberOfShareCertificatesEtcIntendedToPurchaseTextBlock` から下限・上限
+- 買付予定株数: `NumberOfShareCertificatesEtcIntendedToPurchaseTextBlock` から**合計**行の下限・上限、または単独の買付予定数
+- 買付代金: `FundEtcForPurchaseEtcTextBlock` から 買付代金（a）
+- 公開買付代理人: `HowToAcceptTextBlock` の ①公開買付代理人（なければ表紙 `NameOfLegalRepresentativeCoverPage`）
 - スポンサー候補: `PurposesOfPurchaseEtcTextBlock`（または `OverviewOfPurchaseEtcTextBlock`）の本公開買付の概要・二段落目
 - MBO: 目的・概要・意見表明本文から MBO / マネジメント・バイアウト等を検索
 - 既保有割合: 議決権数 (d)+(g) を総議決権 (j) で割る。d=買付者、g=特別関係者
@@ -142,6 +147,14 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 - 自己株式の公開買付けは `self_tob_*.csv` に分け、他社株の `tob_cases.csv` からは外す
 - 意見表明だけの行は作らず、同じ会社ペアの届出案件に賛同／反対を載せる
 - 結果は `output/current/` が最新。日付付きコピーは `output/snapshots/` に最大20件。それより古いものは `snapshots/trash/` へ移動
+
+### OfferPriceRaw の文字数上限について
+
+EDINET から取得した「買付け等の価格」の**原文**を CSV に保存する列が `OfferPriceRaw` です。届出書の価格欄は非常に長く（算定の基礎・プレミアム率の説明など）、そのまま全部を CSV に入れるとファイルが巨大になったり、Excel で扱いにくくなったりします。
+
+そのため、**先頭から一定文字数だけ**を `OfferPriceRaw` に保存しています（現在は 5000 文字）。一方、CSV に書き込む前の**全文**からは `OfferPrice`（1株あたり価格）や評価レンジ（市場株価法・DCF など）を抽出するので、Enrich 実行時点では後半に書かれた数値も取りこぼしません。
+
+既存 CSV を `--recompute-only` で再計算する場合は、保存済みの `OfferPriceRaw`（短い断片）しか見えないため、5000 文字を超える後半の情報は再抽出できません。全件を埋めるには Enrich TOB の再実行が必要です。
 
 ## ローカルで試す場合（任意）
 

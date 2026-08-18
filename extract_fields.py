@@ -459,24 +459,92 @@ def parse_valuation_ranges(text: str) -> dict[str, str]:
     }
 
 
-def parse_planned_purchase_bounds(text: str) -> tuple[str, str]:
-    """Return (min shares, max shares) from section 4(3) intended purchase text."""
+def parse_planned_purchase_counts(text: str) -> dict[str, str]:
+    """Return planned share counts from the 合計 row in section 4(3)."""
+    empty = {
+        "PlannedSharesMin": "",
+        "PlannedSharesMax": "",
+        "PlannedSharesPlanned": "",
+    }
     if not text:
-        return "", ""
+        return empty
     compact = re.sub(r"\s+", "", strip_html(text))
-    no_floor = bool(re.search(r"下限(?:及び上限)?[をは]?(?:設定して|定めて)おりません", compact))
-    no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", compact))
-    floor = "" if no_floor else _last_bound(compact, "下限")
-    cap = "" if no_cap else _last_bound(compact, "上限")
-    if floor is not None:
-        floor = f"{floor:,}"
-    else:
-        floor = ""
-    if cap is not None:
-        cap = f"{cap:,}"
-    else:
-        cap = ""
-    return floor, cap
+    total_matches = list(re.finditer(r"合計", compact))
+    section = compact[total_matches[-1].start() : total_matches[-1].start() + 800] if total_matches else compact
+
+    no_floor = bool(re.search(r"下限(?:及び上限)?[をは]?(?:設定して|定めて)おりません", section))
+    no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", section))
+    floor = None if no_floor else _last_bound(section, "下限")
+    cap = None if no_cap else _last_bound(section, "上限")
+
+    planned = ""
+    if floor is None and cap is None:
+        match = re.search(r"買付予定数[（(]?([\d,，]+)(?:株|口|個)", section)
+        if match:
+            value = _parse_int(match.group(1))
+            if value is not None:
+                planned = f"{value:,}"
+
+    return {
+        "PlannedSharesMin": f"{floor:,}" if floor is not None else "",
+        "PlannedSharesMax": f"{cap:,}" if cap is not None else "",
+        "PlannedSharesPlanned": planned,
+    }
+
+
+def parse_planned_purchase_bounds(text: str) -> tuple[str, str]:
+    """Backward-compatible wrapper for min/max only."""
+    parsed = parse_planned_purchase_counts(text)
+    return parsed["PlannedSharesMin"], parsed["PlannedSharesMax"]
+
+
+def parse_purchase_consideration(text: str) -> str:
+    """Extract 買付代金（a) from section 8 with its currency unit."""
+    if not text:
+        return ""
+    compact = re.sub(r"\s+", " ", strip_html(text))
+    match = re.search(
+        r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(円|ウォン|ドル|USD|米ドル)",
+        compact,
+    )
+    if match:
+        unit = match.group(2)
+        if unit == "USD":
+            unit = "米ドル"
+        return f"{_comma_number(match.group(1))}{unit}"
+    return ""
+
+
+def _trim_agent_name(text: str) -> str:
+    candidate = clean_extracted_name(text)
+    candidate = re.sub(r"\s+(?:名称|氏名又は名称)\s*$", "", candidate).strip()
+    candidate = re.sub(r"\s+(?:所在地|最寄|電話).*$", "", candidate).strip()
+    return candidate[:120]
+
+
+def extract_tender_offer_agent(application_text: str, cover_agent_name: str = "") -> str:
+    """Extract the tender offer agent from section 7(1) or the cover page."""
+    cover = _trim_agent_name(cover_agent_name)
+    if cover and cover not in {"－", "-", "該当なし", "なし"}:
+        return cover
+    if not application_text:
+        return ""
+    plain = strip_html(application_text)
+    match = re.search(
+        r"[①１]\s*公開買付代理人.{0,160}?(?:名称|氏名又は名称)[:：]?\s*([^\n\r、。]{2,120})",
+        plain,
+    )
+    if match:
+        return _trim_agent_name(match.group(1))
+    match = re.search(
+        r"[①１]\s*公開買付代理人\s*([^。\n\r]{2,120}?)(?:所在地|最寄|電話|②|$)",
+        plain,
+    )
+    if match:
+        candidate = _trim_agent_name(match.group(1))
+        if candidate and not candidate.startswith("("):
+            return candidate
+    return ""
 
 
 def judge_target_delisting(
