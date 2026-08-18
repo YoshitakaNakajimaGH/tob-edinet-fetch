@@ -34,13 +34,14 @@ from extract_fields import (
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_basis_section,
+    extract_valuation_from_purposes,
     format_pct,
     judge_tob_result,
     parse_holding_pct_from_text,
     parse_period_dates,
     parse_planned_purchase_counts,
     parse_purchase_consideration,
-    parse_valuation_ranges,
+    parse_valuation_from_sources,
     summarize_price,
 )
 from output_store import load_all_list_rows, publish_tob_outputs
@@ -54,9 +55,14 @@ from tob_common import (
     REPORT_SIDE,
     WITHDRAW_SIDE,
     apply_name_fallbacks,
+    columns_for_enrich_groups,
+    parse_enrich_groups,
     partition_issuer_tenders,
     prepare_pipeline_rows,
+    should_update_field,
 )
+
+PURPOSES_RAW_LIMIT = 15000
 
 DOC_API = "https://api.edinet-fsa.go.jp/api/v2/documents/{doc_id}"
 AMENDMENT_TYPES = {"250", "260", "280", "300", "320"}
@@ -177,32 +183,40 @@ def compute_doc_status(row: dict, extracted_ok: bool) -> str:
     return "partial"
 
 
-def apply_names(row: dict, facts: dict[str, list[str]], fields: dict) -> None:
+def apply_names(row: dict, facts: dict[str, list[str]], fields: dict, selected: frozenset[str] | None) -> None:
     offeror, _ = first_fact(facts, fields.get("offeror_name", []))
     target, _ = first_fact(facts, fields.get("target_name", []))
-    if offeror:
+    if should_update_field("OfferorName", selected) and offeror:
         row["OfferorName"] = clean_extracted_name(offeror.split("\n")[0])
-    if target:
+    if should_update_field("TargetName", selected) and target:
         row["TargetName"] = clean_extracted_name(target.split("\n")[0])
 
 
-def apply_holdings(row: dict, facts: dict[str, list[str]], fields: dict) -> None:
+def apply_holdings(row: dict, facts: dict[str, list[str]], fields: dict, selected: frozenset[str] | None) -> None:
+    if selected is not None and not selected & {
+        "ExistingHoldingRatio",
+        "ExistingHoldingRatioElement",
+        "SpecialRelatedHoldingRatio",
+        "AfterPurchaseRatio",
+        "AfterPurchaseRatioElement",
+    }:
+        return
     offeror_votes, existing_eid = first_fact(facts, fields.get("offeror_voting_rights", []))
     special_votes, _ = first_fact(facts, fields.get("special_voting_rights", []))
     total_votes, _ = first_fact(facts, fields.get("total_voting_rights", []))
     existing, special, _ = compute_holding_ratios(offeror_votes, special_votes, total_votes)
-    if existing:
+    if should_update_field("ExistingHoldingRatio", selected) and existing:
         row["ExistingHoldingRatio"] = existing
         row["ExistingHoldingRatioElement"] = existing_eid
-    if special:
+    if should_update_field("SpecialRelatedHoldingRatio", selected) and special:
         row["SpecialRelatedHoldingRatio"] = special
-    if not row.get("ExistingHoldingRatio"):
+    if should_update_field("ExistingHoldingRatio", selected) and not row.get("ExistingHoldingRatio"):
         holding_text, holding_eid = first_fact(facts, fields.get("existing_holding_text", []))
         parsed = parse_holding_pct_from_text(holding_text)
         if parsed:
             row["ExistingHoldingRatio"] = parsed
             row["ExistingHoldingRatioElement"] = holding_eid
-    if not row.get("SpecialRelatedHoldingRatio"):
+    if should_update_field("SpecialRelatedHoldingRatio", selected) and not row.get("SpecialRelatedHoldingRatio"):
         special_text, _ = first_fact(facts, fields.get("special_holding_text", []))
         parsed = parse_holding_pct_from_text(special_text)
         if parsed:
@@ -211,16 +225,22 @@ def apply_holdings(row: dict, facts: dict[str, list[str]], fields: dict) -> None
         facts,
         fields.get("after_purchase_ratio", []) or fields.get("ownership_ratio", []),
     )
-    if after:
+    if should_update_field("AfterPurchaseRatio", selected) and after:
         row["AfterPurchaseRatio"] = format_pct(after)
         row["AfterPurchaseRatioElement"] = after_eid
 
 
-def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) -> None:
+def apply_facts_to_row(
+    row: dict,
+    facts: dict[str, list[str]],
+    mapping: dict,
+    *,
+    selected: frozenset[str] | None = None,
+) -> None:
     type_code = row.get("DocTypeCode") or ""
     tax_key = DOC_TYPE_TO_TAXONOMY.get(type_code)
     fields = mapping.get(tax_key, {}) if tax_key else {}
-    apply_names(row, facts, fields)
+    apply_names(row, facts, fields, selected)
 
     if type_code in FILING_SIDE or tax_key == "ton":
         price_text, price_eid = first_fact(facts, fields.get("offer_price_text", []))
@@ -232,77 +252,95 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
         application_text, application_eid = first_fact(facts, fields.get("application_text", []))
         agent_name, agent_eid = first_fact(facts, fields.get("agent_name", []))
         start, end = parse_period_dates(period_text)
-        if price_text:
+        if should_update_field("OfferPriceRaw", selected) and price_text:
             row["OfferPriceRaw"] = price_text[:5000]
             row["OfferPrice"] = summarize_price(price_text)
             row["OfferPriceElement"] = price_eid
-            basis = extract_valuation_basis_section(price_text)
-            if basis:
-                row["ValuationBasisRaw"] = basis[:2500]
-            row.update(parse_valuation_ranges(price_text))
-        if period_text:
+            if should_update_field("ValuationBasisRaw", selected):
+                basis = extract_valuation_basis_section(price_text)
+                if basis:
+                    row["ValuationBasisRaw"] = basis[:2500]
+        if should_update_field("OfferPeriodRaw", selected) and period_text:
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
             row["OfferPeriodEnd"] = end
             row["OfferPeriodElement"] = period_eid
-        if purposes_text:
-            row["PurposesRaw"] = purposes_text[:3000]
+        if should_update_field("PurposesRaw", selected) and purposes_text:
+            row["PurposesRaw"] = purposes_text[:PURPOSES_RAW_LIMIT]
             row["PurposesElement"] = purposes_eid
-        if overview_text:
+        if should_update_field("OverviewRaw", selected) and overview_text:
             row["OverviewRaw"] = overview_text[:2000]
             row["OverviewElement"] = overview_eid
+        if selected is None or selected & {
+            "ValuationMarketMin",
+            "ValuationMarketMax",
+            "ValuationComparableMin",
+            "ValuationComparableMax",
+            "ValuationDCFMin",
+            "ValuationDCFMax",
+            "ValuationBasisRaw",
+        }:
+            valuation = parse_valuation_from_sources(price_text, purposes_text, overview_text)
+            if any(valuation.values()):
+                row.update(valuation)
+            elif should_update_field("ValuationBasisRaw", selected):
+                purposes_basis = extract_valuation_from_purposes(purposes_text)
+                if purposes_basis and not row.get("ValuationBasisRaw"):
+                    row["ValuationBasisRaw"] = purposes_basis[:2500]
         sponsor_source = purposes_text or overview_text
-        if sponsor_source:
+        if should_update_field("SponsorHint", selected) and sponsor_source:
             row["SponsorHint"] = extract_sponsor_from_purposes(sponsor_source)
-        row["IsMBO"] = detect_mbo([purposes_text, overview_text])
-        if intended_text:
+        if should_update_field("IsMBO", selected):
+            row["IsMBO"] = detect_mbo([purposes_text, overview_text])
+        if should_update_field("IntendedPurchaseRaw", selected) and intended_text:
             row["IntendedPurchaseRaw"] = intended_text[:2000]
             row["IntendedPurchaseElement"] = intended_eid
             row.update(parse_planned_purchase_counts(intended_text))
-        if fund_text:
+        if should_update_field("FundRaw", selected) and fund_text:
             row["FundRaw"] = fund_text[:2000]
             row["FundElement"] = fund_eid
             row["PurchaseConsideration"] = parse_purchase_consideration(fund_text)
-        if application_text or agent_name:
+        if should_update_field("TenderOfferAgent", selected) and (application_text or agent_name):
             if application_text:
                 row["ApplicationRaw"] = application_text[:1500]
                 row["ApplicationElement"] = application_eid
             row["TenderOfferAgent"] = extract_tender_offer_agent(application_text, agent_name)
-        apply_holdings(row, facts, fields)
+        apply_holdings(row, facts, fields, selected)
 
     if type_code in OPINION_SIDE or tax_key == "pst":
         opinion_text, opinion_eid = first_fact(facts, fields.get("opinion_text", []))
-        if opinion_text:
+        if should_update_field("OpinionRaw", selected) and opinion_text:
             row["OpinionRaw"] = opinion_text[:1000]
             row["OpinionStance"] = parse_opinion_stance(opinion_text)
             row["OpinionElement"] = opinion_eid
-            if not row.get("IsMBO"):
+            if should_update_field("IsMBO", selected) and not row.get("IsMBO"):
                 row["IsMBO"] = detect_mbo([opinion_text])
 
     if type_code in REPORT_SIDE or tax_key == "tor":
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
         result_text, result_eid = first_fact(facts, fields.get("final_result_text", []))
         start, end = parse_period_dates(period_text)
-        if period_text:
+        if should_update_field("OfferPeriodRaw", selected) and period_text:
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
             row["OfferPeriodEnd"] = end
             row["OfferPeriodElement"] = period_eid
-        if result_text:
+        if should_update_field("FinalResultRaw", selected) and result_text:
             row["FinalResultRaw"] = result_text[:1000]
             row["FinalResultNote"] = judge_tob_result(result_text)
             row["FinalResultElement"] = result_eid
-        apply_holdings(row, facts, fields)
+        apply_holdings(row, facts, fields, selected)
 
     if type_code in WITHDRAW_SIDE or tax_key == "wto":
-        row["FinalResultNote"] = "撤回"
+        if should_update_field("FinalResultNote", selected):
+            row["FinalResultNote"] = "撤回"
         reason_text, reason_eid = first_fact(facts, fields.get("withdrawal_reason_text", []))
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
-        if reason_text:
+        if should_update_field("WithdrawalReasonRaw", selected) and reason_text:
             row["WithdrawalReasonRaw"] = reason_text[:1000]
             row["WithdrawalReason"] = summarize_text(reason_text)
             row["WithdrawalReasonElement"] = reason_eid
-        if period_text:
+        if should_update_field("OfferPeriodRaw", selected) and period_text:
             start, end = parse_period_dates(period_text)
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
@@ -311,7 +349,7 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
 
     if type_code in ANSWER_SIDE or tax_key == "toa":
         response_text, response_eid = first_fact(facts, fields.get("response_text", []))
-        if response_text:
+        if should_update_field("ResponseRaw", selected) and response_text:
             row["ResponseRaw"] = response_text[:1000]
             row["ResponseNote"] = summarize_text(response_text)
             row["ResponseElement"] = response_eid
@@ -333,6 +371,8 @@ def enrich_document(
     cache_dir: Path,
     force: bool,
     sleep: float,
+    *,
+    selected: frozenset[str] | None = None,
 ) -> None:
     doc_id = row.get("DocID") or ""
     type_code = row.get("DocTypeCode") or ""
@@ -370,7 +410,7 @@ def enrich_document(
     row["TaxonomyYear"] = year
     row["TaxonomyDate"] = tax_date or str(mapping.get("taxonomy_date") or "")
     row["TaxonomySource"] = source
-    apply_facts_to_row(row, facts, mapping)
+    apply_facts_to_row(row, facts, mapping, selected=selected)
     apply_name_fallbacks(row)
     row["ExtractionStatus"] = compute_doc_status(row, extracted_ok=True)
 
@@ -388,6 +428,8 @@ def enrich_documents(
     sleep: float,
     only_pending: bool,
     doc_limit: int,
+    *,
+    selected: frozenset[str] | None = None,
 ) -> int:
     by_id = {r.get("DocID") or "": r for r in rows if r.get("DocID")}
     processed = 0
@@ -398,7 +440,7 @@ def enrich_documents(
             break
         doc_id = row.get("DocID") or ""
         print(f"enrich {doc_id} type={row.get('DocTypeCode')}", flush=True)
-        enrich_document(row, catalog, by_id, api_key, cache_dir, force, sleep)
+        enrich_document(row, catalog, by_id, api_key, cache_dir, force, sleep, selected=selected)
         processed += 1
     return processed
 
@@ -422,7 +464,17 @@ def main() -> int:
         action="store_true",
         help="APIを使わず、既存の Raw 列から価格要約・成否・案件の買付後割合を再計算する",
     )
+    parser.add_argument(
+        "--fields",
+        default="all",
+        help=(
+            "更新する列グループ（カンマ区切り）。"
+            "all / basic / valuation / planned_shares / fund / sponsor / agent / holdings / opinion / result"
+        ),
+    )
     args = parser.parse_args()
+    enrich_groups = parse_enrich_groups(args.fields)
+    selected = columns_for_enrich_groups(enrich_groups)
 
     output_dir = Path(args.output_dir)
     edinet_list = ensure_edinet_code_list(Path(args.edinet_cache))
@@ -432,7 +484,11 @@ def main() -> int:
         return 1
 
     if args.recompute_only:
-        other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows, edinet_list)
+        other, cases, issuer, issuer_cases = prepare_pipeline_rows(
+            rows,
+            edinet_list,
+            selected=selected,
+        )
         list_out, _cases_out = publish_tob_outputs(
             output_dir,
             other,
@@ -440,7 +496,7 @@ def main() -> int:
             self_list_rows=issuer,
             self_case_rows=issuer_cases,
         )
-        print("既存Rawから再計算（APIなし）")
+        print(f"既存Rawから再計算（APIなし） fields={args.fields}")
         print(f"他社株: {list_out} ({len(other)} docs / {len(cases)} cases)")
         print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
         return 0
@@ -462,8 +518,13 @@ def main() -> int:
         args.sleep,
         args.only_pending,
         args.doc_limit,
+        selected=selected,
     )
-    other, cases, issuer, issuer_cases = prepare_pipeline_rows(other + issuer, edinet_list)
+    other, cases, issuer, issuer_cases = prepare_pipeline_rows(
+        other + issuer,
+        edinet_list,
+        selected=selected,
+    )
     list_out, cases_out = publish_tob_outputs(
         output_dir,
         other,
@@ -471,7 +532,7 @@ def main() -> int:
         self_list_rows=issuer,
         self_case_rows=issuer_cases,
     )
-    print(f"処理書類: {processed}（自社株 {len(issuer)} 件は他社株CSVから除外）")
+    print(f"処理書類: {processed} fields={args.fields}（自社株 {len(issuer)} 件は他社株CSVから除外）")
     print(f"他社株: {list_out} ({len(other)} docs / {len(cases)} cases)")
     print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
     return 0

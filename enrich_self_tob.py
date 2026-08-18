@@ -46,9 +46,13 @@ from tob_common import (
     FILING_SIDE,
     REPORT_SIDE,
     WITHDRAW_SIDE,
+    SELF_ENRICH_FIELD_GROUPS,
     apply_name_fallbacks,
+    columns_for_enrich_groups,
+    parse_enrich_groups,
     partition_issuer_tenders,
     prepare_pipeline_rows,
+    should_update_field,
 )
 
 
@@ -76,11 +80,17 @@ def compute_issuer_doc_status(row: dict, extracted_ok: bool) -> str:
     return "partial"
 
 
-def apply_issuer_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) -> None:
+def apply_issuer_facts_to_row(
+    row: dict,
+    facts: dict[str, list[str]],
+    mapping: dict,
+    *,
+    selected: frozenset[str] | None = None,
+) -> None:
     type_code = row.get("DocTypeCode") or ""
     tax_key = DOC_TYPE_TO_TAXONOMY.get(type_code)
     fields = mapping.get(tax_key, {}) if tax_key else {}
-    apply_names(row, facts, fields)
+    apply_names(row, facts, fields, selected)
 
     if type_code in FILING_SIDE or tax_key == "ton":
         price_text, price_eid = first_fact(facts, fields.get("offer_price_text", []))
@@ -90,24 +100,24 @@ def apply_issuer_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: d
         application_text, application_eid = first_fact(facts, fields.get("application_text", []))
         agent_name, agent_eid = first_fact(facts, fields.get("agent_name", []))
         start, end = parse_period_dates(period_text)
-        if price_text:
+        if should_update_field("OfferPriceRaw", selected) and price_text:
             row["OfferPriceRaw"] = price_text[:5000]
             row["OfferPrice"] = summarize_price(price_text)
             row["OfferPriceElement"] = price_eid
-        if period_text:
+        if should_update_field("OfferPeriodRaw", selected) and period_text:
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
             row["OfferPeriodEnd"] = end
             row["OfferPeriodElement"] = period_eid
-        if intended_text:
+        if should_update_field("IntendedPurchaseRaw", selected) and intended_text:
             row["IntendedPurchaseRaw"] = intended_text[:2000]
             row["IntendedPurchaseElement"] = intended_eid
             row.update(parse_planned_purchase_counts(intended_text))
-        if fund_text:
+        if should_update_field("FundRaw", selected) and fund_text:
             row["FundRaw"] = fund_text[:2000]
             row["FundElement"] = fund_eid
             row["PurchaseConsideration"] = parse_purchase_consideration(fund_text)
-        if application_text or agent_name:
+        if should_update_field("TenderOfferAgent", selected) and (application_text or agent_name):
             if application_text:
                 row["ApplicationRaw"] = application_text[:1500]
                 row["ApplicationElement"] = application_eid
@@ -118,31 +128,38 @@ def apply_issuer_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: d
         acquired_text, acquired_eid = first_fact(facts, fields.get("acquired_shares_text", []))
         prorata_text, prorata_eid = first_fact(facts, fields.get("prorata_calculation_text", []))
         start, end = parse_period_dates(period_text)
-        if period_text:
+        if should_update_field("OfferPeriodRaw", selected) and period_text:
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
             row["OfferPeriodEnd"] = end
             row["OfferPeriodElement"] = period_eid
-        if acquired_text:
+        if should_update_field("AcquiredSharesRaw", selected) and acquired_text:
             row["AcquiredSharesRaw"] = acquired_text[:2000]
             row["AcquiredSharesElement"] = acquired_eid
-        if prorata_text:
+        if should_update_field("ProrataCalculationRaw", selected) and prorata_text:
             row["ProrataCalculationRaw"] = prorata_text[:2000]
             row["ProrataCalculationElement"] = prorata_eid
         if acquired_text or prorata_text:
-            row.update(parse_self_tob_report_counts(acquired_text, prorata_text))
-            row["FinalResultNote"] = judge_self_tob_result(acquired_text, prorata_text)
-            row["FinalResultElement"] = acquired_eid or prorata_eid
+            if selected is None or selected & {
+                "ApplicationCount",
+                "PurchaseCount",
+                "ProrataUsed",
+                "FinalResultNote",
+            }:
+                row.update(parse_self_tob_report_counts(acquired_text, prorata_text))
+                row["FinalResultNote"] = judge_self_tob_result(acquired_text, prorata_text)
+                row["FinalResultElement"] = acquired_eid or prorata_eid
 
     if type_code in WITHDRAW_SIDE or tax_key == "wto":
-        row["FinalResultNote"] = "撤回"
+        if should_update_field("FinalResultNote", selected):
+            row["FinalResultNote"] = "撤回"
         reason_text, reason_eid = first_fact(facts, fields.get("withdrawal_reason_text", []))
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
-        if reason_text:
+        if should_update_field("WithdrawalReasonRaw", selected) and reason_text:
             row["WithdrawalReasonRaw"] = reason_text[:1000]
             row["WithdrawalReason"] = summarize_text(reason_text)
             row["WithdrawalReasonElement"] = reason_eid
-        if period_text:
+        if should_update_field("OfferPeriodRaw", selected) and period_text:
             start, end = parse_period_dates(period_text)
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
@@ -158,6 +175,8 @@ def enrich_issuer_document(
     cache_dir: Path,
     force: bool,
     sleep: float,
+    *,
+    selected: frozenset[str] | None = None,
 ) -> None:
     doc_id = row.get("DocID") or ""
     type_code = row.get("DocTypeCode") or ""
@@ -196,7 +215,7 @@ def enrich_issuer_document(
     row["TaxonomyYear"] = year
     row["TaxonomyDate"] = tax_date or str(mapping.get("taxonomy_date") or "")
     row["TaxonomySource"] = source
-    apply_issuer_facts_to_row(row, facts, mapping)
+    apply_issuer_facts_to_row(row, facts, mapping, selected=selected)
     apply_name_fallbacks(row)
     if row.get("OfferorName"):
         row["OfferorName"] = clean_extracted_name(row["OfferorName"])
@@ -214,6 +233,8 @@ def enrich_issuer_documents(
     sleep: float,
     only_pending: bool,
     doc_limit: int,
+    *,
+    selected: frozenset[str] | None = None,
 ) -> int:
     by_id = {r.get("DocID") or "": r for r in rows if r.get("DocID")}
     processed = 0
@@ -224,7 +245,7 @@ def enrich_issuer_documents(
             break
         doc_id = row.get("DocID") or ""
         print(f"enrich self {doc_id} type={row.get('DocTypeCode')}", flush=True)
-        enrich_issuer_document(row, catalog, by_id, api_key, cache_dir, force, sleep)
+        enrich_issuer_document(row, catalog, by_id, api_key, cache_dir, force, sleep, selected=selected)
         processed += 1
     return processed
 
@@ -248,7 +269,17 @@ def main() -> int:
         action="store_true",
         help="APIを使わず、既存の Raw 列から価格・応募/買付数・案件を再計算する",
     )
+    parser.add_argument(
+        "--fields",
+        default="all",
+        help=(
+            "更新する列グループ（カンマ区切り）。"
+            "all / basic / planned_shares / fund / agent / result"
+        ),
+    )
     args = parser.parse_args()
+    enrich_groups = parse_enrich_groups(args.fields, allowed=SELF_ENRICH_GROUP_NAMES)
+    selected = columns_for_enrich_groups(enrich_groups, group_map=SELF_ENRICH_FIELD_GROUPS)
 
     output_dir = Path(args.output_dir)
     edinet_list = ensure_edinet_code_list(Path(args.edinet_cache))
@@ -259,7 +290,11 @@ def main() -> int:
 
     other, issuer = partition_issuer_tenders(rows)
     if args.recompute_only:
-        other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows, edinet_list)
+        other, cases, issuer, issuer_cases = prepare_pipeline_rows(
+            rows,
+            edinet_list,
+            selected=selected,
+        )
         _list_out, _cases_out = publish_tob_outputs(
             output_dir,
             other,
@@ -267,7 +302,7 @@ def main() -> int:
             self_list_rows=issuer,
             self_case_rows=issuer_cases,
         )
-        print("既存Rawから再計算（APIなし）")
+        print(f"既存Rawから再計算（APIなし） fields={args.fields}")
         print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
         print(f"他社株: {len(other)} docs / {len(cases)} cases")
         return 0
@@ -288,8 +323,13 @@ def main() -> int:
         args.sleep,
         args.only_pending,
         args.doc_limit,
+        selected=selected,
     )
-    other, cases, issuer, issuer_cases = prepare_pipeline_rows(other + issuer, edinet_list)
+    other, cases, issuer, issuer_cases = prepare_pipeline_rows(
+        other + issuer,
+        edinet_list,
+        selected=selected,
+    )
     _list_out, _cases_out = publish_tob_outputs(
         output_dir,
         other,
@@ -297,7 +337,7 @@ def main() -> int:
         self_list_rows=issuer,
         self_case_rows=issuer_cases,
     )
-    print(f"処理書類: {processed}（自社株のみ）")
+    print(f"処理書類: {processed} fields={args.fields}（自社株のみ）")
     print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
     print(f"他社株: {len(other)} docs / {len(cases)} cases（変更なし）")
     return 0

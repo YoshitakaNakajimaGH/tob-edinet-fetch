@@ -14,6 +14,7 @@ from extract_fields import (
     detect_mbo,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
+    extract_valuation_from_purposes,
     format_pct,
     format_sec_code,
     judge_target_delisting,
@@ -23,7 +24,7 @@ from extract_fields import (
     parse_planned_purchase_counts,
     parse_purchase_consideration,
     parse_self_tob_report_counts,
-    parse_valuation_ranges,
+    parse_valuation_from_sources,
     summarize_price,
 )
 from edinet_code_list import EdinetCodeList, ensure_edinet_code_list
@@ -176,6 +177,188 @@ LIST_FIELDS = [
 ]
 
 EXTRACTION_FIELDS = [key for key in LIST_FIELDS if key not in METADATA_FIELDS]
+
+# Selective enrichment groups (GitHub Actions / CLI --fields).
+ENRICH_GROUP_NAMES = (
+    "all",
+    "basic",
+    "valuation",
+    "planned_shares",
+    "fund",
+    "sponsor",
+    "agent",
+    "holdings",
+    "opinion",
+    "result",
+)
+
+ENRICH_FIELD_GROUPS: dict[str, frozenset[str]] = {
+    "basic": frozenset(
+        {
+            "OfferPrice",
+            "OfferPriceRaw",
+            "OfferPriceElement",
+            "OfferPeriodStart",
+            "OfferPeriodEnd",
+            "OfferPeriodRaw",
+            "OfferPeriodElement",
+            "OfferorName",
+            "TargetName",
+            "WithdrawalReason",
+            "WithdrawalReasonRaw",
+            "WithdrawalReasonElement",
+            "ResponseNote",
+            "ResponseRaw",
+            "ResponseElement",
+            "FinalResultNote",
+            "TaxonomyYear",
+            "TaxonomyDate",
+            "TaxonomySource",
+        }
+    ),
+    "valuation": frozenset(
+        {
+            "ValuationMarketMin",
+            "ValuationMarketMax",
+            "ValuationComparableMin",
+            "ValuationComparableMax",
+            "ValuationDCFMin",
+            "ValuationDCFMax",
+            "ValuationBasisRaw",
+            "PurposesRaw",
+            "PurposesElement",
+            "OverviewRaw",
+            "OverviewElement",
+        }
+    ),
+    "planned_shares": frozenset(
+        {
+            "PlannedSharesMin",
+            "PlannedSharesMax",
+            "PlannedSharesPlanned",
+            "IntendedPurchaseRaw",
+            "IntendedPurchaseElement",
+        }
+    ),
+    "fund": frozenset({"PurchaseConsideration", "FundRaw", "FundElement"}),
+    "sponsor": frozenset(
+        {
+            "SponsorHint",
+            "IsMBO",
+            "PurposesRaw",
+            "PurposesElement",
+            "OverviewRaw",
+            "OverviewElement",
+            "OpinionRaw",
+            "OpinionElement",
+        }
+    ),
+    "agent": frozenset(
+        {
+            "TenderOfferAgent",
+            "ApplicationRaw",
+            "ApplicationElement",
+        }
+    ),
+    "holdings": frozenset(
+        {
+            "ExistingHoldingRatio",
+            "ExistingHoldingRatioElement",
+            "SpecialRelatedHoldingRatio",
+            "AfterPurchaseRatio",
+            "AfterPurchaseRatioElement",
+        }
+    ),
+    "opinion": frozenset({"OpinionStance", "OpinionRaw", "OpinionElement", "IsMBO"}),
+    "result": frozenset(
+        {
+            "FinalResultNote",
+            "FinalResultRaw",
+            "FinalResultElement",
+            "AcquiredSharesRaw",
+            "AcquiredSharesElement",
+            "ProrataCalculationRaw",
+            "ProrataCalculationElement",
+            "ApplicationCount",
+            "PurchaseCount",
+            "ProrataUsed",
+            "OfferPeriodStart",
+            "OfferPeriodEnd",
+            "OfferPeriodRaw",
+            "OfferPeriodElement",
+            "AfterPurchaseRatio",
+            "AfterPurchaseRatioElement",
+        }
+    ),
+}
+
+SELF_ENRICH_GROUP_NAMES = (
+    "all",
+    "basic",
+    "planned_shares",
+    "fund",
+    "agent",
+    "result",
+)
+
+SELF_ENRICH_FIELD_GROUPS: dict[str, frozenset[str]] = {
+    "basic": frozenset(
+        {
+            "OfferPrice",
+            "OfferPriceRaw",
+            "OfferPriceElement",
+            "OfferPeriodStart",
+            "OfferPeriodEnd",
+            "OfferPeriodRaw",
+            "OfferPeriodElement",
+            "OfferorName",
+            "TargetName",
+            "FinalResultNote",
+            "TaxonomyYear",
+            "TaxonomyDate",
+            "TaxonomySource",
+        }
+    ),
+    "planned_shares": ENRICH_FIELD_GROUPS["planned_shares"],
+    "fund": ENRICH_FIELD_GROUPS["fund"],
+    "agent": ENRICH_FIELD_GROUPS["agent"],
+    "result": ENRICH_FIELD_GROUPS["result"],
+}
+
+
+def parse_enrich_groups(
+    spec: str,
+    *,
+    allowed: tuple[str, ...] = ENRICH_GROUP_NAMES,
+) -> frozenset[str]:
+    """Parse comma-separated enrich groups. Empty or 'all' means all groups."""
+    text = (spec or "all").strip().lower()
+    if not text or text == "all":
+        return frozenset({"all"})
+    groups = frozenset(part.strip() for part in text.split(",") if part.strip())
+    unknown = groups - set(allowed)
+    if unknown:
+        allowed_text = ", ".join(allowed)
+        raise SystemExit(f"不明な --fields グループ: {', '.join(sorted(unknown))}（指定可能: {allowed_text}）")
+    return groups
+
+
+def columns_for_enrich_groups(
+    groups: frozenset[str],
+    *,
+    group_map: dict[str, frozenset[str]] = ENRICH_FIELD_GROUPS,
+) -> frozenset[str] | None:
+    """Return column names to update, or None when all columns should be updated."""
+    if "all" in groups:
+        return None
+    columns: set[str] = set()
+    for group in groups:
+        columns.update(group_map[group])
+    return frozenset(columns)
+
+
+def should_update_field(field: str, selected: frozenset[str] | None) -> bool:
+    return selected is None or field in selected
 
 CASE_FIELDS = [
     "OfferorName",
@@ -602,45 +785,82 @@ def collect_delisting_source_texts(docs: list[dict]) -> list[str]:
     return texts
 
 
-def refresh_derived_list_fields(rows: list[dict]) -> None:
+def refresh_derived_list_fields(
+    rows: list[dict],
+    *,
+    selected: frozenset[str] | None = None,
+) -> None:
     """Recompute short price/result columns from stored Raw text (no API)."""
     for row in rows:
         raw_price = row.get("OfferPriceRaw") or ""
         valuation_text = row.get("ValuationBasisRaw") or raw_price
-        if raw_price:
-            row["OfferPrice"] = summarize_price(raw_price)
-        if valuation_text:
-            parsed = parse_valuation_ranges(valuation_text)
-            if not any(parsed.values()) and raw_price:
-                parsed = parse_valuation_ranges(raw_price)
-            row.update(parsed)
         purposes_raw = row.get("PurposesRaw") or ""
         overview_raw = row.get("OverviewRaw") or ""
-        opinion_raw = row.get("OpinionRaw") or ""
-        if purposes_raw or overview_raw:
+        if should_update_field("OfferPrice", selected) and raw_price:
+            row["OfferPrice"] = summarize_price(raw_price)
+        if selected is None or selected & {
+            "ValuationMarketMin",
+            "ValuationMarketMax",
+            "ValuationComparableMin",
+            "ValuationComparableMax",
+            "ValuationDCFMin",
+            "ValuationDCFMax",
+            "ValuationBasisRaw",
+        }:
+            parsed = parse_valuation_from_sources(
+                valuation_text,
+                raw_price,
+                purposes_raw,
+                overview_raw,
+            )
+            if any(parsed.values()):
+                for key, value in parsed.items():
+                    if should_update_field(key, selected):
+                        row[key] = value
+            elif should_update_field("ValuationBasisRaw", selected):
+                if not row.get("ValuationBasisRaw"):
+                    purposes_basis = extract_valuation_from_purposes(purposes_raw)
+                    if purposes_basis:
+                        row["ValuationBasisRaw"] = purposes_basis[:2500]
+        if should_update_field("SponsorHint", selected) and (purposes_raw or overview_raw):
             row["SponsorHint"] = extract_sponsor_from_purposes(purposes_raw or overview_raw)
-        row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, opinion_raw])
+        if should_update_field("IsMBO", selected):
+            row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, row.get("OpinionRaw") or ""])
         intended_raw = row.get("IntendedPurchaseRaw") or ""
-        if intended_raw:
+        if intended_raw and (
+            selected is None
+            or selected
+            & {
+                "PlannedSharesMin",
+                "PlannedSharesMax",
+                "PlannedSharesPlanned",
+            }
+        ):
             row.update(parse_planned_purchase_counts(intended_raw))
         fund_raw = row.get("FundRaw") or ""
-        if fund_raw:
+        if should_update_field("PurchaseConsideration", selected) and fund_raw:
             row["PurchaseConsideration"] = parse_purchase_consideration(fund_raw)
         application_raw = row.get("ApplicationRaw") or ""
-        if application_raw:
+        if should_update_field("TenderOfferAgent", selected) and application_raw:
             row["TenderOfferAgent"] = extract_tender_offer_agent(application_raw)
         code = row.get("DocTypeCode") or ""
-        if code in WITHDRAW_SIDE:
-            row["FinalResultNote"] = "撤回"
-        elif code in REPORT_SIDE:
-            raw = row.get("FinalResultRaw") or ""
-            acquired_raw = row.get("AcquiredSharesRaw") or ""
-            prorata_raw = row.get("ProrataCalculationRaw") or ""
-            if acquired_raw or prorata_raw:
-                row.update(parse_self_tob_report_counts(acquired_raw, prorata_raw))
-                row["FinalResultNote"] = judge_self_tob_result(acquired_raw, prorata_raw)
-            elif raw:
-                row["FinalResultNote"] = judge_tob_result(raw)
+        if should_update_field("FinalResultNote", selected):
+            if code in WITHDRAW_SIDE:
+                row["FinalResultNote"] = "撤回"
+            elif code in REPORT_SIDE:
+                raw = row.get("FinalResultRaw") or ""
+                acquired_raw = row.get("AcquiredSharesRaw") or ""
+                prorata_raw = row.get("ProrataCalculationRaw") or ""
+                if acquired_raw or prorata_raw:
+                    if selected is None or selected & {
+                        "ApplicationCount",
+                        "PurchaseCount",
+                        "ProrataUsed",
+                    }:
+                        row.update(parse_self_tob_report_counts(acquired_raw, prorata_raw))
+                    row["FinalResultNote"] = judge_self_tob_result(acquired_raw, prorata_raw)
+                elif raw:
+                    row["FinalResultNote"] = judge_tob_result(raw)
 
 
 def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
@@ -860,9 +1080,11 @@ def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> 
 def prepare_pipeline_rows(
     rows: list[dict],
     edinet_list: EdinetCodeList | None = None,
+    *,
+    selected: frozenset[str] | None = None,
 ) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
     """Split 自社株, assign case IDs, and build both case tables."""
-    refresh_derived_list_fields(rows)
+    refresh_derived_list_fields(rows, selected=selected)
     refresh_target_metadata(rows, edinet_list)
     other, issuer = partition_issuer_tenders(rows)
     assign_case_ids(other)

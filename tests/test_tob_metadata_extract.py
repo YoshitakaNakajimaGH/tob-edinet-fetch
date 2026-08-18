@@ -13,10 +13,13 @@ from extract_fields import (
     detect_mbo,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
+    extract_valuation_from_purposes,
     parse_planned_purchase_counts,
     parse_purchase_consideration,
+    parse_valuation_from_sources,
     parse_valuation_ranges,
 )
+from tob_common import columns_for_enrich_groups, parse_enrich_groups
 
 
 class SponsorHintTests(unittest.TestCase):
@@ -76,6 +79,40 @@ class ValuationRangeTests(unittest.TestCase):
         self.assertEqual(parsed["ValuationMarketMax"], "1,017")
         self.assertEqual(parsed["ValuationDCFMin"], "524")
         self.assertEqual(parsed["ValuationDCFMax"], "1,480")
+
+    def test_parses_valuation_from_purposes_section(self) -> None:
+        price = "算定の基礎 第三者算定機関からの算定書は取得しておりません。"
+        purposes = (
+            "３【買付け等の目的】(3）本公開買付価格の公正性を担保するための措置 "
+            "ＳＭＢＣ日興証券は、市場株価法：1,420円から1,480円 "
+            "類似上場会社比較法：1,350円から1,510円 "
+            "ＤＣＦ法：1,600円から2,100円の範囲で算定しました。"
+        )
+        parsed = parse_valuation_from_sources(price, purposes)
+        self.assertEqual(parsed["ValuationMarketMin"], "1,420")
+        self.assertEqual(parsed["ValuationDCFMax"], "2,100")
+
+    def test_extract_valuation_from_purposes_finds_keyword_window(self) -> None:
+        text = (
+            "背景説明が長く続きます。" * 20
+            + "公開買付者は、市場株価法：900円から950円、ＤＣＦ法：1,100円から1,300円と算定。"
+        )
+        section = extract_valuation_from_purposes(text)
+        self.assertIn("市場株価法", section)
+        self.assertIn("ＤＣＦ法", section)
+
+
+class EnrichFieldGroupTests(unittest.TestCase):
+    def test_parse_groups_defaults_to_all(self) -> None:
+        self.assertEqual(parse_enrich_groups(""), frozenset({"all"}))
+        self.assertIsNone(columns_for_enrich_groups(frozenset({"all"})))
+
+    def test_parse_specific_groups(self) -> None:
+        groups = parse_enrich_groups("valuation, fund")
+        columns = columns_for_enrich_groups(groups)
+        self.assertIn("ValuationMarketMin", columns)
+        self.assertIn("PurchaseConsideration", columns)
+        self.assertNotIn("PlannedSharesPlanned", columns)
 
 
 class PlannedPurchaseTests(unittest.TestCase):

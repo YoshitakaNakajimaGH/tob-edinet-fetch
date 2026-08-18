@@ -528,6 +528,60 @@ def _parse_yen_range(label_pattern: str, text: str) -> tuple[str, str]:
     return "", ""
 
 
+_VALUATION_PURPOSE_MARKERS = (
+    "市場株価法",
+    "市場株価平均法",
+    "類似上場会社比較法",
+    "類似会社比較法",
+    "ＤＣＦ法",
+    "DCF法",
+    "株式価値算定書",
+    "算定書",
+    "第三者算定機関",
+    "フェアネス・オピニオン",
+)
+
+
+def extract_valuation_from_purposes(text: str, *, limit: int = 8000) -> str:
+    """Return valuation-relevant passages from 買付け等の目的 when absent from price."""
+    if not text:
+        return ""
+    plain = strip_html(text)
+    section_patterns = (
+        r"[(（]3[)）][^。\n]{0,80}(?:公正性|算定|価格の決定|価格)",
+        r"[(（]2[)）][^。\n]{0,120}(?:意思決定|算定|協議|背景|経緯)",
+        r"本公開買付価格の公正性",
+        r"株式価値の算定",
+        r"第三者算定機関",
+    )
+    for pattern in section_patterns:
+        match = re.search(pattern, plain)
+        if not match:
+            continue
+        chunk = plain[match.start() : match.start() + limit]
+        if any(marker in chunk for marker in _VALUATION_PURPOSE_MARKERS):
+            return chunk[:limit]
+    best_idx = -1
+    for marker in _VALUATION_PURPOSE_MARKERS:
+        idx = plain.find(marker)
+        if idx >= 0 and (best_idx < 0 or idx < best_idx):
+            best_idx = idx
+    if best_idx >= 0:
+        return plain[max(0, best_idx - 400) : best_idx + limit][:limit]
+    return ""
+
+
+def _empty_valuation_ranges() -> dict[str, str]:
+    return {
+        "ValuationMarketMin": "",
+        "ValuationMarketMax": "",
+        "ValuationComparableMin": "",
+        "ValuationComparableMax": "",
+        "ValuationDCFMin": "",
+        "ValuationDCFMax": "",
+    }
+
+
 def parse_valuation_ranges(text: str) -> dict[str, str]:
     """Parse per-method share-value ranges from 算定の基礎."""
     basis = extract_valuation_basis_section(text, limit=5000) or strip_html(text)
@@ -536,6 +590,26 @@ def parse_valuation_ranges(text: str) -> dict[str, str]:
     if not any(parsed.values()) and plain and plain != basis:
         parsed = _parse_valuation_ranges_from_text(plain)
     return parsed
+
+
+def parse_valuation_from_sources(*texts: str) -> dict[str, str]:
+    """Try price/basis first, then 買付け等の目的 passages that mention valuation methods."""
+    for text in texts:
+        if not text:
+            continue
+        parsed = parse_valuation_ranges(text)
+        if any(parsed.values()):
+            return parsed
+    for text in texts:
+        if not text:
+            continue
+        section = extract_valuation_from_purposes(text)
+        if not section:
+            continue
+        parsed = parse_valuation_ranges(section)
+        if any(parsed.values()):
+            return parsed
+    return _empty_valuation_ranges()
 
 
 def _parse_valuation_ranges_from_text(text: str) -> dict[str, str]:
