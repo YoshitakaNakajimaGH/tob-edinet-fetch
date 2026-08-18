@@ -11,11 +11,17 @@ from pathlib import Path
 
 from extract_fields import (
     clean_extracted_name,
+    detect_mbo,
+    extract_sponsor_from_purposes,
+    extract_tender_offer_agent,
     format_pct,
     format_sec_code,
     judge_target_delisting,
     judge_tob_result,
     normalize_name,
+    parse_planned_purchase_counts,
+    parse_purchase_consideration,
+    parse_valuation_ranges,
     summarize_price,
 )
 from edinet_code_list import EdinetCodeList, ensure_edinet_code_list
@@ -98,6 +104,19 @@ LIST_FIELDS = [
     "ExistingHoldingRatio",
     "SpecialRelatedHoldingRatio",
     "AfterPurchaseRatio",
+    "SponsorHint",
+    "IsMBO",
+    "ValuationMarketMin",
+    "ValuationMarketMax",
+    "ValuationComparableMin",
+    "ValuationComparableMax",
+    "ValuationDCFMin",
+    "ValuationDCFMax",
+    "PlannedSharesMin",
+    "PlannedSharesMax",
+    "PlannedSharesPlanned",
+    "PurchaseConsideration",
+    "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
     "WithdrawalReason",
@@ -122,6 +141,17 @@ LIST_FIELDS = [
     "OfferPriceElement",
     "OfferPeriodRaw",
     "OfferPeriodElement",
+    "PurposesRaw",
+    "PurposesElement",
+    "OverviewRaw",
+    "OverviewElement",
+    "ValuationBasisRaw",
+    "IntendedPurchaseRaw",
+    "IntendedPurchaseElement",
+    "FundRaw",
+    "FundElement",
+    "ApplicationRaw",
+    "ApplicationElement",
     "ExistingHoldingRatioElement",
     "AfterPurchaseRatioElement",
     "OpinionRaw",
@@ -149,6 +179,19 @@ CASE_FIELDS = [
     "ExistingHoldingRatio",
     "SpecialRelatedHoldingRatio",
     "AfterPurchaseRatio",
+    "SponsorHint",
+    "IsMBO",
+    "ValuationMarketMin",
+    "ValuationMarketMax",
+    "ValuationComparableMin",
+    "ValuationComparableMax",
+    "ValuationDCFMin",
+    "ValuationDCFMax",
+    "PlannedSharesMin",
+    "PlannedSharesMax",
+    "PlannedSharesPlanned",
+    "PurchaseConsideration",
+    "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
     "TargetDelistingNote",
@@ -546,8 +589,26 @@ def refresh_derived_list_fields(rows: list[dict]) -> None:
     """Recompute short price/result columns from stored Raw text (no API)."""
     for row in rows:
         raw_price = row.get("OfferPriceRaw") or ""
+        valuation_text = row.get("ValuationBasisRaw") or raw_price
         if raw_price:
             row["OfferPrice"] = summarize_price(raw_price)
+        if valuation_text:
+            row.update(parse_valuation_ranges(valuation_text))
+        purposes_raw = row.get("PurposesRaw") or ""
+        overview_raw = row.get("OverviewRaw") or ""
+        opinion_raw = row.get("OpinionRaw") or ""
+        if purposes_raw or overview_raw:
+            row["SponsorHint"] = extract_sponsor_from_purposes(purposes_raw or overview_raw)
+        row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, opinion_raw])
+        intended_raw = row.get("IntendedPurchaseRaw") or ""
+        if intended_raw:
+            row.update(parse_planned_purchase_counts(intended_raw))
+        fund_raw = row.get("FundRaw") or ""
+        if fund_raw:
+            row["PurchaseConsideration"] = parse_purchase_consideration(fund_raw)
+        application_raw = row.get("ApplicationRaw") or ""
+        if application_raw:
+            row["TenderOfferAgent"] = extract_tender_offer_agent(application_raw)
         code = row.get("DocTypeCode") or ""
         if code in WITHDRAW_SIDE:
             row["FinalResultNote"] = "撤回"
@@ -566,6 +627,19 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "ExistingHoldingRatio": "",
         "SpecialRelatedHoldingRatio": "",
         "AfterPurchaseRatio": "",
+        "SponsorHint": "",
+        "IsMBO": "",
+        "ValuationMarketMin": "",
+        "ValuationMarketMax": "",
+        "ValuationComparableMin": "",
+        "ValuationComparableMax": "",
+        "ValuationDCFMin": "",
+        "ValuationDCFMax": "",
+        "PlannedSharesMin": "",
+        "PlannedSharesMax": "",
+        "PlannedSharesPlanned": "",
+        "PurchaseConsideration": "",
+        "TenderOfferAgent": "",
         "OpinionStance": "",
         "FinalResultNote": "",
         "TargetName": "",
@@ -600,11 +674,30 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["ExistingHoldingRatio"] = doc["ExistingHoldingRatio"]
             if doc.get("SpecialRelatedHoldingRatio"):
                 out["SpecialRelatedHoldingRatio"] = doc["SpecialRelatedHoldingRatio"]
+            for key in (
+                "SponsorHint",
+                "IsMBO",
+                "ValuationMarketMin",
+                "ValuationMarketMax",
+                "ValuationComparableMin",
+                "ValuationComparableMax",
+                "ValuationDCFMin",
+                "ValuationDCFMax",
+                "PlannedSharesMin",
+                "PlannedSharesMax",
+                "PlannedSharesPlanned",
+                "PurchaseConsideration",
+                "TenderOfferAgent",
+            ):
+                if doc.get(key):
+                    out[key] = doc[key]
             # Filing AfterPurchaseRatio is the *planned* post-offer figure (often 100%).
             # Cases show the actual outcome instead; do not copy the plan here.
         elif type_code in OPINION_SIDE:
             if doc.get("OpinionStance"):
                 out["OpinionStance"] = doc["OpinionStance"]
+            if doc.get("IsMBO") == "Yes":
+                out["IsMBO"] = "Yes"
         elif type_code in REPORT_SIDE:
             if doc.get("FinalResultRaw"):
                 result_raw = doc["FinalResultRaw"]

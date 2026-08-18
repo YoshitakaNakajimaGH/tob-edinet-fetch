@@ -30,10 +30,17 @@ from pathlib import Path
 from extract_fields import (
     clean_extracted_name,
     compute_holding_ratios,
+    detect_mbo,
+    extract_sponsor_from_purposes,
+    extract_tender_offer_agent,
+    extract_valuation_basis_section,
     format_pct,
     judge_tob_result,
     parse_holding_pct_from_text,
     parse_period_dates,
+    parse_planned_purchase_counts,
+    parse_purchase_consideration,
+    parse_valuation_ranges,
     summarize_price,
 )
 from output_store import load_all_list_rows, publish_tob_outputs
@@ -218,16 +225,49 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
     if type_code in FILING_SIDE or tax_key == "ton":
         price_text, price_eid = first_fact(facts, fields.get("offer_price_text", []))
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
+        purposes_text, purposes_eid = first_fact(facts, fields.get("purposes_text", []))
+        overview_text, overview_eid = first_fact(facts, fields.get("overview_text", []))
+        intended_text, intended_eid = first_fact(facts, fields.get("intended_purchase_text", []))
+        fund_text, fund_eid = first_fact(facts, fields.get("fund_text", []))
+        application_text, application_eid = first_fact(facts, fields.get("application_text", []))
+        agent_name, agent_eid = first_fact(facts, fields.get("agent_name", []))
         start, end = parse_period_dates(period_text)
         if price_text:
-            row["OfferPriceRaw"] = price_text[:1000]
+            row["OfferPriceRaw"] = price_text[:5000]
             row["OfferPrice"] = summarize_price(price_text)
             row["OfferPriceElement"] = price_eid
+            basis = extract_valuation_basis_section(price_text)
+            if basis:
+                row["ValuationBasisRaw"] = basis[:2500]
+            row.update(parse_valuation_ranges(price_text))
         if period_text:
             row["OfferPeriodRaw"] = period_text[:1000]
             row["OfferPeriodStart"] = start
             row["OfferPeriodEnd"] = end
             row["OfferPeriodElement"] = period_eid
+        if purposes_text:
+            row["PurposesRaw"] = purposes_text[:3000]
+            row["PurposesElement"] = purposes_eid
+        if overview_text:
+            row["OverviewRaw"] = overview_text[:2000]
+            row["OverviewElement"] = overview_eid
+        sponsor_source = purposes_text or overview_text
+        if sponsor_source:
+            row["SponsorHint"] = extract_sponsor_from_purposes(sponsor_source)
+        row["IsMBO"] = detect_mbo([purposes_text, overview_text])
+        if intended_text:
+            row["IntendedPurchaseRaw"] = intended_text[:2000]
+            row["IntendedPurchaseElement"] = intended_eid
+            row.update(parse_planned_purchase_counts(intended_text))
+        if fund_text:
+            row["FundRaw"] = fund_text[:2000]
+            row["FundElement"] = fund_eid
+            row["PurchaseConsideration"] = parse_purchase_consideration(fund_text)
+        if application_text or agent_name:
+            if application_text:
+                row["ApplicationRaw"] = application_text[:1500]
+                row["ApplicationElement"] = application_eid
+            row["TenderOfferAgent"] = extract_tender_offer_agent(application_text, agent_name)
         apply_holdings(row, facts, fields)
 
     if type_code in OPINION_SIDE or tax_key == "pst":
@@ -236,6 +276,8 @@ def apply_facts_to_row(row: dict, facts: dict[str, list[str]], mapping: dict) ->
             row["OpinionRaw"] = opinion_text[:1000]
             row["OpinionStance"] = parse_opinion_stance(opinion_text)
             row["OpinionElement"] = opinion_eid
+            if not row.get("IsMBO"):
+                row["IsMBO"] = detect_mbo([opinion_text])
 
     if type_code in REPORT_SIDE or tax_key == "tor":
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
