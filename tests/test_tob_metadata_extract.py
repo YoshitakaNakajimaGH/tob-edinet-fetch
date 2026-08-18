@@ -157,7 +157,31 @@ class PlannedPurchaseTests(unittest.TestCase):
         parsed = parse_planned_purchase_counts(text)
         self.assertEqual(parsed["PlannedSharesMin"], "4,297,400")
         self.assertEqual(parsed["PlannedSharesMax"], "")
-        self.assertEqual(parsed["PlannedSharesPlanned"], "")
+        self.assertEqual(parsed["PlannedSharesPlanned"], "20,252,536")
+
+    def test_parses_all_three_from_total_row(self) -> None:
+        text = (
+            "（３）【買付予定の株券等の数】"
+            "株券等の種類買付予定数買付予定数の下限買付予定数の上限"
+            "普通株式16,280,645（株）13,615,600（株）16,280,645（株）"
+            "合計16,280,645（株）13,615,600（株）16,280,645（株）"
+        )
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesPlanned"], "16,280,645")
+        self.assertEqual(parsed["PlannedSharesMin"], "13,615,600")
+        self.assertEqual(parsed["PlannedSharesMax"], "16,280,645")
+
+    def test_parses_planned_when_min_set_and_max_dash(self) -> None:
+        text = (
+            "株券等の種類買付予定数買付予定数の下限買付予定数の上限"
+            "普通株式41,650,969(株)12,133,398(株)―(株)"
+            "合計41,650,969(株)12,133,398(株)―(株)"
+            "(注１)買付予定数の下限(12,133,398株)に満たない場合"
+        )
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesPlanned"], "41,650,969")
+        self.assertEqual(parsed["PlannedSharesMin"], "12,133,398")
+        self.assertEqual(parsed["PlannedSharesMax"], "")
 
 
 class PurchaseConsiderationTests(unittest.TestCase):

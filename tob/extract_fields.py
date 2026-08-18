@@ -692,21 +692,57 @@ def _parse_valuation_ranges_from_text(text: str) -> dict[str, str]:
 
 
 def _is_dash_count(token: str) -> bool:
-    return token in {"―", "－", "-", "—", "－", "―(株)", "－(株)"}
+    stripped = (token or "").strip()
+    if not stripped:
+        return True
+    dash_chars = set("―－—-−‑ー")
+    return all(ch in dash_chars for ch in stripped)
 
 
 _SHARE_UNIT = r"(?:株|口|個)"
 _SHARE_PAREN = rf"(?:\({_SHARE_UNIT}\)|（{_SHARE_UNIT}）)"
+_SHARE_SUFFIX = rf"(?:{_SHARE_PAREN}|{_SHARE_UNIT})?"
+_DASH_CHARS = "―－—-−‑ー"
+
+
+def _extract_planned_purchase_section(compact: str) -> str:
+    """Isolate section (3) table text and stop before footnotes / next heading."""
+    start = -1
+    for marker in (
+        "（３）【買付予定の株券等の数】",
+        "(３)【買付予定の株券等の数】",
+        "【買付予定の株券等の数】",
+        "買付予定の株券等の数",
+    ):
+        idx = compact.find(marker)
+        if idx >= 0:
+            start = idx
+            break
+    if start < 0:
+        total_matches = list(re.finditer(r"合計", compact))
+        if total_matches:
+            start = max(0, total_matches[-1].start() - 500)
+        else:
+            return compact[:1200]
+    tail = compact[start:]
+    for stop in (r"\(注", r"（注", r"４【", r"4【", r"５【", r"5【"):
+        match = re.search(stop, tail)
+        if match:
+            tail = tail[: match.start()]
+    return tail[:1200]
 
 
 def _parse_total_row_counts(section: str) -> tuple[int | None, int | None, int | None]:
-    """Parse 合計 row in XBRL table layout: 合計2,517,495(株)―(株)―(株)."""
-    match = re.search(rf"合計([\d,，]+){_SHARE_PAREN}(.*)", section)
+    """Parse 合計 row in XBRL table layout: 合計16,280,645（株）13,615,600（株）16,280,645（株）."""
+    match = re.search(rf"合計([\d,，]+){_SHARE_SUFFIX}(.*)", section)
     if not match:
         return None, None, None
     planned = _parse_int(match.group(1))
-    rest = match.group(2)[:160]
-    tokens = re.findall(rf"([\d,，]+|―|－|-){_SHARE_PAREN}", rest)
+    rest = re.split(r"(?:\(注|（注|４【|4【)", match.group(2), maxsplit=1)[0][:200]
+    tokens = re.findall(
+        rf"([{_DASH_CHARS}]|[\d,，]+){_SHARE_SUFFIX}",
+        rest,
+    )
     floor = None
     cap = None
     if tokens:
@@ -727,39 +763,40 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
     if not text:
         return empty
     compact = re.sub(r"\s+", "", strip_html(text))
-    total_matches = list(re.finditer(r"合計", compact))
-    section = compact[total_matches[-1].start() : total_matches[-1].start() + 800] if total_matches else compact
+    section = _extract_planned_purchase_section(compact)
 
     no_floor = bool(re.search(r"下限(?:及び上限)?[をは]?(?:設定して|定めて)おりません", section))
     no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", section))
-    floor = None if no_floor else _last_bound(section, "下限")
-    cap = None if no_cap else _last_bound(section, "上限")
-    table_planned, table_floor, table_cap = _parse_total_row_counts(section)
-    if floor is None and table_floor is not None:
-        floor = table_floor
-    if cap is None and table_cap is not None:
-        cap = table_cap
 
-    planned = ""
-    if floor is None and cap is None:
+    table_planned, table_floor, table_cap = _parse_total_row_counts(section)
+
+    floor = None if no_floor else table_floor
+    cap = None if no_cap else table_cap
+
+    # Legacy 上限（xxx株） layout — only when table columns did not provide bounds.
+    table_tail = section.split("合計")[-1] if "合計" in section else section
+    if floor is None and not no_floor:
+        floor = _last_bound(table_tail, "下限")
+    if cap is None and not no_cap:
+        cap = _last_bound(table_tail, "上限")
+
+    planned_val = table_planned
+    if planned_val is None:
         for pattern in (
-            rf"買付予定数[（(]?([\d,，]+){_SHARE_PAREN}",
+            rf"買付予定数[（(]?([\d,，]+){_SHARE_SUFFIX}",
             r"買付予定数[（(]([\d,，]+)(?:株|口|個)[)）]",
             r"買付予定数[（(]?([\d,，]+)(?:株|口|個)",
         ):
             match = re.search(pattern, section)
             if match:
-                value = _parse_int(match.group(1))
-                if value is not None:
-                    planned = f"{value:,}"
+                planned_val = _parse_int(match.group(1))
+                if planned_val is not None:
                     break
-        if not planned and table_planned is not None:
-            planned = f"{table_planned:,}"
 
     return {
         "PlannedSharesMin": f"{floor:,}" if floor is not None else "",
         "PlannedSharesMax": f"{cap:,}" if cap is not None else "",
-        "PlannedSharesPlanned": planned,
+        "PlannedSharesPlanned": f"{planned_val:,}" if planned_val is not None else "",
     }
 
 
