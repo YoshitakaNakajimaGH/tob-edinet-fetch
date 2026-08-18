@@ -610,7 +610,10 @@ def refresh_derived_list_fields(rows: list[dict]) -> None:
         if raw_price:
             row["OfferPrice"] = summarize_price(raw_price)
         if valuation_text:
-            row.update(parse_valuation_ranges(valuation_text))
+            parsed = parse_valuation_ranges(valuation_text)
+            if not any(parsed.values()) and raw_price:
+                parsed = parse_valuation_ranges(raw_price)
+            row.update(parsed)
         purposes_raw = row.get("PurposesRaw") or ""
         overview_raw = row.get("OverviewRaw") or ""
         opinion_raw = row.get("OpinionRaw") or ""

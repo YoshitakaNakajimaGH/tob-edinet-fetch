@@ -512,25 +512,40 @@ def extract_valuation_basis_section(text: str, *, limit: int = 2500) -> str:
 
 
 def _parse_yen_range(label_pattern: str, text: str) -> tuple[str, str]:
-    match = re.search(
+    patterns = (
         rf"{label_pattern}[：:\s]*([\d,，]+)\s*円\s*(?:から|～|〜|~|-)\s*([\d,，]+)\s*円",
-        text,
+        rf"{label_pattern}[：:\s]*([\d,，]+)円\s*(?:から|～|〜|~|-)\s*([\d,，]+)円",
     )
-    if not match:
-        return "", ""
-    return _comma_number(match.group(1)), _comma_number(match.group(2))
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return _comma_number(match.group(1)), _comma_number(match.group(2))
+    compact = re.sub(r"\s+", "", text)
+    for pattern in patterns:
+        match = re.search(pattern, compact)
+        if match:
+            return _comma_number(match.group(1)), _comma_number(match.group(2))
+    return "", ""
 
 
 def parse_valuation_ranges(text: str) -> dict[str, str]:
     """Parse per-method share-value ranges from 算定の基礎."""
     basis = extract_valuation_basis_section(text, limit=5000) or strip_html(text)
-    compact = re.sub(r"\s+", " ", basis)
-    market_min, market_max = _parse_yen_range(r"市場株価(?:法|平均法)", compact)
+    plain = strip_html(text)
+    parsed = _parse_valuation_ranges_from_text(basis)
+    if not any(parsed.values()) and plain and plain != basis:
+        parsed = _parse_valuation_ranges_from_text(plain)
+    return parsed
+
+
+def _parse_valuation_ranges_from_text(text: str) -> dict[str, str]:
+    compact = re.sub(r"\s+", " ", text)
+    market_min, market_max = _parse_yen_range(r"市場株価(?:平均法|法)", compact)
     comparable_min, comparable_max = _parse_yen_range(
         r"類似(?:上場)?(?:会社)?比較法",
         compact,
     )
-    dcf_min, dcf_max = _parse_yen_range(r"(?:DC|ＤＣ)F法", compact)
+    dcf_min, dcf_max = _parse_yen_range(r"(?:DCF|ＤＣＦ|DC|ＤＣ)[FＦ]?法", compact)
     return {
         "ValuationMarketMin": market_min,
         "ValuationMarketMax": market_max,
@@ -539,6 +554,28 @@ def parse_valuation_ranges(text: str) -> dict[str, str]:
         "ValuationDCFMin": dcf_min,
         "ValuationDCFMax": dcf_max,
     }
+
+
+def _is_dash_count(token: str) -> bool:
+    return token in {"―", "－", "-", "—", "－", "―(株)", "－(株)"}
+
+
+def _parse_total_row_counts(section: str) -> tuple[int | None, int | None, int | None]:
+    """Parse 合計 row in XBRL table layout: 合計2,517,495(株)―(株)―(株)."""
+    match = re.search(r"合計([\d,，]+)\(株\)(.*)", section)
+    if not match:
+        return None, None, None
+    planned = _parse_int(match.group(1))
+    rest = match.group(2)[:160]
+    tokens = re.findall(r"([\d,，]+|―|－|-)\(株\)", rest)
+    floor = None
+    cap = None
+    if tokens:
+        if not _is_dash_count(tokens[0]):
+            floor = _parse_int(tokens[0])
+        if len(tokens) > 1 and not _is_dash_count(tokens[1]):
+            cap = _parse_int(tokens[1])
+    return planned, floor, cap
 
 
 def parse_planned_purchase_counts(text: str) -> dict[str, str]:
@@ -558,6 +595,11 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
     no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", section))
     floor = None if no_floor else _last_bound(section, "下限")
     cap = None if no_cap else _last_bound(section, "上限")
+    table_planned, table_floor, table_cap = _parse_total_row_counts(section)
+    if floor is None and table_floor is not None:
+        floor = table_floor
+    if cap is None and table_cap is not None:
+        cap = table_cap
 
     planned = ""
     if floor is None and cap is None:
@@ -566,6 +608,8 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
             value = _parse_int(match.group(1))
             if value is not None:
                 planned = f"{value:,}"
+        if not planned and table_planned is not None:
+            planned = f"{table_planned:,}"
 
     return {
         "PlannedSharesMin": f"{floor:,}" if floor is not None else "",
@@ -585,11 +629,17 @@ def parse_purchase_consideration(text: str) -> str:
     if not text:
         return ""
     compact = re.sub(r"\s+", " ", strip_html(text))
-    match = re.search(
+    patterns = (
+        r"買付代金\(円\)\([ａaAＡ]\)([\d,，]+)",
         r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(円|ウォン|ドル|USD|米ドル)",
-        compact,
+        r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(?:円|ウォン|ドル|USD|米ドル)",
     )
-    if match:
+    for pattern in patterns:
+        match = re.search(pattern, compact)
+        if not match:
+            continue
+        if match.lastindex == 1:
+            return f"{_comma_number(match.group(1))}円"
         unit = match.group(2)
         if unit == "USD":
             unit = "米ドル"
