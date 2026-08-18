@@ -12,7 +12,6 @@ from pathlib import Path
 from extract_fields import (
     clean_extracted_name,
     detect_mbo,
-    extract_parent_hint,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_from_purposes,
@@ -77,11 +76,23 @@ DOC_TYPE_TO_TAXONOMY = {
 
 DEFAULT_RECENT_DAYS = 35
 
+EDINET_VIEW_BASE = "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx"
+
+
+def edinet_view_url(doc_id: str) -> str:
+    """Return the EDINET web viewer URL for a docID (no API key required)."""
+    text = (doc_id or "").strip()
+    if not text:
+        return ""
+    return f"{EDINET_VIEW_BASE}?{text}"
+
+
 # API metadata only. Fetch upsert overwrites these, and keeps extraction columns.
 METADATA_FIELDS = [
     "SubmitDateTime",
     "DocTypeCode",
     "DocTypeName",
+    "EdinetDocUrl",
     "RoleHint",
     "FilerName",
     "FilerSecCode",
@@ -99,8 +110,8 @@ METADATA_FIELDS = [
 LIST_FIELDS = [
     "SubmitDateTime",
     "DocTypeName",
+    "EdinetDocUrl",
     "OfferorName",
-    "ParentHint",
     "TargetSecCode",
     "TargetName",
     "OfferPrice",
@@ -187,7 +198,6 @@ _SELF_LIST_EXCLUDE = frozenset(
         "AfterPurchaseRatio",
         "SponsorHint",
         "IsMBO",
-        "ParentHint",
         "OpinionStance",
         "FinalResultNote",
         "ApplicationCount",
@@ -273,7 +283,6 @@ ENRICH_FIELD_GROUPS: dict[str, frozenset[str]] = {
     "sponsor": frozenset(
         {
             "SponsorHint",
-            "ParentHint",
             "IsMBO",
             "PurposesRaw",
             "PurposesElement",
@@ -402,7 +411,7 @@ def should_update_field(field: str, selected: frozenset[str] | None) -> bool:
 
 CASE_FIELDS = [
     "OfferorName",
-    "ParentHint",
+    "SponsorHint",
     "TargetSecCode",
     "TargetName",
     "Status",
@@ -412,7 +421,6 @@ CASE_FIELDS = [
     "ExistingHoldingRatio",
     "SpecialRelatedHoldingRatio",
     "AfterPurchaseRatio",
-    "SponsorHint",
     "IsMBO",
     "ValuationMarketMin",
     "ValuationMarketMax",
@@ -431,6 +439,8 @@ CASE_FIELDS = [
     "PurchaseCount",
     "ProrataUsed",
     "TargetDelistingNote",
+    "LatestFilingUrl",
+    "LatestReportUrl",
     "FirstFilingDate",
     "LastUpdateDate",
     "HasOpinion",
@@ -453,7 +463,6 @@ _SELF_CASE_EXCLUDE = frozenset(
         "AfterPurchaseRatio",
         "SponsorHint",
         "IsMBO",
-        "ParentHint",
         "OpinionStance",
         "FinalResultNote",
         "ApplicationCount",
@@ -884,8 +893,6 @@ def refresh_derived_list_fields(
                         row["ValuationBasisRaw"] = purposes_basis[:2500]
         if should_update_field("SponsorHint", selected) and (purposes_raw or overview_raw):
             row["SponsorHint"] = extract_sponsor_from_purposes(purposes_raw or overview_raw)
-        if should_update_field("ParentHint", selected) and (purposes_raw or overview_raw):
-            row["ParentHint"] = extract_parent_hint(purposes_raw or overview_raw)
         if should_update_field("IsMBO", selected):
             row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, row.get("OpinionRaw") or ""])
         intended_raw = row.get("IntendedPurchaseRaw") or ""
@@ -935,7 +942,6 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "SpecialRelatedHoldingRatio": "",
         "AfterPurchaseRatio": "",
         "SponsorHint": "",
-        "ParentHint": "",
         "IsMBO": "",
         "ValuationMarketMin": "",
         "ValuationMarketMax": "",
@@ -989,7 +995,6 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["SpecialRelatedHoldingRatio"] = doc["SpecialRelatedHoldingRatio"]
             for key in (
                 "SponsorHint",
-                "ParentHint",
                 "IsMBO",
                 "ValuationMarketMin",
                 "ValuationMarketMax",
@@ -1126,8 +1131,10 @@ def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> 
             "Status": case_status(docs_sorted),
             "HasOpinion": has_opinion,
             "LatestFilingDocID": (latest_filing or {}).get("DocID", ""),
+            "LatestFilingUrl": edinet_view_url((latest_filing or {}).get("DocID", "")),
             "LatestOpinionDocID": (latest_opinion or {}).get("DocID", ""),
             "LatestReportDocID": (latest_report or {}).get("DocID", ""),
+            "LatestReportUrl": edinet_view_url((latest_report or {}).get("DocID", "")),
             "DocCount": str(len(docs_sorted)),
             "DocIDList": ";".join(doc_ids),
             **overlay,
@@ -1148,6 +1155,10 @@ def prepare_pipeline_rows(
     selected: frozenset[str] | None = None,
 ) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
     """Split 自社株, assign case IDs, and build both case tables."""
+    for row in rows:
+        doc_id = row.get("DocID") or ""
+        if doc_id:
+            row["EdinetDocUrl"] = edinet_view_url(doc_id)
     refresh_derived_list_fields(rows, selected=selected)
     refresh_target_metadata(rows, edinet_list)
     other, issuer = partition_issuer_tenders(rows)

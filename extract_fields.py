@@ -797,6 +797,14 @@ def _trim_agent_name(text: str) -> str:
     candidate = clean_extracted_name(text)
     candidate = re.sub(r"\s+(?:名称|氏名又は名称)\s*$", "", candidate).strip()
     candidate = re.sub(r"\s+(?:所在地|最寄|電話).*$", "", candidate).strip()
+    parts = re.split(r"[\s　]+", candidate, maxsplit=1)
+    if len(parts) == 2:
+        tail = parts[1]
+        if re.match(r"^(?:〒|[一-龥]{2,4}[都道府県])", tail) or re.search(
+            r"[都道府県].*(?:丁目|番地|番|号)",
+            tail,
+        ):
+            candidate = parts[0].strip()
     return candidate[:120]
 
 

@@ -11,7 +11,6 @@ if str(ROOT) not in sys.path:
 
 from extract_fields import (
     detect_mbo,
-    extract_parent_hint,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_from_purposes,
@@ -179,27 +178,27 @@ class PurchaseConsiderationTests(unittest.TestCase):
         self.assertEqual(parse_purchase_consideration(text), "97,809,894,000円")
 
 
-class ParentHintTests(unittest.TestCase):
-    def test_parent_label_pattern(self) -> None:
-        text = "株式会社ABCホールディングス（以下「公開買付者親会社」という。）は"
-        self.assertEqual(extract_parent_hint(text), "株式会社ABCホールディングス")
-
-    def test_ownership_pattern(self) -> None:
-        text = "その発行済株式の全てを株式会社テスト親が所有しており"
-        self.assertEqual(extract_parent_hint(text), "株式会社テスト親")
-
-    def test_falls_back_to_sponsor_extraction(self) -> None:
-        text = "本公開買付けは、KKR Asia Holdings L.P.（以下「KKR」という。）が行う。"
-        hint = extract_parent_hint(text)
-        self.assertTrue(hint)
-        self.assertIn("KKR", hint)
-
-
 class TenderOfferAgentTests(unittest.TestCase):
     def test_prefers_cover_page_name(self) -> None:
         self.assertEqual(
             extract_tender_offer_agent("", "野村證券株式会社"),
             "野村證券株式会社",
+        )
+
+    def test_strips_address_after_company_name(self) -> None:
+        self.assertEqual(
+            extract_tender_offer_agent(
+                "",
+                "ＳＭＢＣ日興証券株式会社 東京都千代田区丸の内三丁目３番１号",
+            ),
+            "ＳＭＢＣ日興証券株式会社",
+        )
+        self.assertEqual(
+            extract_tender_offer_agent(
+                "",
+                "三菱ＵＦＪモルガン・スタンレー証券株式会社　東京都千代田区大手町一丁目９番２号",
+            ),
+            "三菱ＵＦＪモルガン・スタンレー証券株式会社",
         )
 
     def test_parses_application_section(self) -> None:
