@@ -1,0 +1,56 @@
+{
+  "year": 2026,
+  "taxonomy_date": "2025-11-01",
+  "note": "2026年版自社株公開買付（jptoi_cor）。Element IDs from 2025-11-11 element list.",
+  "source_url": "https://www.fsa.go.jp/search/20251111/1e_ElementList.xlsx",
+  "ton": {
+    "offeror_name": [
+      "jptoi_cor:FullNameOrNameOfFilerOfNotificationCoverPage",
+      "jptoi_cor:FullNameOrNameOfFilerCoverPage"
+    ],
+    "offer_price_text": [
+      "jptoi_cor:PriceOfPurchaseEtcTextBlock"
+    ],
+    "period_text": [
+      "jptoi_cor:PeriodOfPurchaseEtcTextBlock"
+    ],
+    "intended_purchase_text": [
+      "jptoi_cor:NumberOfListedShareCertificatesEtcIntendedToPurchaseTextBlock"
+    ],
+    "fund_text": [
+      "jptoi_cor:FundForPurchaseEtcTextBlock"
+    ],
+    "application_text": [
+      "jptoi_cor:HowToAcceptTextBlock"
+    ],
+    "agent_name": [
+      "jptoi_cor:NameOfLegalRepresentativeCoverPage"
+    ]
+  },
+  "tor": {
+    "offeror_name": [
+      "jptoi_cor:FullNameOrNameOfFilerCoverPage"
+    ],
+    "period_text": [
+      "jptoi_cor:TenderOfferPeriodTextBlock"
+    ],
+    "acquired_shares_text": [
+      "jptoi_cor:NumberOfListedShareCertificatesEtcAcquiredByPurchaseEtcTextBlock"
+    ],
+    "prorata_calculation_text": [
+      "jptoi_cor:CalculationForPurchaseEtcByMethodOfProportionalDistributionTextBlock"
+    ]
+  },
+  "wto": {
+    "offeror_name": [
+      "jptoi_cor:FullNameOrNameOfFilerOfNotificationCoverPage",
+      "jptoi_cor:FullNameOrNameOfFilerCoverPage"
+    ],
+    "period_text": [
+      "jptoi_cor:TenderOfferPeriodTextBlock"
+    ],
+    "withdrawal_reason_text": [
+      "jptoi_cor:ReasonForWithdrawalEtcTextBlock"
+    ]
+  }
+}

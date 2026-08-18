@@ -69,6 +69,14 @@ class ValuationRangeTests(unittest.TestCase):
         self.assertEqual(parsed["ValuationMarketMin"], "1,675")
         self.assertEqual(parsed["ValuationDCFMax"], "2,783")
 
+    def test_parses_fullwidth_dcf_and_tilde(self) -> None:
+        text = "算定の基礎 市場株価平均法：997円～1,017円ＤＣＦ法　　　：524円～1,480円"
+        parsed = parse_valuation_ranges(text)
+        self.assertEqual(parsed["ValuationMarketMin"], "997")
+        self.assertEqual(parsed["ValuationMarketMax"], "1,017")
+        self.assertEqual(parsed["ValuationDCFMin"], "524")
+        self.assertEqual(parsed["ValuationDCFMax"], "1,480")
+
 
 class PlannedPurchaseTests(unittest.TestCase):
     def test_parses_floor_and_cap_from_total_row(self) -> None:
@@ -86,6 +94,34 @@ class PlannedPurchaseTests(unittest.TestCase):
         parsed = parse_planned_purchase_counts(text)
         self.assertEqual(parsed["PlannedSharesPlanned"], "2,000,000")
 
+    def test_parses_xbrl_table_without_bounds(self) -> None:
+        text = (
+            "株券等の種類買付予定数買付予定数の下限買付予定数の上限"
+            "普通株式2,517,495(株)―(株)―(株)合計2,517,495(株)―(株)―(株)"
+            "上限及び下限を設定しておりません"
+        )
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesPlanned"], "2,517,495")
+
+    def test_parses_fullwidth_share_parentheses(self) -> None:
+        text = (
+            "普通株式2,448,692（株）―（株）―（株）"
+            "合計2,448,692（株）―（株）―（株）"
+            "上限及び下限を設定しておりません"
+        )
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesPlanned"], "2,448,692")
+
+    def test_parses_xbrl_table_with_floor_only(self) -> None:
+        text = (
+            "普通株式20,252,536(株)4,297,400(株)－(株)"
+            "合計20,252,536(株)4,297,400(株)－(株)"
+        )
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesMin"], "4,297,400")
+        self.assertEqual(parsed["PlannedSharesMax"], "")
+        self.assertEqual(parsed["PlannedSharesPlanned"], "")
+
 
 class PurchaseConsiderationTests(unittest.TestCase):
     def test_parses_yen_amount(self) -> None:
@@ -95,6 +131,14 @@ class PurchaseConsiderationTests(unittest.TestCase):
     def test_parses_won_amount(self) -> None:
         text = "買付代金(a) 120,000,000ウォン"
         self.assertEqual(parse_purchase_consideration(text), "120,000,000ウォン")
+
+    def test_parses_yen_before_a_marker(self) -> None:
+        text = "買付代金(円)(a)3,222,393,600金銭以外の対価"
+        self.assertEqual(parse_purchase_consideration(text), "3,222,393,600円")
+
+    def test_parses_fullwidth_yen_marker(self) -> None:
+        text = "買付代金（円）(a)97,809,894,000金銭以外"
+        self.assertEqual(parse_purchase_consideration(text), "97,809,894,000円")
 
 
 class TenderOfferAgentTests(unittest.TestCase):

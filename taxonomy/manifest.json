@@ -1,6 +1,16 @@
 {
-  "note": "他社株公開買付（jptoo-ton/pst/wto/tor/toa）の年度別タクソノミ。訂正書類は元書類と同じ版を使う。",
+  "note": "他社株（jptoo-*）と自社株（jptoi_cor）公開買付の年度別タクソノミ。訂正書類は元書類と同じ版を使う。",
   "source_index": "https://www.fsa.go.jp/search/20251111.html",
+  "issuer_detection_markers": {
+    "2026": [
+      "jptoi_cor:NumberOfListedShareCertificatesEtcIntendedToPurchaseTextBlock",
+      "jptoi_cor:FundForPurchaseEtcTextBlock"
+    ],
+    "2021": [
+      "jptoi_cor:PeriodOfPurchaseEtcTextBlock",
+      "jptoi_cor:PriceOfPurchaseEtcTextBlock"
+    ]
+  },
   "detection_markers": {
     "2026": [
       "jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock",
@@ -19,6 +29,7 @@
       "applies_from": "2021-01-01",
       "applies_to": "2026-04-30",
       "mapping": "mappings/2021.json",
+      "issuer_mapping": "mappings/issuer_2021.json",
       "note": "2021年版。他社株TOBは2026-04-30提出分までこの版が継続適用。"
     },
     {
@@ -60,6 +71,7 @@
       "applies_from": "2026-05-01",
       "applies_to": null,
       "mapping": "mappings/2026.json",
+      "issuer_mapping": "mappings/issuer_2026.json",
       "source_url": "https://www.fsa.go.jp/search/20251111/1e_ElementList.xlsx",
       "note": "2026年版。2026-05-01以後に公開買付開始公告し提出する書類から適用。"
     }

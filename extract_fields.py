@@ -257,6 +257,88 @@ def judge_tob_result(text: str, *, withdrawn: bool = False) -> str:
     return ""
 
 
+def _first_count(compact: str, patterns: tuple[str, ...]) -> int | None:
+    for pattern in patterns:
+        match = re.search(pattern, compact)
+        if match:
+            value = _parse_int(match.group(1))
+            if value is not None:
+                return value
+    return None
+
+
+def parse_self_tob_report_counts(acquired_text: str, prorata_text: str = "") -> dict[str, str]:
+    """Parse 応募数・買付数・按分 from self-tender report text blocks."""
+    empty = {
+        "ApplicationCount": "",
+        "PurchaseCount": "",
+        "ProrataUsed": "",
+    }
+    if not acquired_text and not prorata_text:
+        return empty
+
+    compact = re.sub(r"\s+", "", strip_html(acquired_text))
+    prorata_compact = re.sub(r"\s+", "", strip_html(prorata_text))
+
+    application = _first_count(
+        compact,
+        (
+            r"応募(?:株数|数|普通株式数|上場株券等数)[（(]([\d,，]+)(?:株|口|個)",
+            r"応募(?:された)?(?:普通株式|上場株券等|株券等)(?:の)?(?:数|総数|合計)[（(]([\d,，]+)(?:株|口|個)",
+            r"応募(?:普通株式|上場株券等|株券等)[^。]{0,30}?([\d,，]+)(?:株|口|個)",
+        ),
+    )
+    purchase = _first_count(
+        compact,
+        (
+            r"買付(?:株数|数|普通株式数|上場株券等数)[（(]([\d,，]+)(?:株|口|個)",
+            r"買付け等(?:を行った|により取得した|により買い付けた)(?:普通株式|上場株券等|株券等)(?:の)?(?:数|総数|合計)[（(]([\d,，]+)(?:株|口|個)",
+            r"買付(?:普通株式|上場株券等|株券等)[^。]{0,30}?([\d,，]+)(?:株|口|個)",
+        ),
+    )
+
+    prorata = bool(prorata_compact.strip())
+    if not prorata:
+        prorata = bool(re.search(r"あん分比例|按分比例", compact))
+    if not prorata and prorata_compact:
+        prorata = bool(re.search(r"あん分比例|按分比例", prorata_compact))
+    if not prorata and application is not None and purchase is not None and application > purchase:
+        prorata = True
+
+    prorata_used = ""
+    if application is not None or purchase is not None or prorata_compact:
+        prorata_used = "Yes" if prorata else "No"
+
+    return {
+        "ApplicationCount": f"{application:,}" if application is not None else "",
+        "PurchaseCount": f"{purchase:,}" if purchase is not None else "",
+        "ProrataUsed": prorata_used,
+    }
+
+
+def judge_self_tob_result(acquired_text: str, prorata_text: str = "", *, withdrawn: bool = False) -> str:
+    """Classify a self-tender report as 成立 / 成立（按分） / 不成立 / 撤回."""
+    if withdrawn:
+        return RESULT_WITHDRAWN
+    counts = parse_self_tob_report_counts(acquired_text, prorata_text)
+    application_raw = counts.get("ApplicationCount") or ""
+    purchase_raw = counts.get("PurchaseCount") or ""
+    application = _parse_int(application_raw.replace(",", "")) if application_raw else None
+    purchase = _parse_int(purchase_raw.replace(",", "")) if purchase_raw else None
+    prorata = counts.get("ProrataUsed") == "Yes"
+
+    combined = re.sub(r"\s+", "", strip_html(acquired_text + "\n" + prorata_text))
+    if re.search(r"全部の買付け等を行いません|下限.{0,80}満たなかった|応募(?:株券等|普通株式)はありませんでした", combined):
+        return RESULT_FAILURE
+    if purchase == 0 or (application == 0 and purchase is not None):
+        return RESULT_FAILURE
+    if prorata:
+        return RESULT_SUCCESS_PRORATA
+    if purchase is not None and purchase > 0:
+        return RESULT_SUCCESS
+    return judge_tob_result(combined)
+
+
 def compute_holding_ratios(
     offeror_votes: str,
     special_votes: str,
@@ -430,25 +512,40 @@ def extract_valuation_basis_section(text: str, *, limit: int = 2500) -> str:
 
 
 def _parse_yen_range(label_pattern: str, text: str) -> tuple[str, str]:
-    match = re.search(
+    patterns = (
         rf"{label_pattern}[：:\s]*([\d,，]+)\s*円\s*(?:から|～|〜|~|-)\s*([\d,，]+)\s*円",
-        text,
+        rf"{label_pattern}[：:\s]*([\d,，]+)円\s*(?:から|～|〜|~|-)\s*([\d,，]+)円",
     )
-    if not match:
-        return "", ""
-    return _comma_number(match.group(1)), _comma_number(match.group(2))
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return _comma_number(match.group(1)), _comma_number(match.group(2))
+    compact = re.sub(r"\s+", "", text)
+    for pattern in patterns:
+        match = re.search(pattern, compact)
+        if match:
+            return _comma_number(match.group(1)), _comma_number(match.group(2))
+    return "", ""
 
 
 def parse_valuation_ranges(text: str) -> dict[str, str]:
     """Parse per-method share-value ranges from 算定の基礎."""
     basis = extract_valuation_basis_section(text, limit=5000) or strip_html(text)
-    compact = re.sub(r"\s+", " ", basis)
-    market_min, market_max = _parse_yen_range(r"市場株価(?:法|平均法)", compact)
+    plain = strip_html(text)
+    parsed = _parse_valuation_ranges_from_text(basis)
+    if not any(parsed.values()) and plain and plain != basis:
+        parsed = _parse_valuation_ranges_from_text(plain)
+    return parsed
+
+
+def _parse_valuation_ranges_from_text(text: str) -> dict[str, str]:
+    compact = re.sub(r"\s+", " ", text)
+    market_min, market_max = _parse_yen_range(r"市場株価(?:平均法|法)", compact)
     comparable_min, comparable_max = _parse_yen_range(
         r"類似(?:上場)?(?:会社)?比較法",
         compact,
     )
-    dcf_min, dcf_max = _parse_yen_range(r"(?:DC|ＤＣ)F法", compact)
+    dcf_min, dcf_max = _parse_yen_range(r"(?:DCF|ＤＣＦ|DC|ＤＣ)[FＦ]?法", compact)
     return {
         "ValuationMarketMin": market_min,
         "ValuationMarketMax": market_max,
@@ -457,6 +554,32 @@ def parse_valuation_ranges(text: str) -> dict[str, str]:
         "ValuationDCFMin": dcf_min,
         "ValuationDCFMax": dcf_max,
     }
+
+
+def _is_dash_count(token: str) -> bool:
+    return token in {"―", "－", "-", "—", "－", "―(株)", "－(株)"}
+
+
+_SHARE_UNIT = r"(?:株|口|個)"
+_SHARE_PAREN = rf"(?:\({_SHARE_UNIT}\)|（{_SHARE_UNIT}）)"
+
+
+def _parse_total_row_counts(section: str) -> tuple[int | None, int | None, int | None]:
+    """Parse 合計 row in XBRL table layout: 合計2,517,495(株)―(株)―(株)."""
+    match = re.search(rf"合計([\d,，]+){_SHARE_PAREN}(.*)", section)
+    if not match:
+        return None, None, None
+    planned = _parse_int(match.group(1))
+    rest = match.group(2)[:160]
+    tokens = re.findall(rf"([\d,，]+|―|－|-){_SHARE_PAREN}", rest)
+    floor = None
+    cap = None
+    if tokens:
+        if not _is_dash_count(tokens[0]):
+            floor = _parse_int(tokens[0])
+        if len(tokens) > 1 and not _is_dash_count(tokens[1]):
+            cap = _parse_int(tokens[1])
+    return planned, floor, cap
 
 
 def parse_planned_purchase_counts(text: str) -> dict[str, str]:
@@ -476,14 +599,27 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
     no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", section))
     floor = None if no_floor else _last_bound(section, "下限")
     cap = None if no_cap else _last_bound(section, "上限")
+    table_planned, table_floor, table_cap = _parse_total_row_counts(section)
+    if floor is None and table_floor is not None:
+        floor = table_floor
+    if cap is None and table_cap is not None:
+        cap = table_cap
 
     planned = ""
     if floor is None and cap is None:
-        match = re.search(r"買付予定数[（(]?([\d,，]+)(?:株|口|個)", section)
-        if match:
-            value = _parse_int(match.group(1))
-            if value is not None:
-                planned = f"{value:,}"
+        for pattern in (
+            rf"買付予定数[（(]?([\d,，]+){_SHARE_PAREN}",
+            r"買付予定数[（(]([\d,，]+)(?:株|口|個)[)）]",
+            r"買付予定数[（(]?([\d,，]+)(?:株|口|個)",
+        ):
+            match = re.search(pattern, section)
+            if match:
+                value = _parse_int(match.group(1))
+                if value is not None:
+                    planned = f"{value:,}"
+                    break
+        if not planned and table_planned is not None:
+            planned = f"{table_planned:,}"
 
     return {
         "PlannedSharesMin": f"{floor:,}" if floor is not None else "",
@@ -503,11 +639,18 @@ def parse_purchase_consideration(text: str) -> str:
     if not text:
         return ""
     compact = re.sub(r"\s+", " ", strip_html(text))
-    match = re.search(
+    patterns = (
+        r"買付代金\(円\)\([ａaAＡ]\)([\d,，]+)",
+        r"買付代金（円）\([ａaAＡ]\)([\d,，]+)",
         r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(円|ウォン|ドル|USD|米ドル)",
-        compact,
+        r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(?:円|ウォン|ドル|USD|米ドル)",
     )
-    if match:
+    for pattern in patterns:
+        match = re.search(pattern, compact)
+        if not match:
+            continue
+        if match.lastindex == 1:
+            return f"{_comma_number(match.group(1))}円"
         unit = match.group(2)
         if unit == "USD":
             unit = "米ドル"

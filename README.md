@@ -73,6 +73,23 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 
 所要時間の目安: 全書類で十数分（書類数×API呼び出し）。
 
+**他社株TOBのみ**対象です。自社株TOBは下記の **Enrich Self TOB** を使います。
+
+### 3. 自社株TOBの詳細を埋める（Enrich Self TOB）
+
+`self_tob_list.csv` は提出者＝対象会社の自己株式公開買付です。**Enrich Self TOB** で `jptoi_cor` タクソノミから次を抽出します。
+
+| 書類 | 抽出項目 |
+|------|----------|
+| 届出書 240/250 | 買付期間、普通株式の買付価格、合計の買付予定数、§6(1)①公開買付代理人、§7 買付代金 |
+| 報告書 270/280 | 応募数（ApplicationCount）、買付数（PurchaseCount）、按分の有無（ProrataUsed） |
+
+1. **Actions** → **Enrich Self TOB** → **Run workflow**
+2. 初回: `doc_limit` は `0`（全書類）
+3. 2回目以降: **only pending**（既定オン）で未処理書類だけ更新
+
+`ApplicationCount` / `PurchaseCount` / `ProrataUsed` は報告書の「買付け等を行った上場株券等の数」および按分計算ブロックから判定します。応募数が買付数を上回った場合も按分とみなします。
+
 ## tob_cases.csv の見方
 
 左に人が読む項目、右にID類を置いています。

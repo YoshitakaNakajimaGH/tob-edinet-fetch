@@ -17,10 +17,12 @@ from extract_fields import (
     format_pct,
     format_sec_code,
     judge_target_delisting,
+    judge_self_tob_result,
     judge_tob_result,
     normalize_name,
     parse_planned_purchase_counts,
     parse_purchase_consideration,
+    parse_self_tob_report_counts,
     parse_valuation_ranges,
     summarize_price,
 )
@@ -119,6 +121,9 @@ LIST_FIELDS = [
     "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
+    "ApplicationCount",
+    "PurchaseCount",
+    "ProrataUsed",
     "WithdrawalReason",
     "ResponseNote",
     "RoleHint",
@@ -158,6 +163,10 @@ LIST_FIELDS = [
     "OpinionElement",
     "FinalResultRaw",
     "FinalResultElement",
+    "AcquiredSharesRaw",
+    "AcquiredSharesElement",
+    "ProrataCalculationRaw",
+    "ProrataCalculationElement",
     "WithdrawalReasonRaw",
     "WithdrawalReasonElement",
     "ResponseRaw",
@@ -194,6 +203,9 @@ CASE_FIELDS = [
     "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
+    "ApplicationCount",
+    "PurchaseCount",
+    "ProrataUsed",
     "TargetDelistingNote",
     "FirstFilingDate",
     "LastUpdateDate",
@@ -307,6 +319,11 @@ def apply_name_fallbacks(row: dict) -> None:
         row["OfferorName"] = filer
     if not row.get("TargetName") and type_code in OPINION_SIDE:
         row["TargetName"] = filer
+    if is_issuer_tender(row):
+        if not row.get("TargetName"):
+            row["TargetName"] = row.get("OfferorName") or filer
+        if not row.get("OfferorName"):
+            row["OfferorName"] = filer
     if row.get("OfferorName"):
         row["OfferorName"] = clean_extracted_name(row["OfferorName"])
     if row.get("TargetName"):
@@ -593,7 +610,10 @@ def refresh_derived_list_fields(rows: list[dict]) -> None:
         if raw_price:
             row["OfferPrice"] = summarize_price(raw_price)
         if valuation_text:
-            row.update(parse_valuation_ranges(valuation_text))
+            parsed = parse_valuation_ranges(valuation_text)
+            if not any(parsed.values()) and raw_price:
+                parsed = parse_valuation_ranges(raw_price)
+            row.update(parsed)
         purposes_raw = row.get("PurposesRaw") or ""
         overview_raw = row.get("OverviewRaw") or ""
         opinion_raw = row.get("OpinionRaw") or ""
@@ -614,7 +634,12 @@ def refresh_derived_list_fields(rows: list[dict]) -> None:
             row["FinalResultNote"] = "撤回"
         elif code in REPORT_SIDE:
             raw = row.get("FinalResultRaw") or ""
-            if raw:
+            acquired_raw = row.get("AcquiredSharesRaw") or ""
+            prorata_raw = row.get("ProrataCalculationRaw") or ""
+            if acquired_raw or prorata_raw:
+                row.update(parse_self_tob_report_counts(acquired_raw, prorata_raw))
+                row["FinalResultNote"] = judge_self_tob_result(acquired_raw, prorata_raw)
+            elif raw:
                 row["FinalResultNote"] = judge_tob_result(raw)
 
 
@@ -642,12 +667,17 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "TenderOfferAgent": "",
         "OpinionStance": "",
         "FinalResultNote": "",
+        "ApplicationCount": "",
+        "PurchaseCount": "",
+        "ProrataUsed": "",
         "TargetName": "",
         "LastEnrichedDocID": "",
     }
     last_enriched = ""
     withdrawn = False
     result_raw = ""
+    acquired_raw = ""
+    prorata_raw = ""
     report_after = ""
     for doc in docs_sorted:
         type_code = doc.get("DocTypeCode") or ""
@@ -703,6 +733,13 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 result_raw = doc["FinalResultRaw"]
             elif doc.get("FinalResultNote"):
                 result_raw = doc["FinalResultNote"]
+            if doc.get("AcquiredSharesRaw"):
+                acquired_raw = doc["AcquiredSharesRaw"]
+            if doc.get("ProrataCalculationRaw"):
+                prorata_raw = doc["ProrataCalculationRaw"]
+            for key in ("ApplicationCount", "PurchaseCount", "ProrataUsed"):
+                if doc.get(key):
+                    out[key] = doc[key]
             if doc.get("OfferPeriodStart"):
                 out["OfferPeriodStart"] = doc["OfferPeriodStart"]
             if doc.get("OfferPeriodEnd"):
@@ -710,7 +747,12 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
             if doc.get("AfterPurchaseRatio") or doc.get("OwnershipRatio"):
                 report_after = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
 
-    result = judge_tob_result(result_raw, withdrawn=withdrawn)
+    if acquired_raw or prorata_raw:
+        result = judge_self_tob_result(acquired_raw, prorata_raw, withdrawn=withdrawn)
+        if not out.get("ApplicationCount") and not out.get("PurchaseCount"):
+            out.update(parse_self_tob_report_counts(acquired_raw, prorata_raw))
+    else:
+        result = judge_tob_result(result_raw, withdrawn=withdrawn)
     out["FinalResultNote"] = result
     if result in {"不成立", "撤回"}:
         out["AfterPurchaseRatio"] = out.get("ExistingHoldingRatio") or ""
@@ -736,6 +778,8 @@ def compute_case_enrichment_status(case: dict, docs: list[dict]) -> str:
             "ExistingHoldingRatio",
             "OpinionStance",
             "FinalResultNote",
+            "ApplicationCount",
+            "PurchaseCount",
         )
         if case.get(key)
     )
