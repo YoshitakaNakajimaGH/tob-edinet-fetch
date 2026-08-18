@@ -25,7 +25,13 @@ import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 
-from output_store import load_all_list_rows, publish_tob_outputs
+from output_store import (
+    format_range_label,
+    load_all_list_rows,
+    load_range_list_rows,
+    publish_tob_outputs,
+    read_fetch_meta,
+)
 from edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
 from tob_common import (
     DEFAULT_DOC_TYPES,
@@ -140,6 +146,9 @@ def main() -> int:
     days = (end - start).days + 1
     print(f"期間: {start} 〜 {end}（{days} 日, mode={mode}）")
 
+    range_label = format_range_label(start, end)
+    print(f"範囲ラベル: {range_label}")
+
     incoming: list[dict] = []
     current = start
     index = 0
@@ -179,17 +188,19 @@ def main() -> int:
         rows = incoming
         added, updated = len(incoming), 0
     else:
-        existing = load_all_list_rows(output_dir)
+        existing = load_range_list_rows(output_dir, range_label)
         rows, added, updated = merge_document_rows(existing, incoming)
-        print(f"既存: {len(existing)} / 追加: {added} / メタデータ更新: {updated}")
+        print(f"既存({range_label}): {len(existing)} / 追加: {added} / メタデータ更新: {updated}")
 
     other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows, edinet_list)
     list_path, cases_path = publish_tob_outputs(
         output_dir,
         other,
         cases,
+        range_label=range_label,
         self_list_rows=issuer,
         self_case_rows=issuer_cases,
+        fetch_meta={"start": start, "end": end, "mode": mode},
     )
     print(f"他社株 書類: {len(other)} / 案件: {len(cases)}")
     print(f"自社株 書類: {len(issuer)} / 案件: {len(issuer_cases)}")

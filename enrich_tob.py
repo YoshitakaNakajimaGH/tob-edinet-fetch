@@ -31,6 +31,7 @@ from extract_fields import (
     clean_extracted_name,
     compute_holding_ratios,
     detect_mbo,
+    extract_parent_hint,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_basis_section,
@@ -44,7 +45,7 @@ from extract_fields import (
     parse_valuation_from_sources,
     summarize_price,
 )
-from output_store import load_all_list_rows, publish_tob_outputs
+from output_store import load_all_list_rows, publish_context_from_meta, publish_tob_outputs
 from edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
@@ -290,6 +291,8 @@ def apply_facts_to_row(
         sponsor_source = purposes_text or overview_text
         if should_update_field("SponsorHint", selected) and sponsor_source:
             row["SponsorHint"] = extract_sponsor_from_purposes(sponsor_source)
+        if should_update_field("ParentHint", selected) and sponsor_source:
+            row["ParentHint"] = extract_parent_hint(sponsor_source)
         if should_update_field("IsMBO", selected):
             row["IsMBO"] = detect_mbo([purposes_text, overview_text])
         if should_update_field("IntendedPurchaseRaw", selected) and intended_text:
@@ -495,6 +498,7 @@ def main() -> int:
             cases,
             self_list_rows=issuer,
             self_case_rows=issuer_cases,
+            **publish_context_from_meta(output_dir),
         )
         print(f"既存Rawから再計算（APIなし） fields={args.fields}")
         print(f"他社株: {list_out} ({len(other)} docs / {len(cases)} cases)")
@@ -531,6 +535,7 @@ def main() -> int:
         cases,
         self_list_rows=issuer,
         self_case_rows=issuer_cases,
+        **publish_context_from_meta(output_dir),
     )
     print(f"処理書類: {processed} fields={args.fields}（自社株 {len(issuer)} 件は他社株CSVから除外）")
     print(f"他社株: {list_out} ({len(other)} docs / {len(cases)} cases)")

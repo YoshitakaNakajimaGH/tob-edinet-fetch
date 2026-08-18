@@ -316,6 +316,11 @@ def parse_self_tob_report_counts(acquired_text: str, prorata_text: str = "") -> 
     }
 
 
+def detect_prorata_used(acquired_text: str, prorata_text: str = "") -> str:
+    """Return Yes/No for 按分 without populating application/purchase counts."""
+    return parse_self_tob_report_counts(acquired_text, prorata_text).get("ProrataUsed", "")
+
+
 def judge_self_tob_result(acquired_text: str, prorata_text: str = "", *, withdrawn: bool = False) -> str:
     """Classify a self-tender report as 成立 / 成立（按分） / 不成立 / 撤回."""
     if withdrawn:
@@ -472,6 +477,62 @@ def extract_sponsor_from_purposes(text: str) -> str:
         sponsor = _subject_before_wa(paragraph)
         if sponsor:
             return sponsor
+    return ""
+
+
+_PARENT_LABEL_PATTERN = re.compile(
+    r"([^。、\n]{2,80}?)[（(]以下[「『]"
+    r"(?:公開買付者親会社|.+?親会社|.+?ファンド|.+?グループ)"
+)
+
+
+def _clean_parent_candidate(name: str) -> str:
+    candidate = re.sub(r"\s+", "", strip_html(name)).strip("　 ")
+    candidate = re.sub(r"^[①②③④⑤⑥⑦⑧⑨⑩]\s*", "", candidate)
+    if not candidate or SPONSOR_SUBJECT_SKIP.match(candidate):
+        return ""
+    if len(candidate) < 2 or len(candidate) > 80:
+        return ""
+    return candidate
+
+
+def extract_parent_hint(text: str) -> str:
+    """Rule-based parent/sponsor name from 買付け等の目的 (no web search)."""
+    if not text:
+        return ""
+    plain = strip_html(text)
+    compact = re.sub(r"\s+", "", plain)
+
+    label_match = _PARENT_LABEL_PATTERN.search(plain)
+    if label_match:
+        cleaned = _clean_parent_candidate(label_match.group(1))
+        if cleaned:
+            return cleaned
+
+    for pattern in (
+        r"公開買付者親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
+        r"親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
+        r"その発行済(?:株式|出資|持分)(?:の全て)?を([^。、\n]{2,80}?)が(?:所有|保有)",
+    ):
+        match = re.search(pattern, compact)
+        if match:
+            cleaned = _clean_parent_candidate(match.group(1))
+            if cleaned:
+                return cleaned
+
+    sponsor = extract_sponsor_from_purposes(text)
+    if sponsor:
+        return sponsor
+
+    for pattern in (
+        r"((?:[A-ZＡ-Ｚ]{2,}(?:\s+[A-ZＡ-Ｚ]{2,}){0,4})[^。]{0,24}ファンド)",
+        r"((?:KKR|ＫＫＲ|ベイン|カーライル|ブラックストーン|Apollo|アポロ)[^。、]{0,24})",
+    ):
+        match = re.search(pattern, compact)
+        if match:
+            cleaned = _clean_parent_candidate(match.group(1))
+            if cleaned:
+                return cleaned
     return ""
 
 
