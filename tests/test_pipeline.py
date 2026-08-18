@@ -16,6 +16,8 @@ from tob_common import (
     LIST_FIELDS,
     assign_case_ids,
     build_cases,
+    edinet_view_url,
+    latest_outcome_doc,
     merge_document_rows,
     normalize_doc_row,
     partition_issuer_tenders,
@@ -282,6 +284,64 @@ class MergeAndCaseTests(unittest.TestCase):
         self.assertNotIn("UltimateParentNote", LIST_FIELDS)
         self.assertNotIn("ParentHint", LIST_FIELDS)
         self.assertNotIn("WithdrawalReason", CASE_FIELDS)
+
+    def test_latest_outcome_doc_prefers_report_or_withdrawal(self) -> None:
+        report = normalize_doc_row(
+            {
+                "DocID": "S100REPORT",
+                "DocTypeCode": "270",
+                "SubmitDateTime": "2026-03-01 10:00",
+            }
+        )
+        withdraw = normalize_doc_row(
+            {
+                "DocID": "S100WITHDRAW",
+                "DocTypeCode": "260",
+                "SubmitDateTime": "2026-02-15 10:00",
+            }
+        )
+        self.assertEqual(latest_outcome_doc([report, withdraw])["DocID"], "S100REPORT")
+        self.assertEqual(latest_outcome_doc([withdraw])["DocID"], "S100WITHDRAW")
+        self.assertIsNone(latest_outcome_doc([]))
+
+    def test_case_urls_include_filing_and_outcome(self) -> None:
+        rows = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100FILING",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2026-01-10 10:00",
+                    "FilerName": "Buyer KK",
+                    "FilerEdinetCode": "E11111",
+                    "SubjectEdinetCode": "E22222",
+                }
+            ),
+            normalize_doc_row(
+                {
+                    "DocID": "S100REPORT",
+                    "CaseID": "S100FILING",
+                    "ParentDocID": "S100FILING",
+                    "DocTypeCode": "270",
+                    "SubmitDateTime": "2026-03-01 10:00",
+                    "FilerName": "Buyer KK",
+                    "FilerEdinetCode": "E11111",
+                    "SubjectEdinetCode": "E22222",
+                    "FinalResultNote": "成立",
+                    "ExtractionStatus": "done",
+                }
+            ),
+        ]
+        assign_case_ids(rows)
+        case = build_cases(rows)[0]
+        self.assertEqual(
+            case["LatestFilingUrl"],
+            edinet_view_url("S100FILING"),
+        )
+        self.assertEqual(
+            case["LatestOutcomeUrl"],
+            edinet_view_url("S100REPORT"),
+        )
+        self.assertEqual(case["LatestOutcomeDocID"], "S100REPORT")
 
     def test_failed_offer_uses_existing_ratio_not_planned_after(self) -> None:
         rows = [

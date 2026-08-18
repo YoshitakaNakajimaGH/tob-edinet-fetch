@@ -113,7 +113,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | PlannedSharesPlanned | 合計行に上限・下限がなく、買付予定数だけ書かれている場合の株数 |
 | PurchaseConsideration | 第1部§8「買付け等に要する資金」の買付代金（a）（単位付き。例: `38,234,567,890円`） |
 | TenderOfferAgent | 第1部§7(1)①公開買付代理人（なければ表紙の代理人名称）。住所は除き会社名のみ |
-| LatestFilingUrl / LatestReportUrl | EDINET 閲覧画面へのリンク（届出書・報告書）。APIキー不要 |
+| LatestFilingUrl / LatestOutcomeUrl | EDINET 閲覧画面へのリンク（届出書／報告書または撤回書）。APIキー不要 |
 | OpinionStance | 賛同 / 反対 / 意見留保 / 要確認 |
 | FinalResultNote | `成立` / `成立（按分）` / `不成立` / `撤回`。報告書の成否本文から判定。撤回届出があれば撤回 |
 | TargetDelistingNote | 対象会社の上場廃止状況。`上場廃止済` / `上場廃止予定` / `上場維持`（意見表明本文と EDINET 提出者リストの上場区分から推定） |

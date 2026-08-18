@@ -440,7 +440,7 @@ CASE_FIELDS = [
     "ProrataUsed",
     "TargetDelistingNote",
     "LatestFilingUrl",
-    "LatestReportUrl",
+    "LatestOutcomeUrl",
     "FirstFilingDate",
     "LastUpdateDate",
     "HasOpinion",
@@ -452,6 +452,7 @@ CASE_FIELDS = [
     "LatestFilingDocID",
     "LatestOpinionDocID",
     "LatestReportDocID",
+    "LatestOutcomeDocID",
     "LastEnrichedDocID",
     "DocIDList",
 ]
@@ -750,6 +751,20 @@ def latest_doc(docs: list[dict], type_codes: set[str]) -> dict | None:
     if not matched:
         return None
     return max(matched, key=lambda d: d.get("SubmitDateTime") or "")
+
+
+def latest_outcome_doc(docs: list[dict]) -> dict | None:
+    """Return the latest report or withdrawal document for a TOB case."""
+    candidates: list[dict] = []
+    report = latest_doc(docs, REPORT_SIDE)
+    withdraw = latest_doc(docs, WITHDRAW_SIDE)
+    if report:
+        candidates.append(report)
+    if withdraw:
+        candidates.append(withdraw)
+    if not candidates:
+        return None
+    return max(candidates, key=lambda d: d.get("SubmitDateTime") or "")
 
 
 def earliest_doc(docs: list[dict], type_codes: set[str]) -> dict | None:
@@ -1108,6 +1123,7 @@ def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> 
         latest_filing = latest_doc(docs_sorted, FILING_SIDE)
         latest_opinion = latest_doc(docs_sorted, OPINION_SIDE)
         latest_report = latest_doc(docs_sorted, REPORT_SIDE)
+        latest_outcome = latest_outcome_doc(docs_sorted)
         overlay = overlay_case_from_docs(docs_sorted)
         if overlay.get("TargetName"):
             target_name = overlay["TargetName"]
@@ -1134,7 +1150,8 @@ def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> 
             "LatestFilingUrl": edinet_view_url((latest_filing or {}).get("DocID", "")),
             "LatestOpinionDocID": (latest_opinion or {}).get("DocID", ""),
             "LatestReportDocID": (latest_report or {}).get("DocID", ""),
-            "LatestReportUrl": edinet_view_url((latest_report or {}).get("DocID", "")),
+            "LatestOutcomeDocID": (latest_outcome or {}).get("DocID", ""),
+            "LatestOutcomeUrl": edinet_view_url((latest_outcome or {}).get("DocID", "")),
             "DocCount": str(len(docs_sorted)),
             "DocIDList": ";".join(doc_ids),
             **overlay,
