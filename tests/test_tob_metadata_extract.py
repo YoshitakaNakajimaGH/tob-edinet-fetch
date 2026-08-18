@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from extract_fields import (
+from tob.extract_fields import (
     detect_mbo,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
@@ -19,7 +19,7 @@ from extract_fields import (
     parse_valuation_from_sources,
     parse_valuation_ranges,
 )
-from tob_common import columns_for_enrich_groups, parse_enrich_groups
+from tob.tob_common import columns_for_enrich_groups, parse_enrich_groups
 
 
 class SponsorHintTests(unittest.TestCase):

@@ -9,8 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from extract_fields import judge_self_tob_result, parse_self_tob_report_counts
-from taxonomy import TaxonomyCatalog
+from tob.extract_fields import judge_self_tob_result, parse_self_tob_report_counts
+from tob.taxonomy import TaxonomyCatalog
 
 
 class SelfTobReportCountTests(unittest.TestCase):
@@ -40,13 +40,13 @@ class SelfTobReportCountTests(unittest.TestCase):
 
 class IssuerTaxonomyTests(unittest.TestCase):
     def test_issuer_mapping_loads(self) -> None:
-        catalog = TaxonomyCatalog(Path("taxonomy"))
+        catalog = TaxonomyCatalog(ROOT / "tob" / "taxonomy")
         mapping = catalog.mapping_for_year(2021, issuer=True)
         self.assertIn("ton", mapping)
         self.assertIn("jptoi_cor:PriceOfPurchaseEtcTextBlock", mapping["ton"]["offer_price_text"])
 
     def test_detects_issuer_facts(self) -> None:
-        catalog = TaxonomyCatalog(Path("taxonomy"))
+        catalog = TaxonomyCatalog(ROOT / "tob" / "taxonomy")
         facts = {"jptoi_cor:FundForPurchaseEtcTextBlock": ["dummy"]}
         year = catalog.detect_from_facts(facts, issuer=True)
         self.assertEqual(year, "2026")

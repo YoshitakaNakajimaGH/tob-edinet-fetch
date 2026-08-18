@@ -17,8 +17,8 @@ import sys
 import time
 from pathlib import Path
 
-from edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
-from enrich_tob import (
+from edinet.edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
+from tob.enrich_tob import (
     AMENDMENT_TYPES,
     apply_names,
     fetch_document_zip,
@@ -29,7 +29,7 @@ from enrich_tob import (
     summarize_text,
     utc_now_iso,
 )
-from extract_fields import (
+from tob.extract_fields import (
     clean_extracted_name,
     detect_prorata_used,
     extract_tender_offer_agent,
@@ -38,9 +38,9 @@ from extract_fields import (
     parse_purchase_consideration,
     summarize_price,
 )
-from output_store import load_all_list_rows, publish_context_from_meta, publish_tob_outputs
-from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
-from tob_common import (
+from tob.output_store import load_all_list_rows, publish_context_from_meta, publish_tob_outputs
+from tob.taxonomy import TaxonomyCatalog, resolve_taxonomy_year
+from tob.tob_common import (
     DOC_TYPE_TO_TAXONOMY,
     FILING_SIDE,
     REPORT_SIDE,

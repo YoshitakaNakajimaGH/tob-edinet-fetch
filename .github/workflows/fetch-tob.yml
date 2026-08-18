@@ -37,6 +37,11 @@ on:
           - "2019"
           - "2018"
           - "2017"
+      sleep_seconds:
+        description: "API呼び出し間隔（秒）。429等が出たら1.0〜2.0に増やす"
+        required: false
+        default: "0.5"
+        type: string
   schedule:
     - cron: "0 0 * * 1-5"
 
@@ -60,11 +65,12 @@ jobs:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            python fetch_tob.py --recent-days 35
+            python -m tob.fetch_tob --recent-days 35
           else
-            python fetch_tob.py \
+            python -m tob.fetch_tob \
               --from-year "${{ github.event.inputs.start_year }}" \
-              --to-year "${{ github.event.inputs.end_year }}"
+              --to-year "${{ github.event.inputs.end_year }}" \
+              --sleep "${{ github.event.inputs.sleep_seconds }}"
           fi
 
       - name: Commit CSV if changed

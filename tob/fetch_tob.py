@@ -25,15 +25,15 @@ import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 
-from output_store import (
+from edinet.edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
+from tob.output_store import (
     format_range_label,
     load_all_list_rows,
     load_range_list_rows,
     publish_tob_outputs,
     read_fetch_meta,
 )
-from edinet_code_list import DEFAULT_CACHE_PATH, ensure_edinet_code_list
-from tob_common import (
+from tob.tob_common import (
     DEFAULT_DOC_TYPES,
     DEFAULT_RECENT_DAYS,
     DOC_TYPE_NAMES,
@@ -116,7 +116,12 @@ def main() -> int:
         default=str(DEFAULT_CACHE_PATH),
         help="EDINET提出者リストCSVのキャッシュ先",
     )
-    parser.add_argument("--sleep", type=float, default=1.2, help="API呼び出し間隔（秒）")
+    parser.add_argument(
+        "--sleep",
+        type=float,
+        default=0.5,
+        help="API呼び出し間隔（秒）。キャッシュ未命中時のみ待機。429等が出たら増やす",
+    )
     parser.add_argument("--no-cache", action="store_true", help="キャッシュを使わない")
     parser.add_argument(
         "--replace",
