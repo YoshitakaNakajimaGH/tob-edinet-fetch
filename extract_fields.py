@@ -329,6 +329,156 @@ def has_delisting_planned_signal(text: str) -> bool:
     )
 
 
+SPONSOR_SUBJECT_SKIP = re.compile(
+    r"^(?:公開買付者|対象者|当社|本公開|普通株式|株券|本書|前記|上記|なお|また|さらに|ただし|但し|"
+    r"公開買付者ら|対象者グループ|本取引|本公開買付|本デュー)"
+)
+
+
+def _split_paragraphs(text: str) -> list[str]:
+    if not text:
+        return []
+    text = strip_html(text)
+    chunks = re.split(r"\n\s*\n+", text)
+    if len(chunks) <= 1:
+        chunks = re.split(r"(?<=[。．])\s+", text)
+    return [chunk.strip() for chunk in chunks if chunk.strip()]
+
+
+def _subject_before_wa(text: str) -> str:
+    match = re.match(r"^(.{1,80}?)は、", text.strip())
+    if not match:
+        return ""
+    subject = match.group(1).strip()
+    subject = re.sub(r"^[（(][^）)]*[）)]\s*", "", subject)
+    subject = re.sub(r"^[①②③④⑤⑥⑦⑧⑨⑩]\s*", "", subject)
+    if not subject or SPONSOR_SUBJECT_SKIP.match(subject):
+        return ""
+    if len(subject) < 2:
+        return ""
+    return subject[:80]
+
+
+def extract_overview_section(text: str) -> str:
+    """Return the (1) 本公開買付の概要 subsection from purposes/overview text."""
+    if not text:
+        return ""
+    plain = strip_html(text)
+    match = re.search(
+        r"(?:[(（]?\s*[1１]\s*[)）]?\s*)?(?:【)?本公開買付(?:け)?の概要(?:】)?(.+?)"
+        r"(?=(?:[(（]?\s*[2２]\s*[)）]?)|(?:【)?本公開買付(?:け)?の|算定の|"
+        r"(?:[(（]?\s*[2２]\s*[)）]?\s*)?(?:【)?本公開買付|$)",
+        plain,
+        flags=re.DOTALL,
+    )
+    if match:
+        return match.group(1).strip()
+    return ""
+
+
+def extract_sponsor_from_purposes(text: str) -> str:
+    """Extract the subject before 'は、' in the 2nd paragraph of 本公開買付の概要."""
+    overview = extract_overview_section(text)
+    if not overview:
+        overview = text
+    paragraphs = _split_paragraphs(overview)
+    if len(paragraphs) >= 2:
+        sponsor = _subject_before_wa(paragraphs[1])
+        if sponsor:
+            return sponsor
+    for paragraph in paragraphs[1:3]:
+        sponsor = _subject_before_wa(paragraph)
+        if sponsor:
+            return sponsor
+    return ""
+
+
+MBO_PATTERN = re.compile(
+    r"ＭＢＯ|MBO|マネジメント[・･]?バイアウト|"
+    r"経営陣(?:による|が).{0,24}(?:公開買付|ＴＯＢ|TOB)|"
+    r"本ＭＢＯ(?:公開買付|取引)"
+)
+
+
+def detect_mbo(texts: list[str]) -> str:
+    """Return 'Yes' when the filing narrative indicates an MBO."""
+    combined = "\n".join(text for text in texts if text)
+    if not combined:
+        return ""
+    compact = re.sub(r"\s+", "", strip_html(combined))
+    if "マネジメントプレゼンテーション" in compact:
+        compact = compact.replace("マネジメントプレゼンテーション", "")
+    return "Yes" if MBO_PATTERN.search(compact) else ""
+
+
+def extract_valuation_basis_section(text: str, *, limit: int = 2500) -> str:
+    """Return the 算定の基礎 portion of the price text block."""
+    if not text:
+        return ""
+    plain = strip_html(text)
+    match = re.search(
+        r"算定の基礎(.+?)(?:算定の経緯|（本公開買付価格|（注|※|$)",
+        plain,
+        flags=re.DOTALL,
+    )
+    if match:
+        return match.group(0)[:limit]
+    idx = plain.find("算定の基礎")
+    if idx >= 0:
+        return plain[idx : idx + limit]
+    return ""
+
+
+def _parse_yen_range(label_pattern: str, text: str) -> tuple[str, str]:
+    match = re.search(
+        rf"{label_pattern}[：:\s]*([\d,，]+)\s*円\s*(?:から|～|〜|~|-)\s*([\d,，]+)\s*円",
+        text,
+    )
+    if not match:
+        return "", ""
+    return _comma_number(match.group(1)), _comma_number(match.group(2))
+
+
+def parse_valuation_ranges(text: str) -> dict[str, str]:
+    """Parse per-method share-value ranges from 算定の基礎."""
+    basis = extract_valuation_basis_section(text, limit=5000) or strip_html(text)
+    compact = re.sub(r"\s+", " ", basis)
+    market_min, market_max = _parse_yen_range(r"市場株価(?:法|平均法)", compact)
+    comparable_min, comparable_max = _parse_yen_range(
+        r"類似(?:上場)?(?:会社)?比較法",
+        compact,
+    )
+    dcf_min, dcf_max = _parse_yen_range(r"(?:DC|ＤＣ)F法", compact)
+    return {
+        "ValuationMarketMin": market_min,
+        "ValuationMarketMax": market_max,
+        "ValuationComparableMin": comparable_min,
+        "ValuationComparableMax": comparable_max,
+        "ValuationDCFMin": dcf_min,
+        "ValuationDCFMax": dcf_max,
+    }
+
+
+def parse_planned_purchase_bounds(text: str) -> tuple[str, str]:
+    """Return (min shares, max shares) from section 4(3) intended purchase text."""
+    if not text:
+        return "", ""
+    compact = re.sub(r"\s+", "", strip_html(text))
+    no_floor = bool(re.search(r"下限(?:及び上限)?[をは]?(?:設定して|定めて)おりません", compact))
+    no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", compact))
+    floor = "" if no_floor else _last_bound(compact, "下限")
+    cap = "" if no_cap else _last_bound(compact, "上限")
+    if floor is not None:
+        floor = f"{floor:,}"
+    else:
+        floor = ""
+    if cap is not None:
+        cap = f"{cap:,}"
+    else:
+        cap = ""
+    return floor, cap
+
+
 def judge_target_delisting(
     result_note: str,
     listing_category: str,
