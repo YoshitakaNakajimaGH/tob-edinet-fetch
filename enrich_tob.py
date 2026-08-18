@@ -31,7 +31,6 @@ from extract_fields import (
     clean_extracted_name,
     compute_holding_ratios,
     detect_mbo,
-    extract_parent_hint,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_basis_section,
@@ -291,8 +290,6 @@ def apply_facts_to_row(
         sponsor_source = purposes_text or overview_text
         if should_update_field("SponsorHint", selected) and sponsor_source:
             row["SponsorHint"] = extract_sponsor_from_purposes(sponsor_source)
-        if should_update_field("ParentHint", selected) and sponsor_source:
-            row["ParentHint"] = extract_parent_hint(sponsor_source)
         if should_update_field("IsMBO", selected):
             row["IsMBO"] = detect_mbo([purposes_text, overview_text])
         if should_update_field("IntendedPurchaseRaw", selected) and intended_text:

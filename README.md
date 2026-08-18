@@ -106,13 +106,14 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | ExistingHoldingRatio | すでに買付者＋特別関係者が持つ株券等所有割合 |
 | SpecialRelatedHoldingRatio | 特別関係者だけの既保有割合 |
 | AfterPurchaseRatio | 買付後の実際の株券等所有割合。届出書の予定値（100%など）は使わない。不成立・撤回なら既保有と同じ。実施中は空 |
-| SponsorHint | 届出書「買付け等の目的」の（１）本公開買付の概要・二段落目先頭の「Xは、」から取ったスポンサー候補（補助情報） |
+| SponsorHint | 届出書「買付け等の目的」の（１）本公開買付の概要・二段落目先頭の「Xは、」から取ったスポンサー候補（**案件CSVの2列目**） |
 | IsMBO | 本文に MBO / マネジメント・バイアウト等の記載があれば `Yes` |
 | ValuationMarketMin / Max など | 第1部§4(2)「算定の基礎」の市場株価法・類似上場会社比較法・DCF法の1株当たり株式価値レンジ（円） |
 | PlannedSharesMin / Max | 第1部§4(3)「買付予定の株券等の数」の**合計**行の下限・上限（株数） |
 | PlannedSharesPlanned | 合計行に上限・下限がなく、買付予定数だけ書かれている場合の株数 |
 | PurchaseConsideration | 第1部§8「買付け等に要する資金」の買付代金（a）（単位付き。例: `38,234,567,890円`） |
-| TenderOfferAgent | 第1部§7(1)①公開買付代理人（なければ表紙の代理人名称） |
+| TenderOfferAgent | 第1部§7(1)①公開買付代理人（なければ表紙の代理人名称）。住所は除き会社名のみ |
+| LatestFilingUrl / LatestOutcomeUrl | EDINET 閲覧画面へのリンク（届出書／報告書または撤回書）。APIキー不要 |
 | OpinionStance | 賛同 / 反対 / 意見留保 / 要確認 |
 | FinalResultNote | `成立` / `成立（按分）` / `不成立` / `撤回`。報告書の成否本文から判定。撤回届出があれば撤回 |
 | TargetDelistingNote | 対象会社の上場廃止状況。`上場廃止済` / `上場廃止予定` / `上場維持`（意見表明本文と EDINET 提出者リストの上場区分から推定） |
@@ -128,6 +129,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 | 列 | 意味 |
 |----|------|
 | SubmitDateTime / DocTypeName | 提出日時・書類名 |
+| EdinetDocUrl | EDINET 閲覧画面 URL（クリックで提出書類を確認） |
 | OfferorName / TargetSecCode / TargetName | 買付者・対象会社の証券コード・対象会社名 |
 | OfferPrice / OfferPeriodStart / End | その書類に書かれた価格・期間 |
 | ExistingHoldingRatio | 買付者＋特別関係者の既保有割合 |
