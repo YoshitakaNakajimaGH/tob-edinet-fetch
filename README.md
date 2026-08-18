@@ -6,7 +6,7 @@
 
 ## 出力フォルダ
 
-普段見るのは **`output/current/`** です。Fetch / Enrich のたびに、同じ内容を日付付きでも残します。日付は **日本時間** です。
+普段見るのは **`output/current/`** です。Fetch / Enrich のたびに、同じ内容を取得範囲ラベル付きスナップショットとしても残します。
 
 ```
 output/
@@ -15,12 +15,13 @@ output/
     tob_cases.csv         … 最新の他社株・案件（業務確認はここ）
     self_tob_list.csv     … 自己株式の公開買付け（書類）
     self_tob_cases.csv    … 自己株式の公開買付け（案件）
+    fetch_meta.json       … 直近 Fetch の取得範囲（Enrich が参照）
   snapshots/
-    2026/08/tob_list_20260817.csv
-    2026/08/tob_cases_20260817.csv
-    2026/08/self_tob_list_20260817.csv
-    2026/08/self_tob_cases_20260817.csv
-    …（種類ごとに直近20日分）
+    tob_list_202001-202012_0001.csv
+    tob_cases_202001-202012_0001.csv
+    self_tob_list_202001-202012_0001.csv
+    self_tob_cases_202001-202012_0001.csv
+    …（取得範囲ごと・種類ごとに直近20件）
     trash/                … 21件目以降を移動。さらに古い20件を超えたら削除
 ```
 
@@ -33,7 +34,7 @@ output/
 
 意見表明報告書は独立した案件行にはしません。同じ買付者・対象会社の届出／報告書の行に `OpinionStance`（賛同／反対）を載せます。
 
-同じ日に2回更新すると、その日のスナップショットは上書きされます（スロットは増えません）。
+同じ取得範囲で同じ日（日本時間）に2回以上更新すると、スナップショット末尾の連番が `_0002`、`_0003` … と増えます。別の取得範囲（例: `202001-202012` と `202401-202412`）は別ファイルとして保持されます。
 
 普段の業務確認は `current/tob_cases.csv`、過去の時点の確認は `snapshots/`、誤って古くなった分は `snapshots/trash/` を見ます。
 
@@ -56,7 +57,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 3. 左の **Fetch TOB** を選ぶ
 4. **Run workflow**
 5. ブランチはマージ後の `master` を選び、**開始年 / 終了年** をドロップダウンから指定（例: `2024` と `2026`）
-6. 完了後、`output/current/tob_list.csv` が **DocID 単位で追加・更新** され、`tob_cases.csv` が再生成される。同じ内容が `output/snapshots/年/月/tob_list_YYYYMMDD.csv` にも残る
+6. 完了後、`output/current/tob_list.csv` が **DocID 単位で追加・更新** され、`tob_cases.csv` が再生成される。同じ内容が `output/snapshots/tob_list_YYYYMM-YYYYMM_0001.csv` にも残る
 
 終了年が今年の場合、取得の終わりは **実行日** までです。既存の詳細列は消しません。
 
@@ -163,7 +164,7 @@ APIキー発行: https://api.edinet-fsa.go.jp/api/auth/index.aspx?mode=1
 - Fetch は既存CSVを上書き消去せず、DocID で upsert する
 - 自己株式の公開買付けは `self_tob_*.csv` に分け、他社株の `tob_cases.csv` からは外す
 - 意見表明だけの行は作らず、同じ会社ペアの届出案件に賛同／反対を載せる
-- 結果は `output/current/` が最新。日付付きコピーは `output/snapshots/` に最大20件。それより古いものは `snapshots/trash/` へ移動
+- 結果は `output/current/` が最新。取得範囲ラベル付きコピーは `output/snapshots/` に範囲ごと最大20件。それより古いものは `snapshots/trash/` へ移動
 
 ### OfferPriceRaw の文字数上限について
 
@@ -192,8 +193,8 @@ python -m unittest discover -s tests -t . -v
 - `edinet_code_list.py` … EDINET 提出者リスト（証券コード・上場区分）の取得とキャッシュ
 - `tob_common.py` … CSV列定義・案件派生
 - `taxonomy/` … 年版タクソノミの選択、年度別マッピング、公式資料の抜粋
-- `output_store.py` … current / 日付付きスナップショット / ごみ箱
+- `output_store.py` … current / 取得範囲別スナップショット / ごみ箱
 - `.github/workflows/fetch-tob.yml` … 一覧の手動（年指定）／平日の直近35日
 - `.github/workflows/enrich-tob.yml` … 詳細抽出（手動のみ）
 - `output/current/` … 最新の他社株・自社株CSV
-- `output/snapshots/` … 日付付き履歴（直近20件）と `trash/`
+- `output/snapshots/` … 取得範囲ラベル付き履歴（範囲ごと直近20件）と `trash/`

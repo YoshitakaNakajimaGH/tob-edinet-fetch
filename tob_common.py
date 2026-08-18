@@ -12,6 +12,7 @@ from pathlib import Path
 from extract_fields import (
     clean_extracted_name,
     detect_mbo,
+    extract_parent_hint,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_from_purposes,
@@ -99,6 +100,7 @@ LIST_FIELDS = [
     "SubmitDateTime",
     "DocTypeName",
     "OfferorName",
+    "ParentHint",
     "TargetSecCode",
     "TargetName",
     "OfferPrice",
@@ -178,6 +180,33 @@ LIST_FIELDS = [
 
 EXTRACTION_FIELDS = [key for key in LIST_FIELDS if key not in METADATA_FIELDS]
 
+_SELF_LIST_EXCLUDE = frozenset(
+    {
+        "ExistingHoldingRatio",
+        "SpecialRelatedHoldingRatio",
+        "AfterPurchaseRatio",
+        "SponsorHint",
+        "IsMBO",
+        "ParentHint",
+        "OpinionStance",
+        "FinalResultNote",
+        "ApplicationCount",
+        "PurchaseCount",
+        "ExistingHoldingRatioElement",
+        "AfterPurchaseRatioElement",
+        "OpinionRaw",
+        "OpinionElement",
+        "FinalResultRaw",
+        "FinalResultElement",
+        "AcquiredSharesRaw",
+        "AcquiredSharesElement",
+        "ProrataCalculationRaw",
+        "ProrataCalculationElement",
+    }
+)
+
+SELF_LIST_FIELDS = [key for key in LIST_FIELDS if key not in _SELF_LIST_EXCLUDE]
+
 # Selective enrichment groups (GitHub Actions / CLI --fields).
 ENRICH_GROUP_NAMES = (
     "all",
@@ -244,6 +273,7 @@ ENRICH_FIELD_GROUPS: dict[str, frozenset[str]] = {
     "sponsor": frozenset(
         {
             "SponsorHint",
+            "ParentHint",
             "IsMBO",
             "PurposesRaw",
             "PurposesElement",
@@ -313,7 +343,9 @@ SELF_ENRICH_FIELD_GROUPS: dict[str, frozenset[str]] = {
             "OfferPeriodElement",
             "OfferorName",
             "TargetName",
-            "FinalResultNote",
+            "WithdrawalReason",
+            "WithdrawalReasonRaw",
+            "WithdrawalReasonElement",
             "TaxonomyYear",
             "TaxonomyDate",
             "TaxonomySource",
@@ -322,7 +354,15 @@ SELF_ENRICH_FIELD_GROUPS: dict[str, frozenset[str]] = {
     "planned_shares": ENRICH_FIELD_GROUPS["planned_shares"],
     "fund": ENRICH_FIELD_GROUPS["fund"],
     "agent": ENRICH_FIELD_GROUPS["agent"],
-    "result": ENRICH_FIELD_GROUPS["result"],
+    "result": frozenset(
+        {
+            "ProrataUsed",
+            "OfferPeriodStart",
+            "OfferPeriodEnd",
+            "OfferPeriodRaw",
+            "OfferPeriodElement",
+        }
+    ),
 }
 
 
@@ -362,6 +402,7 @@ def should_update_field(field: str, selected: frozenset[str] | None) -> bool:
 
 CASE_FIELDS = [
     "OfferorName",
+    "ParentHint",
     "TargetSecCode",
     "TargetName",
     "Status",
@@ -404,6 +445,25 @@ CASE_FIELDS = [
     "LastEnrichedDocID",
     "DocIDList",
 ]
+
+_SELF_CASE_EXCLUDE = frozenset(
+    {
+        "ExistingHoldingRatio",
+        "SpecialRelatedHoldingRatio",
+        "AfterPurchaseRatio",
+        "SponsorHint",
+        "IsMBO",
+        "ParentHint",
+        "OpinionStance",
+        "FinalResultNote",
+        "ApplicationCount",
+        "PurchaseCount",
+        "HasOpinion",
+        "LatestOpinionDocID",
+    }
+)
+
+SELF_CASE_FIELDS = [key for key in CASE_FIELDS if key not in _SELF_CASE_EXCLUDE]
 
 
 def empty_extraction() -> dict[str, str]:
@@ -824,6 +884,8 @@ def refresh_derived_list_fields(
                         row["ValuationBasisRaw"] = purposes_basis[:2500]
         if should_update_field("SponsorHint", selected) and (purposes_raw or overview_raw):
             row["SponsorHint"] = extract_sponsor_from_purposes(purposes_raw or overview_raw)
+        if should_update_field("ParentHint", selected) and (purposes_raw or overview_raw):
+            row["ParentHint"] = extract_parent_hint(purposes_raw or overview_raw)
         if should_update_field("IsMBO", selected):
             row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, row.get("OpinionRaw") or ""])
         intended_raw = row.get("IntendedPurchaseRaw") or ""
@@ -873,6 +935,7 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "SpecialRelatedHoldingRatio": "",
         "AfterPurchaseRatio": "",
         "SponsorHint": "",
+        "ParentHint": "",
         "IsMBO": "",
         "ValuationMarketMin": "",
         "ValuationMarketMax": "",
@@ -926,6 +989,7 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["SpecialRelatedHoldingRatio"] = doc["SpecialRelatedHoldingRatio"]
             for key in (
                 "SponsorHint",
+                "ParentHint",
                 "IsMBO",
                 "ValuationMarketMin",
                 "ValuationMarketMax",

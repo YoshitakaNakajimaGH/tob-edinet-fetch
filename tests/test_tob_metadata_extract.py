@@ -11,6 +11,7 @@ if str(ROOT) not in sys.path:
 
 from extract_fields import (
     detect_mbo,
+    extract_parent_hint,
     extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_from_purposes,
@@ -176,6 +177,22 @@ class PurchaseConsiderationTests(unittest.TestCase):
     def test_parses_fullwidth_yen_marker(self) -> None:
         text = "買付代金（円）(a)97,809,894,000金銭以外"
         self.assertEqual(parse_purchase_consideration(text), "97,809,894,000円")
+
+
+class ParentHintTests(unittest.TestCase):
+    def test_parent_label_pattern(self) -> None:
+        text = "株式会社ABCホールディングス（以下「公開買付者親会社」という。）は"
+        self.assertEqual(extract_parent_hint(text), "株式会社ABCホールディングス")
+
+    def test_ownership_pattern(self) -> None:
+        text = "その発行済株式の全てを株式会社テスト親が所有しており"
+        self.assertEqual(extract_parent_hint(text), "株式会社テスト親")
+
+    def test_falls_back_to_sponsor_extraction(self) -> None:
+        text = "本公開買付けは、KKR Asia Holdings L.P.（以下「KKR」という。）が行う。"
+        hint = extract_parent_hint(text)
+        self.assertTrue(hint)
+        self.assertIn("KKR", hint)
 
 
 class TenderOfferAgentTests(unittest.TestCase):

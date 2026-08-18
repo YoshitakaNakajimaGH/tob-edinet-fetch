@@ -6,7 +6,7 @@ self_tob_list.csv の各書類行について XBRL (type=5) から自社株TOB�
 届出書 (240/250) から:
   買付期間、普通株式の買付価格、合計の買付予定数、公開買付代理人、買付代金
 報告書 (270/280) から:
-  応募数、買付数、按分の有無
+  買付期間、按分の有無
 """
 
 from __future__ import annotations
@@ -31,15 +31,14 @@ from enrich_tob import (
 )
 from extract_fields import (
     clean_extracted_name,
+    detect_prorata_used,
     extract_tender_offer_agent,
-    judge_self_tob_result,
     parse_period_dates,
     parse_planned_purchase_counts,
     parse_purchase_consideration,
-    parse_self_tob_report_counts,
     summarize_price,
 )
-from output_store import load_all_list_rows, publish_tob_outputs
+from output_store import load_all_list_rows, publish_context_from_meta, publish_tob_outputs
 from taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob_common import (
     DOC_TYPE_TO_TAXONOMY,
@@ -47,6 +46,7 @@ from tob_common import (
     REPORT_SIDE,
     WITHDRAW_SIDE,
     SELF_ENRICH_FIELD_GROUPS,
+    SELF_ENRICH_GROUP_NAMES,
     apply_name_fallbacks,
     columns_for_enrich_groups,
     parse_enrich_groups,
@@ -60,9 +60,9 @@ def expected_fields_for_issuer_type(type_code: str) -> tuple[str, ...]:
     if type_code in FILING_SIDE:
         return ("OfferPrice", "OfferPeriodStart", "OfferPeriodEnd", "PlannedSharesPlanned")
     if type_code in REPORT_SIDE:
-        return ("PurchaseCount", "ApplicationCount", "OfferPeriodStart")
+        return ("OfferPeriodStart", "ProrataUsed")
     if type_code in WITHDRAW_SIDE:
-        return ("FinalResultNote",)
+        return ("WithdrawalReason",)
     return ()
 
 
@@ -139,20 +139,10 @@ def apply_issuer_facts_to_row(
         if should_update_field("ProrataCalculationRaw", selected) and prorata_text:
             row["ProrataCalculationRaw"] = prorata_text[:2000]
             row["ProrataCalculationElement"] = prorata_eid
-        if acquired_text or prorata_text:
-            if selected is None or selected & {
-                "ApplicationCount",
-                "PurchaseCount",
-                "ProrataUsed",
-                "FinalResultNote",
-            }:
-                row.update(parse_self_tob_report_counts(acquired_text, prorata_text))
-                row["FinalResultNote"] = judge_self_tob_result(acquired_text, prorata_text)
-                row["FinalResultElement"] = acquired_eid or prorata_eid
+        if should_update_field("ProrataUsed", selected) and (acquired_text or prorata_text):
+            row["ProrataUsed"] = detect_prorata_used(acquired_text, prorata_text)
 
     if type_code in WITHDRAW_SIDE or tax_key == "wto":
-        if should_update_field("FinalResultNote", selected):
-            row["FinalResultNote"] = "撤回"
         reason_text, reason_eid = first_fact(facts, fields.get("withdrawal_reason_text", []))
         period_text, period_eid = first_fact(facts, fields.get("period_text", []))
         if should_update_field("WithdrawalReasonRaw", selected) and reason_text:
@@ -301,6 +291,7 @@ def main() -> int:
             cases,
             self_list_rows=issuer,
             self_case_rows=issuer_cases,
+            **publish_context_from_meta(output_dir),
         )
         print(f"既存Rawから再計算（APIなし） fields={args.fields}")
         print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
@@ -336,6 +327,7 @@ def main() -> int:
         cases,
         self_list_rows=issuer,
         self_case_rows=issuer_cases,
+        **publish_context_from_meta(output_dir),
     )
     print(f"処理書類: {processed} fields={args.fields}（自社株のみ）")
     print(f"自社株: {len(issuer)} docs / {len(issuer_cases)} cases")
