@@ -16,11 +16,15 @@ from tob.output_store import (
     format_range_label,
     list_range_snapshot_files,
     list_trash_range_files,
+    load_all_list_rows,
     next_range_sequence,
     publish_csv,
+    publish_tob_outputs,
     range_snapshot_filename,
+    read_fetch_meta,
     resolve_current_csv,
 )
+from tob.tob_common import merge_document_rows, normalize_doc_row
 
 
 class OutputStoreTests(unittest.TestCase):
@@ -111,6 +115,72 @@ class OutputStoreTests(unittest.TestCase):
 
             os.utime(snap, (noon_jst, noon_jst))
             self.assertEqual(next_range_sequence(root, "tob_list", self.RANGE, day=date(2026, 8, 17)), 2)
+
+    def test_recent_merge_preserves_existing_rows_and_fetch_meta(self) -> None:
+        """Simulates --recent-days upsert: merge into current CSV, keep full-range meta."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            full_range = "201701-202608"
+            full_start = date(2017, 1, 1)
+            full_end = date(2026, 8, 18)
+            existing = [
+                normalize_doc_row(
+                    {
+                        "DocID": f"S100{i:04d}",
+                        "DocTypeCode": "240",
+                        "SubmitDateTime": "2017-01-10 10:00",
+                        "FilerName": "Buyer KK",
+                        "FilerEdinetCode": "E11111",
+                        "SubjectEdinetCode": "E22222",
+                    }
+                )
+                for i in range(50)
+            ]
+            publish_tob_outputs(
+                root,
+                existing,
+                [],
+                range_label=full_range,
+                fetch_meta={"start": full_start, "end": full_end, "mode": "years"},
+            )
+            prior = read_fetch_meta(root)
+            self.assertIsNotNone(prior)
+            assert prior is not None
+
+            incoming = [
+                {
+                    "DocID": "S100NEW1",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2026-08-20 10:00",
+                    "FilerName": "New Buyer",
+                    "FilerEdinetCode": "E99999",
+                    "SubjectEdinetCode": "E88888",
+                }
+            ]
+            merged, added, updated = merge_document_rows(load_all_list_rows(root), incoming)
+            self.assertEqual(added, 1)
+            self.assertEqual(len(merged), 51)
+
+            recent_end = date(2026, 8, 20)
+            publish_tob_outputs(
+                root,
+                merged,
+                [],
+                range_label=str(prior["range_label"]),
+                fetch_meta={
+                    "start": date.fromisoformat(str(prior["start"])),
+                    "end": recent_end,
+                    "mode": str(prior.get("mode") or "years"),
+                },
+            )
+            self.assertEqual(len(load_all_list_rows(root)), 51)
+            meta = read_fetch_meta(root)
+            self.assertIsNotNone(meta)
+            assert meta is not None
+            self.assertEqual(meta["range_label"], full_range)
+            self.assertEqual(meta["mode"], "years")
+            self.assertEqual(meta["start"], "2017-01-01")
+            self.assertEqual(meta["end"], "2026-08-20")
 
 
 if __name__ == "__main__":

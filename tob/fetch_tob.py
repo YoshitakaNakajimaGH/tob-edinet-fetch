@@ -194,20 +194,35 @@ def main() -> int:
     if args.replace:
         rows = incoming
         added, updated = len(incoming), 0
+    elif mode == "recent":
+        existing = load_all_list_rows(output_dir)
+        rows, added, updated = merge_document_rows(existing, incoming)
+        print(f"既存(current): {len(existing)} / 追加: {added} / メタデータ更新: {updated}")
     else:
         existing = load_range_list_rows(output_dir, range_label)
         rows, added, updated = merge_document_rows(existing, incoming)
         print(f"既存({range_label}): {len(existing)} / 追加: {added} / メタデータ更新: {updated}")
 
     other, cases, issuer, issuer_cases = prepare_pipeline_rows(rows, edinet_list)
+    publish_range_label = range_label
+    publish_meta: dict = {"start": start, "end": end, "mode": mode}
+    if mode == "recent":
+        prior = read_fetch_meta(output_dir)
+        if prior and prior.get("range_label"):
+            publish_range_label = str(prior["range_label"])
+            publish_meta = {
+                "start": date.fromisoformat(str(prior["start"])),
+                "end": end,
+                "mode": str(prior.get("mode") or "years"),
+            }
     list_path, cases_path = publish_tob_outputs(
         output_dir,
         other,
         cases,
-        range_label=range_label,
+        range_label=publish_range_label,
         self_list_rows=issuer,
         self_case_rows=issuer_cases,
-        fetch_meta={"start": start, "end": end, "mode": mode},
+        fetch_meta=publish_meta,
     )
     print(f"他社株 書類: {len(other)} / 案件: {len(cases)}")
     print(f"自社株 書類: {len(issuer)} / 案件: {len(issuer_cases)}")

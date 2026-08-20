@@ -42,8 +42,8 @@ on:
         required: false
         default: "0.5"
         type: string
-  schedule:
-    - cron: "0 0 * * 1-5"
+  # schedule: 定期実行は一時停止（再開時は --recent-days と fetch_tob のマージ修正を確認）
+  #   - cron: "0 0 * * 1-5"
 
 permissions:
   contents: write
@@ -64,14 +64,10 @@ jobs:
         env:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            python -m tob.fetch_tob --recent-days 35
-          else
-            python -m tob.fetch_tob \
-              --from-year "${{ github.event.inputs.start_year }}" \
-              --to-year "${{ github.event.inputs.end_year }}" \
-              --sleep "${{ github.event.inputs.sleep_seconds }}"
-          fi
+          python -m tob.fetch_tob \
+            --from-year "${{ github.event.inputs.start_year }}" \
+            --to-year "${{ github.event.inputs.end_year }}" \
+            --sleep "${{ github.event.inputs.sleep_seconds }}"
 
       - name: Commit CSV if changed
         run: |
