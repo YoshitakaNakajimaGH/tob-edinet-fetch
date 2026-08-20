@@ -58,6 +58,9 @@
     ],
     "corporation_info_text": [
       "jptoo-ton_cor:InformationAboutCorporationTextBlock"
+    ],
+    "officer_history_text": [
+      "jptoo-ton_cor:OfficialTitleJobTitleNameDateOfBirthAndJobHistoryTextBlock"
     ]
   },
   "pst": {

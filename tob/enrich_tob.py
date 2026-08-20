@@ -32,7 +32,6 @@ from tob.extract_fields import (
     clean_extracted_name,
     compute_holding_ratios,
     detect_mbo,
-    extract_sponsor_from_purposes,
     extract_tender_offer_agent,
     extract_valuation_basis_section,
     extract_valuation_from_purposes,
@@ -43,6 +42,7 @@ from tob.extract_fields import (
     parse_planned_purchase_counts,
     parse_purchase_consideration,
     parse_valuation_from_sources,
+    resolve_sponsor_hint,
     summarize_price,
 )
 from tob.output_store import load_all_list_rows, publish_context_from_meta, publish_tob_outputs
@@ -289,7 +289,13 @@ def apply_facts_to_row(
                     row["ValuationBasisRaw"] = purposes_basis[:2500]
         sponsor_source = purposes_text or overview_text
         if should_update_field("SponsorHint", selected) and sponsor_source:
-            row["SponsorHint"] = extract_sponsor_from_purposes(sponsor_source)
+            row["SponsorHint"] = resolve_sponsor_hint(
+                offeror_name=row.get("OfferorName") or row.get("FilerName") or "",
+                offeror_edinet_code=row.get("FilerEdinetCode") or "",
+                purposes_raw=purposes_text,
+                overview_raw=overview_text,
+                is_mbo=row.get("IsMBO") or "",
+            )
         if should_update_field("IsMBO", selected):
             row["IsMBO"] = detect_mbo([purposes_text, overview_text])
         if should_update_field("IntendedPurchaseRaw", selected) and intended_text:

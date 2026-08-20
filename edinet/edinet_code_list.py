@@ -5,12 +5,17 @@ from __future__ import annotations
 
 import csv
 import io
+import re
 import zipfile
 from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
 from urllib.error import URLError
 from urllib.request import urlopen
+
+LISTED_CATEGORY = "上場"
+UNLISTED_CATEGORY = "非上場"
+UNLISTED_LABEL = "非上場"
 
 EDINET_CODE_ZIP_URL = (
     "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/codelist/Edinetcode.zip"
@@ -26,15 +31,49 @@ class EdinetFilerInfo:
     name: str
 
 
+def normalize_company_name(name: str) -> str:
+    """Normalize filer names for EDINET code list lookup."""
+    text = (name or "").strip()
+    if not text:
+        return ""
+    text = re.sub(r"\s+", "", text)
+    text = text.replace("（", "(").replace("）", ")")
+    for token in (
+        "株式会社",
+        "(株)",
+        "（株）",
+        "有限会社",
+        "合同会社",
+        "合名会社",
+        "合資会社",
+    ):
+        text = text.replace(token, "")
+    # Drop parenthetical English aliases: Foo（Bar Baz）→ Foo
+    text = re.sub(r"\([^)]*\)", "", text)
+    return text.casefold()
+
+
 class EdinetCodeList:
     def __init__(self, by_edinet: dict[str, EdinetFilerInfo]) -> None:
         self._by_edinet = by_edinet
+        by_name: dict[str, EdinetFilerInfo] = {}
+        for info in by_edinet.values():
+            key = normalize_company_name(info.name)
+            if key and key not in by_name:
+                by_name[key] = info
+        self._by_name = by_name
 
     def get(self, edinet_code: str) -> EdinetFilerInfo | None:
         code = (edinet_code or "").strip()
         if not code:
             return None
         return self._by_edinet.get(code)
+
+    def lookup_by_name(self, name: str) -> EdinetFilerInfo | None:
+        key = normalize_company_name(name)
+        if not key:
+            return None
+        return self._by_name.get(key)
 
     def listing_category(self, edinet_code: str) -> str:
         info = self.get(edinet_code)
@@ -43,6 +82,29 @@ class EdinetCodeList:
     def sec_code(self, edinet_code: str) -> str:
         info = self.get(edinet_code)
         return info.sec_code if info else ""
+
+    def listing_label(
+        self,
+        *,
+        name: str = "",
+        edinet_code: str = "",
+    ) -> str:
+        """Return 4-digit sec code for listed filers, 非上場 for known unlisted, else ''."""
+        info = self.get(edinet_code) if edinet_code else None
+        if info is None and name:
+            info = self.lookup_by_name(name)
+        if info is None:
+            return ""
+        if info.listing_category == LISTED_CATEGORY and info.sec_code:
+            sec = info.sec_code.strip()
+            if sec.isdigit() and len(sec) == 5:
+                return sec[:4]
+            if sec.isdigit() and len(sec) == 4:
+                return sec
+            return sec
+        if info.listing_category == UNLISTED_CATEGORY:
+            return UNLISTED_LABEL
+        return ""
 
 
 def _parse_csv_text(text: str) -> dict[str, EdinetFilerInfo]:

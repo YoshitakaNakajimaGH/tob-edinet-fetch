@@ -26,6 +26,7 @@ from tob.extract_fields import (
     parse_purchase_consideration,
     parse_self_tob_report_counts,
     parse_valuation_from_sources,
+    resolve_sponsor_hint,
     summarize_price,
 )
 
@@ -868,6 +869,7 @@ def refresh_derived_list_fields(
     rows: list[dict],
     *,
     selected: frozenset[str] | None = None,
+    edinet_list: EdinetCodeList | None = None,
 ) -> None:
     """Recompute short price/result columns from stored Raw text (no API)."""
     for row in rows:
@@ -875,6 +877,7 @@ def refresh_derived_list_fields(
         valuation_text = row.get("ValuationBasisRaw") or raw_price
         purposes_raw = row.get("PurposesRaw") or ""
         overview_raw = row.get("OverviewRaw") or ""
+        opinion_raw = row.get("OpinionRaw") or ""
         if should_update_field("OfferPrice", selected) and raw_price:
             row["OfferPrice"] = summarize_price(raw_price)
         if selected is None or selected & {
@@ -901,10 +904,18 @@ def refresh_derived_list_fields(
                     purposes_basis = extract_valuation_from_purposes(purposes_raw)
                     if purposes_basis:
                         row["ValuationBasisRaw"] = purposes_basis[:2500]
-        if should_update_field("SponsorHint", selected) and (purposes_raw or overview_raw):
-            row["SponsorHint"] = extract_sponsor_from_purposes(purposes_raw or overview_raw)
+        if should_update_field("SponsorHint", selected):
+            row["SponsorHint"] = resolve_sponsor_hint(
+                offeror_name=row.get("OfferorName") or row.get("FilerName") or "",
+                offeror_edinet_code=row.get("FilerEdinetCode") or "",
+                purposes_raw=purposes_raw,
+                overview_raw=overview_raw,
+                opinion_raw=opinion_raw,
+                is_mbo=row.get("IsMBO") or "",
+                edinet_list=edinet_list,
+            )
         if should_update_field("IsMBO", selected):
-            row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, row.get("OpinionRaw") or ""])
+            row["IsMBO"] = detect_mbo([purposes_raw, overview_raw, opinion_raw])
         intended_raw = row.get("IntendedPurchaseRaw") or ""
         if intended_raw and (
             selected is None
@@ -1056,6 +1067,33 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
     return out
 
 
+def resolve_case_sponsor_hint(docs: list[dict], edinet_list: EdinetCodeList | None = None) -> str:
+    """Aggregate case documents and infer SponsorHint for tob_cases.csv."""
+    filing = earliest_doc(docs, FILING_SIDE) or (docs[0] if docs else None)
+    if not filing:
+        return ""
+    purposes = ""
+    overview = ""
+    opinion = ""
+    is_mbo = ""
+    for doc in docs:
+        purposes = purposes or doc.get("PurposesRaw") or ""
+        overview = overview or doc.get("OverviewRaw") or ""
+        if (doc.get("DocTypeCode") or "") in OPINION_SIDE:
+            opinion = opinion or doc.get("OpinionRaw") or ""
+        if doc.get("IsMBO") == "Yes":
+            is_mbo = "Yes"
+    return resolve_sponsor_hint(
+        offeror_name=filing.get("OfferorName") or filing.get("FilerName") or "",
+        offeror_edinet_code=filing.get("FilerEdinetCode") or "",
+        purposes_raw=purposes,
+        overview_raw=overview,
+        opinion_raw=opinion,
+        is_mbo=is_mbo,
+        edinet_list=edinet_list,
+    )
+
+
 def compute_case_enrichment_status(case: dict, docs: list[dict]) -> str:
     if case.get("Status") == "撤回":
         return "done"
@@ -1119,6 +1157,9 @@ def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> 
             listing,
             collect_delisting_source_texts(docs_sorted),
         )
+        sponsor_hint = resolve_case_sponsor_hint(docs_sorted, edinet_list)
+        if sponsor_hint:
+            overlay["SponsorHint"] = sponsor_hint
         has_opinion = "Yes" if latest_opinion or overlay.get("OpinionStance") else "No"
         doc_ids = [d.get("DocID") or "" for d in docs_sorted if d.get("DocID")]
         case = {
@@ -1161,7 +1202,7 @@ def prepare_pipeline_rows(
         doc_id = row.get("DocID") or ""
         if doc_id:
             row["EdinetDocUrl"] = edinet_view_url(doc_id)
-    refresh_derived_list_fields(rows, selected=selected)
+    refresh_derived_list_fields(rows, selected=selected, edinet_list=edinet_list)
     refresh_target_metadata(rows, edinet_list)
     other, issuer = partition_issuer_tenders(rows)
     assign_case_ids(other)
