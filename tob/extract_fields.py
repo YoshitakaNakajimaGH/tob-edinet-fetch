@@ -421,6 +421,48 @@ SPONSOR_SUBJECT_SKIP = re.compile(
     r"公開買付者ら|対象者グループ|本取引|本公開買付|本デュー)"
 )
 
+PARENT_NAME_BLOCKLIST = frozenset(
+    {
+        "東京証券取引所",
+        "株式会社東京証券取引所",
+        "大阪証券取引所",
+        "株式会社大阪証券取引所",
+        "名古屋証券取引所",
+        "福岡証券取引所",
+        "札幌証券取引所",
+        "AP及び本ファンド",
+        "本ファンド",
+    }
+)
+
+FUND_OFFEROR_RE = re.compile(
+    r"ファンド|Fund|L\.P\.|LLC|LLP|SPC|Limited\s+Partnership|"
+    r"リミテッド・パートナーシップ|Investment\s+Holdings|インベストメント|"
+    r"BidCo|HoldCo|バリュー・ファンド|Value\s+Fund",
+    re.IGNORECASE,
+)
+
+FUND_CONTEXT_RE = re.compile(
+    r"リミテッド・パートナーシップ|ケイマン諸島法|L\.P\.|"
+    r"(?:持分|出資)(?:の全て|を全て|全部)(?:を)?(?:保有|所有|運用)|"
+    r"プライベート・?エクイティ|PEファンド|ファンド(?:の|を).{0,24}(?:保有|運用)",
+    re.IGNORECASE,
+)
+
+PE_SPONSOR_RULES: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"The\s+Carlyle\s+Group|カーライル", re.I), "The Carlyle Group"),
+    (re.compile(r"\bKKR\b|ＫＫＲ"), "KKR"),
+    (re.compile(r"Bain\s+Capital|ベイン・?キャピタル", re.I), "Bain Capital"),
+    (re.compile(r"Blackstone|ブラックストーン", re.I), "Blackstone"),
+    (re.compile(r"Apollo(?:\s+Global)?|アポロ", re.I), "Apollo"),
+    (re.compile(r"CVC(?:\s+Capital)?|ＣＶＣ", re.I), "CVC"),
+    (re.compile(r"MBK\s+Partners|エムビーケーパートナーズ", re.I), "MBK Partners"),
+    (re.compile(r"Integra\s+Holdings|インテグラ", re.I), "Integra Holdings"),
+    (re.compile(r"H\.I\.S\.|エイチ・アイ・エス", re.I), "H.I.S."),
+)
+
+UNLISTED_LABEL = "非上場"
+
 
 def _split_paragraphs(text: str) -> list[str]:
     if not text:
@@ -496,8 +538,49 @@ def _clean_parent_candidate(name: str) -> str:
     return candidate
 
 
-def extract_parent_hint(text: str) -> str:
-    """Rule-based parent/sponsor name from 買付け等の目的 (no web search)."""
+def _reject_parent_candidate(name: str) -> str:
+    cleaned = _clean_parent_candidate(name)
+    if not cleaned or cleaned in PARENT_NAME_BLOCKLIST:
+        return ""
+    if cleaned.startswith("株式会社東京証券取引所"):
+        return ""
+    return cleaned
+
+
+def extract_pe_sponsor_name(text: str) -> str:
+    if not text:
+        return ""
+    plain = strip_html(text)
+    for pattern, label in PE_SPONSOR_RULES:
+        if pattern.search(plain):
+            return label
+    compact = re.sub(r"\s+", "", plain)
+    for pattern in (
+        r"((?:[A-ZＡ-Ｚ]{2,}(?:[・･\s][A-ZＡ-Ｚ]{2,}){0,4})[^。、]{0,24}ファンド)",
+        r"((?:[A-ZＡ-Ｚ]{2,}(?:[・･\s][A-ZＡ-Ｚ]{2,}){0,4})[^。、]{0,24}キャピタル)",
+    ):
+        match = re.search(pattern, compact)
+        if match:
+            cleaned = _reject_parent_candidate(match.group(1))
+            if cleaned:
+                return cleaned
+    return ""
+
+
+def is_fund_offeror(
+    offeror_name: str,
+    *,
+    purposes_raw: str = "",
+    overview_raw: str = "",
+) -> bool:
+    if FUND_OFFEROR_RE.search(offeror_name or ""):
+        return True
+    combined = f"{purposes_raw}\n{overview_raw}"
+    return bool(FUND_CONTEXT_RE.search(combined))
+
+
+def extract_parent_company_name(text: str) -> str:
+    """Extract parent/sponsor company name from narrative text."""
     if not text:
         return ""
     plain = strip_html(text)
@@ -505,34 +588,120 @@ def extract_parent_hint(text: str) -> str:
 
     label_match = _PARENT_LABEL_PATTERN.search(plain)
     if label_match:
-        cleaned = _clean_parent_candidate(label_match.group(1))
+        cleaned = _reject_parent_candidate(label_match.group(1))
         if cleaned:
             return cleaned
 
     for pattern in (
         r"公開買付者親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
         r"親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
+        r"その(?:完全)?(?:親会社|子会社)(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
+        r"([^。、\n（(]{2,80}?)(?:の(?:完全子会社|子会社)である|を(?:完全)?子会社化)",
         r"その発行済(?:株式|出資|持分)(?:の全て)?を([^。、\n]{2,80}?)が(?:所有|保有)",
+        r"([^。、\n（(]{2,80}?)が(?:その|当該)?(?:持分|出資|株式)(?:の全て|を全て|全部)(?:を)?(?:保有|所有|運用)",
     ):
         match = re.search(pattern, compact)
         if match:
-            cleaned = _clean_parent_candidate(match.group(1))
+            cleaned = _reject_parent_candidate(match.group(1))
             if cleaned:
                 return cleaned
+    return ""
 
+
+def extract_mbo_sponsor_signal(text: str) -> bool:
+    """True when narrative indicates an individual owns 100% of the offeror (MBO SPV)."""
+    if not text:
+        return False
+    compact = re.sub(r"\s+", "", strip_html(text))
+    return bool(
+        re.search(
+            r"代表取締役[^。]{0,40}?(?:氏|が)[^。]{0,80}?(?:100%|１００％|全部|全て|すべて)(?:を)?(?:所有|保有)",
+            compact,
+        )
+        or re.search(
+            r"発行済(?:株式|出資)(?:の全て|を全て|全部)(?:を)?[^。]{0,40}?(?:氏|が)(?:所有|保有)",
+            compact,
+        )
+    )
+
+
+def extract_parent_hint(text: str) -> str:
+    """Rule-based parent/sponsor name from 買付け等の目的 (no web search)."""
+    if not text:
+        return ""
+    parent = extract_parent_company_name(text)
+    if parent:
+        return parent
+    pe = extract_pe_sponsor_name(text)
+    if pe:
+        return pe
     sponsor = extract_sponsor_from_purposes(text)
     if sponsor:
         return sponsor
+    return ""
 
-    for pattern in (
-        r"((?:[A-ZＡ-Ｚ]{2,}(?:\s+[A-ZＡ-Ｚ]{2,}){0,4})[^。]{0,24}ファンド)",
-        r"((?:KKR|ＫＫＲ|ベイン|カーライル|ブラックストーン|Apollo|アポロ)[^。、]{0,24})",
-    ):
-        match = re.search(pattern, compact)
-        if match:
-            cleaned = _clean_parent_candidate(match.group(1))
-            if cleaned:
-                return cleaned
+
+def resolve_sponsor_hint(
+    *,
+    offeror_name: str = "",
+    offeror_edinet_code: str = "",
+    purposes_raw: str = "",
+    overview_raw: str = "",
+    opinion_raw: str = "",
+    corporation_info_raw: str = "",
+    major_shareholders_raw: str = "",
+    officer_history_raw: str = "",
+    is_mbo: str = "",
+    edinet_list: object | None = None,
+) -> str:
+    """Unified SponsorHint: fund/PE name, listed sec code, 非上場, or blank."""
+    purposes = purposes_raw or ""
+    overview = overview_raw or ""
+    opinion = opinion_raw or ""
+    combined = "\n".join(
+        part
+        for part in (
+            purposes,
+            overview,
+            corporation_info_raw,
+            major_shareholders_raw,
+            officer_history_raw,
+            opinion,
+        )
+        if part
+    )
+
+    if is_fund_offeror(offeror_name, purposes_raw=purposes, overview_raw=overview):
+        for extractor in (extract_pe_sponsor_name, extract_parent_company_name, extract_sponsor_from_purposes):
+            value = extractor(combined)
+            if value:
+                return value
+        pe_from_officers = extract_pe_sponsor_name(officer_history_raw)
+        if pe_from_officers:
+            return pe_from_officers
+        return ""
+
+    parent_name = extract_parent_company_name(combined) or extract_sponsor_from_purposes(combined)
+    mbo = is_mbo == "Yes" or detect_mbo([combined, opinion]) == "Yes"
+    if mbo and (extract_mbo_sponsor_signal(opinion or combined) or not parent_name):
+        return UNLISTED_LABEL
+
+    listing_label = ""
+    if edinet_list is not None:
+        if parent_name:
+            listing_label = edinet_list.listing_label(name=parent_name)
+            if listing_label:
+                return listing_label
+            return UNLISTED_LABEL
+        listing_label = edinet_list.listing_label(
+            name=offeror_name,
+            edinet_code=offeror_edinet_code,
+        )
+        if listing_label:
+            return listing_label
+
+    if parent_name:
+        return UNLISTED_LABEL
     return ""
 
 
