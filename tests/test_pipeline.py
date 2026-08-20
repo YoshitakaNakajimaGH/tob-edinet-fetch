@@ -104,6 +104,50 @@ class MergeAndCaseTests(unittest.TestCase):
         self.assertEqual(by_id["S100AAAA"]["ExtractionStatus"], "done")
         self.assertEqual(by_id["S100BBBB"]["OfferPrice"], "")
 
+    def test_fetch_merge_rebuilds_enriched_cases(self) -> None:
+        """Scheduled fetch must upsert metadata without dropping extracted case fields."""
+        existing = [
+            normalize_doc_row(
+                {
+                    "DocID": "S100AAAA",
+                    "CaseID": "S100AAAA",
+                    "DocTypeCode": "240",
+                    "SubmitDateTime": "2026-01-10 10:00",
+                    "FilerName": "Buyer KK",
+                    "FilerEdinetCode": "E11111",
+                    "SubjectEdinetCode": "E22222",
+                    "TargetName": "Target KK",
+                    "OfferPrice": "1,000円/株",
+                    "OfferPeriodStart": "2026-01-11",
+                    "OfferPeriodEnd": "2026-02-20",
+                    "ExistingHoldingRatio": "10%",
+                    "IsMBO": "Yes",
+                    "PlannedSharesMin": "100,000",
+                    "ExtractionStatus": "done",
+                }
+            )
+        ]
+        incoming = [
+            {
+                "DocID": "S100AAAA",
+                "DocTypeCode": "240",
+                "SubmitDateTime": "2026-01-10 10:00",
+                "FilerName": "Buyer KK Updated",
+                "FilerEdinetCode": "E11111",
+                "SubjectEdinetCode": "E22222",
+            }
+        ]
+        rows, _, _ = merge_document_rows(existing, incoming)
+        by_id = {r["DocID"]: r for r in rows}
+        self.assertEqual(by_id["S100AAAA"]["FilerName"], "Buyer KK Updated")
+        assign_case_ids(rows)
+        case = build_cases(rows)[0]
+        self.assertEqual(case["OfferPrice"], "1,000円/株")
+        self.assertEqual(case["OfferPeriodStart"], "2026-01-11")
+        self.assertEqual(case["ExistingHoldingRatio"], "10%")
+        self.assertEqual(case["IsMBO"], "Yes")
+        self.assertEqual(case["PlannedSharesMin"], "100,000")
+
     def test_cases_are_derived_from_document_rows(self) -> None:
         rows = [
             normalize_doc_row(
