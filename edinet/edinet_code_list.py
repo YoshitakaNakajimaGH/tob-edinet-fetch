@@ -6,6 +6,7 @@ from __future__ import annotations
 import csv
 import io
 import re
+import unicodedata
 import zipfile
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -36,6 +37,7 @@ def normalize_company_name(name: str) -> str:
     text = (name or "").strip()
     if not text:
         return ""
+    text = unicodedata.normalize("NFKC", text)
     text = re.sub(r"\s+", "", text)
     text = text.replace("（", "(").replace("）", ")")
     for token in (

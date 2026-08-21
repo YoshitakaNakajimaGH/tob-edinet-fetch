@@ -418,7 +418,8 @@ def has_delisting_planned_signal(text: str) -> bool:
 
 SPONSOR_SUBJECT_SKIP = re.compile(
     r"^(?:公開買付者|対象者|当社|本公開|普通株式|株券|本書|前記|上記|なお|また|さらに|ただし|但し|"
-    r"公開買付者ら|対象者グループ|本取引|本公開買付|本デュー)"
+    r"公開買付者ら|対象者グループ|本取引|本公開買付|本デュー|"
+    r"今般|この度|本件(?:両)?公開買付|本件両公開買付けに関連して)"
 )
 
 PARENT_NAME_BLOCKLIST = frozenset(
@@ -456,6 +457,71 @@ from tob.pe_sponsor_catalog import PE_SPONSOR_RULES
 
 UNLISTED_LABEL = "非上場"
 
+PE_CANONICAL_LABELS = frozenset(label for _, label in PE_SPONSOR_RULES)
+
+NARRATIVE_SPONSOR_RE = re.compile(
+    r"今般|この度|本件(?:両)?公開買付|に関連して|所有割合|前提条件|第三者割当|"
+    r"が運用する|当該プライベート|各企業並びに|関係会社及び|設立された資産運用|"
+    r"その発行済|及びそのグループ|は当該|を目的として|を主たる|を主な|"
+    r"^その|^本件|^今般|^この度|^公開買付者|^LP[（(]|^LLP[（(]|^SATM及び|"
+    r"直接的又|が直接的",
+)
+
+COMPANY_NAME_HINT_RE = re.compile(
+    r"株式会社|有限会社|合同会社|ホールディングス|グループ|"
+    r"Co\.|Ltd|LLC|LLP|L\.P\.|Limited|Partners|Capital|キャピタル|ファンド|"
+    r"Inc\.|Corp\.|Corporation|Pte\.?\s*Ltd|SBIHD",
+    re.IGNORECASE,
+)
+
+
+def sanitize_sponsor_name(name: str) -> str:
+    """Trim narrative noise and incomplete parenthetical aliases from a sponsor name."""
+    candidate = re.sub(r"\s+", "", strip_html(name)).strip("　 ")
+    candidate = re.sub(r"^[①②③④⑤⑥⑦⑧⑨⑩]\s*", "", candidate)
+    candidate = re.sub(r"[（(]以下[「『][^」』]*$", "", candidate)
+    candidate = re.sub(r"[（(][^）)]*$", "", candidate)
+    candidate = re.sub(r"及びそのグループ.*$", "", candidate)
+    candidate = re.sub(r"が運用する.*$", "", candidate)
+    candidate = re.sub(r"は当該.*$", "", candidate)
+    alias = re.search(r"^(.+?)[（(]以下[「『]([^」』]+)[」』]", candidate)
+    if alias:
+        candidate = alias.group(1) or alias.group(2)
+    split_and = re.match(r"^(?:LLC|LLP|LP|Inc|Ltd)及び(.+)$", candidate, re.I)
+    if split_and:
+        candidate = split_and.group(1)
+    candidate = candidate.strip("、。，．及びはがをにの")
+    if candidate == "SBIHD":
+        candidate = "SBIホールディングス"
+    return candidate[:80]
+
+
+def is_acceptable_sponsor_name(name: str) -> bool:
+    if not name or name in PARENT_NAME_BLOCKLIST:
+        return False
+    if name in PE_CANONICAL_LABELS:
+        return True
+    if SPONSOR_SUBJECT_SKIP.match(name):
+        return False
+    if NARRATIVE_SPONSOR_RE.search(name):
+        return False
+    if re.search(r"[「」]", name):
+        return False
+    if name.endswith(("（", "(", "、", "及び", "である", "に", "を", "が", "は", "及")):
+        return False
+    if len(name) > 60 and not COMPANY_NAME_HINT_RE.search(name):
+        return False
+    if not COMPANY_NAME_HINT_RE.search(name) and len(name) > 24:
+        return False
+    return True
+
+
+def _finalize_sponsor_candidate(name: str) -> str:
+    cleaned = sanitize_sponsor_name(name)
+    if not is_acceptable_sponsor_name(cleaned):
+        return ""
+    return cleaned
+
 
 def _split_paragraphs(text: str) -> list[str]:
     if not text:
@@ -478,7 +544,7 @@ def _subject_before_wa(text: str) -> str:
         return ""
     if len(subject) < 2:
         return ""
-    return subject[:80]
+    return _finalize_sponsor_candidate(subject[:80])
 
 
 def extract_overview_section(text: str) -> str:
@@ -532,31 +598,33 @@ def _clean_parent_candidate(name: str) -> str:
 
 
 def _reject_parent_candidate(name: str) -> str:
-    cleaned = _clean_parent_candidate(name)
-    if not cleaned or cleaned in PARENT_NAME_BLOCKLIST:
-        return ""
-    if cleaned.startswith("株式会社東京証券取引所"):
-        return ""
-    return cleaned
+    return _finalize_sponsor_candidate(name)
 
 
 def extract_pe_sponsor_name(text: str) -> str:
     if not text:
         return ""
-    plain = strip_html(text)
-    for pattern, label in PE_SPONSOR_RULES:
-        if pattern.search(plain):
-            return label
-    compact = re.sub(r"\s+", "", plain)
-    for pattern in (
-        r"((?:[A-ZＡ-Ｚ]{2,}(?:[・･\s][A-ZＡ-Ｚ]{2,}){0,4})[^。、]{0,24}ファンド)",
-        r"((?:[A-ZＡ-Ｚ]{2,}(?:[・･\s][A-ZＡ-Ｚ]{2,}){0,4})[^。、]{0,24}キャピタル)",
-    ):
-        match = re.search(pattern, compact)
-        if match:
-            cleaned = _reject_parent_candidate(match.group(1))
-            if cleaned:
-                return cleaned
+    sections = [extract_overview_section(text), text]
+    seen: set[str] = set()
+    for section in sections:
+        if not section or section in seen:
+            continue
+        seen.add(section)
+        plain = strip_html(section)
+        for pattern, label in PE_SPONSOR_RULES:
+            if pattern.search(plain):
+                return label
+        compact = re.sub(r"\s+", "", plain)
+        for pattern in (
+            r"((?:[A-ZＡ-Ｚ][A-ZＡ-Ｚ0-9・･\s]{1,40}?)(?:ファンド|Fund|キャピタル|Capital))",
+            r"((?:[A-ZＡ-Ｚ]{2,}(?:[・･\s][A-ZＡ-Ｚ]{2,}){0,4})[^。、（(]{0,24}(?:ファンド|Fund|キャピタル|Capital))",
+        ):
+            match = re.search(pattern, compact)
+            if match:
+                raw = re.split(r"[（(]以下", match.group(1))[0]
+                cleaned = _finalize_sponsor_candidate(raw)
+                if cleaned:
+                    return cleaned
     return ""
 
 
@@ -574,8 +642,8 @@ def is_fund_offeror(
             return False
     if FUND_OFFEROR_RE.search(offeror_name or ""):
         return True
-    combined = f"{purposes_raw}\n{overview_raw}"
-    return bool(FUND_CONTEXT_RE.search(combined))
+    overview = extract_overview_section(f"{purposes_raw}\n{overview_raw}") or purposes_raw
+    return bool(FUND_CONTEXT_RE.search(overview))
 
 
 def extract_parent_company_name(text: str) -> str:
@@ -597,10 +665,10 @@ def extract_parent_company_name(text: str) -> str:
         r"公開買付者の完全親会社(?:である|は|として)?([^。、\n（(]{2,80}?)(?:は|が|を|の|に)",
         r"完全親会社(?:である|は|として)?([^。、\n（(]{2,80}?)(?:は|が|を|の|に)",
         r"([^。、\n（(]{2,80}?)が公開買付者の完全親会社",
+        r"資産運用会社である([^（(]{2,60}?)[（(]以下",
         r"([^。、\n（(]{2,80}?)及びその完全子会社",
         r"その(?:完全)?(?:親会社|子会社)(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
         r"([^。、\n（(]{2,80}?)(?:の(?:完全子会社|子会社)である|を(?:完全)?子会社化)",
-        r"その発行済(?:株式|出資|持分)(?:の全て)?を([^。、\n]{2,80}?)が(?:所有|保有)",
         r"([^。、\n（(]{2,80}?)が(?:その|当該)?(?:持分|出資|株式)(?:の全て|を全て|全部)(?:を)?(?:保有|所有|運用)",
     ):
         match = re.search(pattern, compact)
@@ -691,14 +759,24 @@ def resolve_sponsor_hint(
     ):
         for extractor in (extract_pe_sponsor_name, extract_parent_company_name, extract_sponsor_from_purposes):
             value = extractor(combined)
-            if value:
+            if not value:
+                continue
+            if value in PE_CANONICAL_LABELS:
                 return value
+            finalized = _finalize_sponsor_candidate(value)
+            if finalized:
+                return finalized
         pe_from_officers = extract_pe_sponsor_name(officer_history_raw)
         if pe_from_officers:
             return pe_from_officers
         return ""
 
     parent_name = extract_parent_company_name(combined) or extract_sponsor_from_purposes(combined)
+    parent_name = _finalize_sponsor_candidate(parent_name)
+    if not parent_name:
+        pe_name = extract_pe_sponsor_name(combined)
+        if pe_name:
+            return pe_name
     mbo = is_mbo == "Yes" or detect_mbo([combined, opinion]) == "Yes"
     if mbo and (extract_mbo_sponsor_signal(opinion or combined) or not parent_name):
         return UNLISTED_LABEL
