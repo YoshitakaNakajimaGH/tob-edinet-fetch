@@ -57,11 +57,21 @@ class EdinetCodeList:
     def __init__(self, by_edinet: dict[str, EdinetFilerInfo]) -> None:
         self._by_edinet = by_edinet
         by_name: dict[str, EdinetFilerInfo] = {}
+        listed_by_name: dict[str, EdinetFilerInfo] = {}
+        unlisted_by_name: dict[str, EdinetFilerInfo] = {}
         for info in by_edinet.values():
             key = normalize_company_name(info.name)
-            if key and key not in by_name:
+            if not key:
+                continue
+            if key not in by_name:
                 by_name[key] = info
+            if info.listing_category == LISTED_CATEGORY and info.sec_code:
+                listed_by_name[key] = info
+            elif info.listing_category == UNLISTED_CATEGORY:
+                unlisted_by_name.setdefault(key, info)
         self._by_name = by_name
+        self._listed_by_name = listed_by_name
+        self._unlisted_by_name = unlisted_by_name
 
     def get(self, edinet_code: str) -> EdinetFilerInfo | None:
         code = (edinet_code or "").strip()
@@ -83,6 +93,15 @@ class EdinetCodeList:
         info = self.get(edinet_code)
         return info.sec_code if info else ""
 
+    @staticmethod
+    def _format_sec_code(raw: str) -> str:
+        sec = (raw or "").strip()
+        if sec.isdigit() and len(sec) == 5:
+            return sec[:4]
+        if sec.isdigit() and len(sec) == 4:
+            return sec
+        return sec
+
     def listing_label(
         self,
         *,
@@ -90,18 +109,22 @@ class EdinetCodeList:
         edinet_code: str = "",
     ) -> str:
         """Return 4-digit sec code for listed filers, 非上場 for known unlisted, else ''."""
+        if name:
+            key = normalize_company_name(name)
+            listed = self._listed_by_name.get(key)
+            if listed and listed.sec_code:
+                return self._format_sec_code(listed.sec_code)
+            unlisted = self._unlisted_by_name.get(key)
+            if unlisted:
+                return UNLISTED_LABEL
+
         info = self.get(edinet_code) if edinet_code else None
         if info is None and name:
             info = self.lookup_by_name(name)
         if info is None:
             return ""
         if info.listing_category == LISTED_CATEGORY and info.sec_code:
-            sec = info.sec_code.strip()
-            if sec.isdigit() and len(sec) == 5:
-                return sec[:4]
-            if sec.isdigit() and len(sec) == 4:
-                return sec
-            return sec
+            return self._format_sec_code(info.sec_code)
         if info.listing_category == UNLISTED_CATEGORY:
             return UNLISTED_LABEL
         return ""

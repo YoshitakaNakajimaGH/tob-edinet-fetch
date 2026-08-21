@@ -18,7 +18,6 @@ from tob.extract_fields import (
 )
 from tob.tob_common import assign_case_ids, build_cases, normalize_doc_row, resolve_case_sponsor_hint
 
-
 FIXTURE = ROOT / "tests" / "fixtures" / "edinet_code_min.csv"
 
 
@@ -88,6 +87,42 @@ class SponsorHintInferenceTests(unittest.TestCase):
     def test_extract_pe_sponsor_bain(self) -> None:
         text = "ベインキャピタルは、本公開買付けを通じて対象者株式の非公開化を企図しております。"
         self.assertEqual(extract_pe_sponsor_name(text), "Bain Capital")
+
+    def test_extract_pe_sponsor_goldman_sachs(self) -> None:
+        text = "ザ・ゴールドマン・サックス・グループ・インク（以下「ゴールドマン・サックス」といいます。）"
+        self.assertEqual(extract_pe_sponsor_name(text), "Goldman Sachs")
+
+    def test_extract_pe_sponsor_advantage_partners(self) -> None:
+        text = "株式会社アドバンテッジパートナーズ（以下「AP」といいます。）が投資関連サービスを提供"
+        self.assertEqual(extract_pe_sponsor_name(text), "Advantage Partners")
+
+    def test_parent_company_full_parent_pattern(self) -> None:
+        from tob.extract_fields import extract_parent_company_name
+
+        text = "公開買付者の完全親会社である日本郵便は対象者株式を所有しておりません"
+        self.assertEqual(extract_parent_company_name(text), "日本郵便")
+
+    def test_listed_strategic_not_treated_as_fund(self) -> None:
+        purposes = (
+            "（１）本公開買付の概要 公開買付者は出光興産株式会社です。"
+            "公開買付者は、対象者を完全子会社化するため本公開買付けを実施します。"
+        )
+        hint = resolve_sponsor_hint(
+            offeror_name="出光興産株式会社",
+            offeror_edinet_code="E01084",
+            purposes_raw=purposes,
+            edinet_list=self.edinet,
+        )
+        self.assertEqual(hint, "5019")
+
+    def test_name_lookup_unlisted_when_edinet_code_empty(self) -> None:
+        hint = resolve_sponsor_hint(
+            offeror_name="株式会社ツクイホールディングス",
+            offeror_edinet_code="E36390",
+            purposes_raw="（１）本公開買付の概要 公開買付者は対象者の親会社です。",
+            edinet_list=self.edinet,
+        )
+        self.assertEqual(hint, UNLISTED_LABEL)
 
     def test_case_level_resolution(self) -> None:
         rows = [
