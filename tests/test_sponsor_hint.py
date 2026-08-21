@@ -13,8 +13,11 @@ from edinet.edinet_code_list import EdinetCodeList, load_edinet_code_list
 from tob.extract_fields import (
     UNLISTED_LABEL,
     extract_pe_sponsor_name,
+    extract_sponsor_from_purposes,
     is_fund_offeror,
+    is_acceptable_sponsor_name,
     resolve_sponsor_hint,
+    sanitize_sponsor_name,
 )
 from tob.tob_common import assign_case_ids, build_cases, normalize_doc_row, resolve_case_sponsor_hint
 
@@ -101,6 +104,42 @@ class SponsorHintInferenceTests(unittest.TestCase):
 
         text = "公開買付者の完全親会社である日本郵便は対象者株式を所有しておりません"
         self.assertEqual(extract_parent_company_name(text), "日本郵便")
+
+    def test_sanitize_rejects_narrative_fragment(self) -> None:
+        self.assertFalse(is_acceptable_sponsor_name("本件両公開買付けに関連して、公開買付者"))
+        self.assertFalse(is_acceptable_sponsor_name("今般、公開買付者"))
+        self.assertEqual(sanitize_sponsor_name("XYZGroup,L.P.(以下「本ファンド"), "XYZGroup,L.P.")
+
+    def test_extract_sponsor_from_purposes_rejects_narrative(self) -> None:
+        text = (
+            "（１）本件両公開買付けの概要\n"
+            "本件両公開買付けに関連して、公開買付者は、Fortress Investment Group LLCの関係法人です。"
+        )
+        self.assertEqual(extract_sponsor_from_purposes(text), "")
+
+    def test_ontario_resolves_fortress_not_narrative(self) -> None:
+        purposes = (
+            "（１）本件両公開買付けの概要\n"
+            "公開買付者は、FIG及びそのグループ（以下「Fortress」といいます。）の関係法人である"
+            "Ontario Holdings I LLCが出資をしております。"
+        )
+        hint = resolve_sponsor_hint(
+            offeror_name="Ｏｎｔａｒｉｏ合同会社",
+            purposes_raw=purposes,
+        )
+        self.assertEqual(hint, "Fortress Investment Group")
+
+    def test_sbi_parent_resolves_listed_sec_code(self) -> None:
+        purposes = (
+            "（１）本公開買付けの概要\n"
+            "公開買付者の完全親会社であるSBIHDは、対象者株式を所有する筆頭株主です。"
+        )
+        hint = resolve_sponsor_hint(
+            offeror_name="SBI地銀ホールディングス株式会社",
+            purposes_raw=purposes,
+            edinet_list=self.edinet,
+        )
+        self.assertEqual(hint, "8473")
 
     def test_listed_strategic_not_treated_as_fund(self) -> None:
         purposes = (
