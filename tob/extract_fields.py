@@ -443,23 +443,16 @@ FUND_OFFEROR_RE = re.compile(
 )
 
 FUND_CONTEXT_RE = re.compile(
-    r"リミテッド・パートナーシップ|ケイマン諸島法|L\.P\.|"
-    r"(?:持分|出資)(?:の全て|を全て|全部)(?:を)?(?:保有|所有|運用)|"
-    r"プライベート・?エクイティ|PEファンド|ファンド(?:の|を).{0,24}(?:保有|運用)",
+    r"リミテッド・パートナーシップ|ケイマン諸島法|\bL\.P\.|"
+    r"(?:PE|ＰＥ)(?:ファンド|ファンド運用)|プライベート・?エクイティ(?:ファンド)?|"
+    r"(?:本|当該|当)(?:ファンド|リミテッド)|"
+    r"(?:GP|ＧＰ)(?:投資|ファンド)|有限責任組合|"
+    r"(?:持分|出資)(?:の全て|を全て|全部)(?:を)?(?:保有|所有|運用).{0,60}(?:ファンド|Fund|L\.P\.|組合|キャピタル)|"
+    r"(?:ファンド|Fund|L\.P\.|組合|キャピタル).{0,80}(?:持分|出資)(?:の全て|を全て|全部)(?:を)?(?:保有|所有|運用)",
     re.IGNORECASE,
 )
 
-PE_SPONSOR_RULES: tuple[tuple[re.Pattern[str], str], ...] = (
-    (re.compile(r"The\s+Carlyle\s+Group|カーライル", re.I), "The Carlyle Group"),
-    (re.compile(r"\bKKR\b|ＫＫＲ"), "KKR"),
-    (re.compile(r"Bain\s+Capital|ベイン・?キャピタル", re.I), "Bain Capital"),
-    (re.compile(r"Blackstone|ブラックストーン", re.I), "Blackstone"),
-    (re.compile(r"Apollo(?:\s+Global)?|アポロ", re.I), "Apollo"),
-    (re.compile(r"CVC(?:\s+Capital)?|ＣＶＣ", re.I), "CVC"),
-    (re.compile(r"MBK\s+Partners|エムビーケーパートナーズ", re.I), "MBK Partners"),
-    (re.compile(r"Integra\s+Holdings|インテグラ", re.I), "Integra Holdings"),
-    (re.compile(r"H\.I\.S\.|エイチ・アイ・エス", re.I), "H.I.S."),
-)
+from tob.pe_sponsor_catalog import PE_SPONSOR_RULES
 
 UNLISTED_LABEL = "非上場"
 
@@ -572,7 +565,13 @@ def is_fund_offeror(
     *,
     purposes_raw: str = "",
     overview_raw: str = "",
+    offeror_edinet_code: str = "",
+    edinet_list: object | None = None,
 ) -> bool:
+    if edinet_list is not None:
+        label = edinet_list.listing_label(name=offeror_name, edinet_code=offeror_edinet_code)
+        if label and label.isdigit():
+            return False
     if FUND_OFFEROR_RE.search(offeror_name or ""):
         return True
     combined = f"{purposes_raw}\n{overview_raw}"
@@ -595,6 +594,10 @@ def extract_parent_company_name(text: str) -> str:
     for pattern in (
         r"公開買付者親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
         r"親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
+        r"公開買付者の完全親会社(?:である|は|として)?([^。、\n（(]{2,80}?)(?:は|が|を|の|に)",
+        r"完全親会社(?:である|は|として)?([^。、\n（(]{2,80}?)(?:は|が|を|の|に)",
+        r"([^。、\n（(]{2,80}?)が公開買付者の完全親会社",
+        r"([^。、\n（(]{2,80}?)及びその完全子会社",
         r"その(?:完全)?(?:親会社|子会社)(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
         r"([^。、\n（(]{2,80}?)(?:の(?:完全子会社|子会社)である|を(?:完全)?子会社化)",
         r"その発行済(?:株式|出資|持分)(?:の全て)?を([^。、\n]{2,80}?)が(?:所有|保有)",
@@ -671,7 +674,21 @@ def resolve_sponsor_hint(
         if part
     )
 
-    if is_fund_offeror(offeror_name, purposes_raw=purposes, overview_raw=overview):
+    if edinet_list is not None:
+        listed_offeror = edinet_list.listing_label(
+            name=offeror_name,
+            edinet_code=offeror_edinet_code,
+        )
+        if listed_offeror and listed_offeror.isdigit():
+            return listed_offeror
+
+    if is_fund_offeror(
+        offeror_name,
+        purposes_raw=purposes,
+        overview_raw=overview,
+        offeror_edinet_code=offeror_edinet_code,
+        edinet_list=edinet_list,
+    ):
         for extractor in (extract_pe_sponsor_name, extract_parent_company_name, extract_sponsor_from_purposes):
             value = extractor(combined)
             if value:
