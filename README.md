@@ -204,6 +204,11 @@ python -m tob.enrich_tob --fields valuation,fund
 python -m tob.enrich_tob --recompute-only
 python -m tob.enrich_self_tob --only-pending
 python -m unittest discover -s tests -v
+
+# GPT 抽出実験（要 OPENAI_API_KEY / pip install pypdf）
+python experiments/gpt-extract/scripts/run_one_case.py --case-id S100M232
+python experiments/gpt-extract/scripts/run_one_case.py --seed-queue 5
+python experiments/gpt-extract/scripts/run_one_case.py --from-queue
 ```
 
 ---
@@ -215,6 +220,8 @@ python -m unittest discover -s tests -v
 | [`tob/`](tob/) | TOB パイプライン（Fetch / Enrich / タクソノミ / 抽出ロジック） |
 | [`edinet/`](edinet/) | EDINET 提出者リスト等の共有ユーティリティ |
 | [`stock_swap/`](stock_swap/) | 株式交換パイプライン（将来追加予定） |
+| [`experiments/`](experiments/) | **試作・検証用**（本番 `output/` に影響しない） |
+| [`experiments/gpt-extract/`](experiments/gpt-extract/) | ChatGPT で TOB PDF → CSV 抽出する実験場 |
 | `output/` | CSV 出力（`current/` と `snapshots/`） |
 | `cache/` | 日次 API レスポンス・XBRL ZIP のキャッシュ |
 

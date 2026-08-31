@@ -1,0 +1,67 @@
+name: GPT Extract Lab
+
+# 実験用: TOB PDF を GPT で抽出（手動のみ）
+on:
+  workflow_dispatch:
+    inputs:
+      case_id:
+        description: "CaseID (e.g. S100M232). Leave empty to use queue pending."
+        required: false
+        default: ""
+        type: string
+      from_queue:
+        description: "Process next pending row in experiments/gpt-extract/cases/queue.csv"
+        required: false
+        default: false
+        type: boolean
+      model:
+        description: "OpenAI model (lightweight recommended)"
+        required: false
+        default: "gpt-4o-mini"
+        type: string
+      clean_pdfs:
+        description: "Delete PDFs after successful extract"
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  gpt-extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install optional PDF dependency
+        run: pip install pypdf
+
+      - name: Run GPT extract lab
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          ARGS=(--model "${{ inputs.model }}")
+          if [ "${{ inputs.clean_pdfs }}" = "true" ]; then
+            ARGS+=(--clean-pdfs)
+          fi
+          if [ -n "${{ inputs.case_id }}" ]; then
+            ARGS+=(--case-id "${{ inputs.case_id }}")
+          elif [ "${{ inputs.from_queue }}" = "true" ]; then
+            ARGS+=(--from-queue)
+          else
+            echo "Specify case_id or enable from_queue"
+            exit 1
+          fi
+          python experiments/gpt-extract/scripts/run_one_case.py "${ARGS[@]}"
+
+      - name: Upload gpt_extract.csv artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-extract-output
+          path: |
+            experiments/gpt-extract/output/gpt_extract.csv
+            experiments/gpt-extract/cases/queue.csv
+          if-no-files-found: warn
