@@ -1,0 +1,11 @@
+# 一時 PDF（容量大・再取得可能）
+pdfs/**
+!pdfs/.gitkeep
+
+# ローカル秘密情報
+.env
+api_key.txt
+
+# キャッシュ
+cache/
+__pycache__/

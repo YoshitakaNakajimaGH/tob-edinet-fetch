@@ -1,0 +1,16 @@
+{
+  "description": "GPT が TOB 書類 PDF から抜き取る項目（実験用）。本番 tob_cases.csv の列と対応づけやすいよう命名。",
+  "fields": [
+    {"name": "OfferPrice", "label": "買付価格", "hint": "例: 1,250円/株。不明なら空文字"},
+    {"name": "OfferPeriodStart", "label": "買付期間開始", "hint": "YYYY-MM-DD"},
+    {"name": "OfferPeriodEnd", "label": "買付期間終了", "hint": "YYYY-MM-DD"},
+    {"name": "AfterPurchaseRatio", "label": "買付後保有比率", "hint": "例: 85.79%"},
+    {"name": "SponsorHint", "label": "スポンサー/親会社", "hint": "PE名・4桁証券コード・非上場。叙事文は不可"},
+    {"name": "IsMBO", "label": "MBO", "hint": "Yes / No / 空"},
+    {"name": "OpinionStance", "label": "意見表明", "hint": "賛同 / 反対 / 意見留保 / 空"},
+    {"name": "FinalResultNote", "label": "公開買付結果", "hint": "成立 / 不成立 / 撤回 等"},
+    {"name": "TargetDelistingNote", "label": "上場廃止", "hint": "上場廃止済 / 上場維持 等"},
+    {"name": "TenderOfferAgent", "label": "公開買付代理人", "hint": "証券会社名"},
+    {"name": "Notes", "label": "備考", "hint": "PDFから読み取れなかった点・判断根拠"}
+  ]
+}
