@@ -1,0 +1,92 @@
+[
+  {
+    "CaseID": "S100L8UR",
+    "SourceMode": "edinet_url",
+    "SourceDocID": "S100MBZL",
+    "LatestFilingUrl": "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100MBZL",
+    "status": "dry_run",
+    "detail": "Would download PDF via EDINET API and send to Gemini",
+    "pdf_path": "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_url/2021-08-24_250_訂正公開買付届出書_S100MBZL.pdf"
+  },
+  {
+    "CaseID": "S100L8UR",
+    "SourceMode": "case_id",
+    "SourceDocID": "S100L8UR;S100LCMP;S100LDZO;S100LFN5;S100LFYI;S100LHH9;S100LI9A;S100LIPK;S100LIPQ;S100LJ38;S100LONO;S100LR1U;S100LY17;S100LYY0;S100LZMW;S100M153;S100M20F;S100M41P;S100M6BR;S100M86D;S100MAF9;S100MBZL;S100MBZT",
+    "doc_count": 23,
+    "status": "dry_run",
+    "detail": "Would download 23 PDFs and send to Gemini",
+    "pdf_paths": [
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-04-28_240_公開買付届出書_S100L8UR.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-05-17_290_意見表明報告書_S100LCMP.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-05-24_310_対質問回答報告書_S100LDZO.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-05-28_300_訂正意見表明報告書_S100LFN5.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-05-31_250_訂正公開買付届出書_S100LFYI.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-06-08_300_訂正意見表明報告書_S100LHH9.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-06-11_300_訂正意見表明報告書_S100LI9A.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-06-14_320_訂正対質問回答報告書_S100LIPK.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-06-14_250_訂正公開買付届出書_S100LIPQ.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-06-15_300_訂正意見表明報告書_S100LJ38.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-06-24_250_訂正公開買付届出書_S100LONO.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-06-25_250_訂正公開買付届出書_S100LR1U.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-07-06_300_訂正意見表明報告書_S100LY17.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-07-09_250_訂正公開買付届出書_S100LYY0.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-07-13_300_訂正意見表明報告書_S100LZMW.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-07-20_250_訂正公開買付届出書_S100M153.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-07-27_300_訂正意見表明報告書_S100M20F.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-08-04_250_訂正公開買付届出書_S100M41P.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-08-06_300_訂正意見表明報告書_S100M6BR.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-08-11_250_訂正公開買付届出書_S100M86D.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-08-13_300_訂正意見表明報告書_S100MAF9.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-08-24_250_訂正公開買付届出書_S100MBZL.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100L8UR/from_case/2021-08-24_260_公開買付撤回届出書_S100MBZT.pdf"
+    ]
+  },
+  {
+    "CaseID": "S100M232",
+    "SourceMode": "edinet_url",
+    "SourceDocID": "S100M232",
+    "LatestFilingUrl": "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100M232",
+    "status": "dry_run",
+    "detail": "Would download PDF via EDINET API and send to Gemini",
+    "pdf_path": "/workspace/experiments/gpt-extract/pdfs/trial/S100M232/from_url/2021-07-28_240_公開買付届出書_S100M232.pdf"
+  },
+  {
+    "CaseID": "S100M232",
+    "SourceMode": "case_id",
+    "SourceDocID": "S100M232;S100M24Q;S100MEYO",
+    "doc_count": 3,
+    "status": "dry_run",
+    "detail": "Would download 3 PDFs and send to Gemini",
+    "pdf_paths": [
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M232/from_case/2021-07-28_240_公開買付届出書_S100M232.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M232/from_case/2021-07-28_290_意見表明報告書_S100M24Q.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M232/from_case/2021-09-09_270_公開買付報告書_S100MEYO.pdf"
+    ]
+  },
+  {
+    "CaseID": "S100M436",
+    "SourceMode": "edinet_url",
+    "SourceDocID": "S100MF27",
+    "LatestFilingUrl": "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100MF27",
+    "status": "dry_run",
+    "detail": "Would download PDF via EDINET API and send to Gemini",
+    "pdf_path": "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_url/2021-09-09_250_訂正公開買付届出書_S100MF27.pdf"
+  },
+  {
+    "CaseID": "S100M436",
+    "SourceMode": "case_id",
+    "SourceDocID": "S100M436;S100M442;S100MCI2;S100MECE;S100MF27;S100MF1T;S100MI1C",
+    "doc_count": 7,
+    "status": "dry_run",
+    "detail": "Would download 7 PDFs and send to Gemini",
+    "pdf_paths": [
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_case/2021-08-04_240_公開買付届出書_S100M436.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_case/2021-08-04_290_意見表明報告書_S100M442.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_case/2021-08-26_250_訂正公開買付届出書_S100MCI2.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_case/2021-09-06_250_訂正公開買付届出書_S100MECE.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_case/2021-09-09_250_訂正公開買付届出書_S100MF27.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_case/2021-09-09_300_訂正意見表明報告書_S100MF1T.pdf",
+      "/workspace/experiments/gpt-extract/pdfs/trial/S100M436/from_case/2021-09-28_270_公開買付報告書_S100MI1C.pdf"
+    ]
+  }
+]

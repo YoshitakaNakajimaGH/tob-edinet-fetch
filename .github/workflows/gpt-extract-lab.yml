@@ -14,10 +14,23 @@ on:
         required: false
         default: false
         type: boolean
-      model:
-        description: "OpenAI model (lightweight recommended)"
+      provider:
+        description: "LLM provider: gemini or openai"
         required: false
-        default: "gpt-4o-mini"
+        default: "gemini"
+        type: choice
+        options:
+          - gemini
+          - openai
+      trial_three:
+        description: "Run 3-case URL vs CaseID trial instead of single case"
+        required: false
+        default: false
+        type: boolean
+      model:
+        description: "Model (gemini-2.0-flash / gpt-4o-mini etc.)"
+        required: false
+        default: "gemini-2.0-flash"
         type: string
       clean_pdfs:
         description: "Delete PDFs after successful extract"
@@ -38,11 +51,18 @@ jobs:
       - name: Install optional PDF dependency
         run: pip install pypdf
 
-      - name: Run GPT extract lab
+      - name: Run extract lab
         env:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          if [ "${{ inputs.trial_three }}" = "true" ]; then
+            python experiments/gpt-extract/scripts/trial_three_cases.py \
+              --limit 3 \
+              --model "${{ inputs.model }}"
+            exit 0
+          fi
           ARGS=(--model "${{ inputs.model }}")
           if [ "${{ inputs.clean_pdfs }}" = "true" ]; then
             ARGS+=(--clean-pdfs)
@@ -52,10 +72,15 @@ jobs:
           elif [ "${{ inputs.from_queue }}" = "true" ]; then
             ARGS+=(--from-queue)
           else
-            echo "Specify case_id or enable from_queue"
+            echo "Specify case_id, from_queue, or trial_three"
             exit 1
           fi
-          python experiments/gpt-extract/scripts/run_one_case.py "${ARGS[@]}"
+          if [ "${{ inputs.provider }}" = "gemini" ]; then
+            python experiments/gpt-extract/scripts/fetch_case_pdfs.py --case-id "${{ inputs.case_id }}"
+            python experiments/gpt-extract/scripts/run_gemini_extract.py --case-id "${{ inputs.case_id }}" --model "${{ inputs.model }}"
+          else
+            python experiments/gpt-extract/scripts/run_one_case.py "${ARGS[@]}"
+          fi
 
       - name: Upload gpt_extract.csv artifact
         uses: actions/upload-artifact@v4
@@ -63,5 +88,6 @@ jobs:
           name: gpt-extract-output
           path: |
             experiments/gpt-extract/output/gpt_extract.csv
+            experiments/gpt-extract/output/trial_report.json
             experiments/gpt-extract/cases/queue.csv
           if-no-files-found: warn

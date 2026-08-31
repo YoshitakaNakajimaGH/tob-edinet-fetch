@@ -43,9 +43,28 @@ experiments/gpt-extract/
 | 変数 | 用途 |
 |---|---|
 | `EDINET_API_KEY` | PDF 取得（本番 Fetch と同じ） |
-| `OPENAI_API_KEY` | GPT 抽出 |
+| `GEMINI_API_KEY` | Gemini 抽出（`GOOGLE_API_KEY` でも可） |
+| `OPENAI_API_KEY` | OpenAI 抽出（任意） |
 
 ローカルでは `.env` を置いてもよいですが、**コミットしない** でください。
+
+## EDINET リンク vs CaseID（検証メモ）
+
+| 方式 | できること | 限界 |
+|---|---|---|
+| **LatestFilingUrl をそのまま Gemini に渡す** | 不可 | リンク先は HTML ビューア（`WZEK0040.aspx`）で PDF ではない。Gemini はページを直接「検索」できない |
+| **URL から DocID を抜いて PDF 取得 → Gemini** | 可能 | `LatestFilingUrl` の DocID 1 件だけ（例: 最新の訂正届出 250）。報告書 270 や意見表明 290 は含まれない |
+| **CaseID から関連書類を全部 PDF 取得 → Gemini** | **推奨** | `tob_list.csv` / `DocIDList` から届出・訂正・意見表明・報告書をまとめて取得できる |
+
+3 件ドライラン結果（`trial_three_cases.py --dry-run`）:
+
+| CaseID | URL→DocID | URL で取れる書類 | CaseID で取れる PDF 数 |
+|---|---|---|---|
+| S100L8UR | S100MBZL | 訂正届出 1 件 | 23 件（届出〜撤回まで） |
+| S100M232 | S100M232 | 届出 1 件 | 3 件（届出+意見+報告） |
+| S100M436 | S100MF27 | 訂正届出 1 件 | 7 件 |
+
+**結論:** 実運用は **CaseID ベース** がよい。URL ベースは「LatestFilingUrl 1 本だけ軽く試す」用途向け。
 
 ## 使い方（ローカル）
 
@@ -57,8 +76,14 @@ export OPENAI_API_KEY=...
 # 1) PDF を取得（例: CaseID S100M232）
 python experiments/gpt-extract/scripts/fetch_case_pdfs.py --case-id S100M232
 
-# 2) GPT で抽出（軽量モデル）
-python experiments/gpt-extract/scripts/run_gpt_extract.py --case-id S100M232
+# 2) Gemini で 3 件試験（URL 経由 vs CaseID 経由）
+python experiments/gpt-extract/scripts/trial_three_cases.py --dry-run
+python experiments/gpt-extract/scripts/trial_three_cases.py --limit 3 --model gemini-2.0-flash
+
+# 3) Gemini で 1 案件
+export GEMINI_API_KEY=...
+python experiments/gpt-extract/scripts/fetch_case_pdfs.py --case-id S100M232
+python experiments/gpt-extract/scripts/run_gemini_extract.py --case-id S100M232
 
 # または 1+2 をまとめて
 python experiments/gpt-extract/scripts/run_one_case.py --case-id S100M232
