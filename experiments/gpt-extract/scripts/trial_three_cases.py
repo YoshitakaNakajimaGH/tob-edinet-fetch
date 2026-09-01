@@ -21,6 +21,7 @@ from fetch_doc_pdf import download_pdf, lookup_doc_row
 from gemini_client import extract_from_pdfs
 from llm_common import (
     DEFAULT_CASES,
+    DEFAULT_GEMINI_MODEL,
     DEFAULT_OUTPUT,
     OUTPUT_FIELDS,
     load_case_meta,
@@ -165,7 +166,7 @@ def save_extract_row(case: dict, mode: str, doc_id: str, extracted: dict, model:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Trial Gemini on 3 cases")
     parser.add_argument("--limit", type=int, default=3)
-    parser.add_argument("--model", default=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"))
+    parser.add_argument("--model", default=os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL))
     parser.add_argument("--dry-run", action="store_true", help="Analyze paths without API calls")
     parser.add_argument("--mode", choices=("url", "case", "both"), default="both")
     args = parser.parse_args()

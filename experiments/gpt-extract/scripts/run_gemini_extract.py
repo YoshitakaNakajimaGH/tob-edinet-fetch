@@ -19,6 +19,7 @@ if str(SCRIPTS) not in sys.path:
 from gemini_client import extract_from_pdfs
 from llm_common import (
     DEFAULT_CASES,
+    DEFAULT_GEMINI_MODEL,
     DEFAULT_OUTPUT,
     DEFAULT_SCHEMA,
     OUTPUT_FIELDS,
@@ -38,7 +39,7 @@ def main() -> int:
     parser.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     parser.add_argument("--cases-csv", type=Path, default=DEFAULT_CASES)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--model", default=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"))
+    parser.add_argument("--model", default=os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL))
     args = parser.parse_args()
 
     api_key = resolve_gemini_api_key()

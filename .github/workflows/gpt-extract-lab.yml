@@ -28,9 +28,9 @@ on:
         default: false
         type: boolean
       model:
-        description: "Model (gemini-2.0-flash / gpt-4o-mini etc.)"
+        description: "Model (gemini-2.5-flash / gpt-4o-mini etc.)"
         required: false
-        default: "gemini-2.0-flash"
+        default: "gemini-2.5-flash"
         type: string
       clean_pdfs:
         description: "Delete PDFs after successful extract"
