@@ -29,6 +29,10 @@ from tob.extract_fields import (
     resolve_sponsor_hint,
     summarize_price,
 )
+from tob.sponsor_hint_llm import (
+    load_sponsor_hint_llm_overlay,
+    resolve_case_sponsor_hint_with_llm,
+)
 
 DOC_TYPE_NAMES = {
     "240": "公開買付届出書",
@@ -1122,6 +1126,7 @@ def compute_case_enrichment_status(case: dict, docs: list[dict]) -> str:
 
 
 def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> list[dict]:
+    llm_overlay = load_sponsor_hint_llm_overlay()
     groups: dict[str, list[dict]] = defaultdict(list)
     for row in rows:
         case_id = row.get("CaseID") or fallback_case_id(row)
@@ -1157,7 +1162,9 @@ def build_cases(rows: list[dict], edinet_list: EdinetCodeList | None = None) -> 
             listing,
             collect_delisting_source_texts(docs_sorted),
         )
-        sponsor_hint = resolve_case_sponsor_hint(docs_sorted, edinet_list)
+        sponsor_hint = resolve_case_sponsor_hint_with_llm(
+            docs_sorted, edinet_list, llm_overlay.get(case_id)
+        )
         if sponsor_hint:
             overlay["SponsorHint"] = sponsor_hint
         has_opinion = "Yes" if latest_opinion or overlay.get("OpinionStance") else "No"
