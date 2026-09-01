@@ -138,3 +138,12 @@ def resolve_gemini_api_key() -> str:
         if value:
             return value
     return ""
+
+
+# gemini-2.0-flash was retired (404 as of mid-2026). Prefer current Flash models.
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL_FALLBACKS = (
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-1.5-flash",
+)

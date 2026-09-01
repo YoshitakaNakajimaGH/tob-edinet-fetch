@@ -32,7 +32,7 @@ on:
       model:
         description: "Gemini model"
         required: false
-        default: "gemini-2.0-flash"
+        default: "gemini-2.5-flash"
         type: string
       apply_cases:
         description: "Write SponsorHint to output/current/tob_cases.csv"

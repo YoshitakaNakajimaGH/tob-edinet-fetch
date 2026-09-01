@@ -22,6 +22,7 @@ if str(GPT_SCRIPTS) not in sys.path:
 from edinet.edinet_code_list import ensure_edinet_code_list  # noqa: E402
 from gemini_client import call_gemini_json  # noqa: E402
 from llm_common import resolve_gemini_api_key  # noqa: E402
+from llm_common import DEFAULT_GEMINI_MODEL  # noqa: E402
 from tob.sponsor_hint_llm import (  # noqa: E402
     DEFAULT_SIDECAR_PATH,
     build_sponsor_hint_prompt,
@@ -247,7 +248,7 @@ def main() -> None:
     parser.add_argument("--only-diff", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--apply-cases", action="store_true")
-    parser.add_argument("--model", default="gemini-2.0-flash")
+    parser.add_argument("--model", default=DEFAULT_GEMINI_MODEL)
     parser.add_argument("--max-chars", type=int, default=14_000)
     parser.add_argument("--sleep", type=float, default=DEFAULT_SLEEP)
     args = parser.parse_args()
