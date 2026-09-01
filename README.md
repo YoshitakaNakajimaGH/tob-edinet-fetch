@@ -209,6 +209,10 @@ python -m unittest discover -s tests -v
 python experiments/gpt-extract/scripts/run_one_case.py --case-id S100M232
 python experiments/gpt-extract/scripts/run_one_case.py --seed-queue 5
 python experiments/gpt-extract/scripts/run_one_case.py --from-queue
+
+# SponsorHint LLM（要 GEMINI_API_KEY、CSV テキストから推論）
+python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --dry-run --limit 5
+python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --only-blank --apply-cases
 ```
 
 ---
@@ -222,6 +226,7 @@ python experiments/gpt-extract/scripts/run_one_case.py --from-queue
 | [`stock_swap/`](stock_swap/) | 株式交換パイプライン（将来追加予定） |
 | [`experiments/`](experiments/) | **試作・検証用**（本番 `output/` に影響しない） |
 | [`experiments/gpt-extract/`](experiments/gpt-extract/) | ChatGPT で TOB PDF → CSV 抽出する実験場 |
+| [`experiments/sponsor-hint-llm/`](experiments/sponsor-hint-llm/) | Gemini で CSV テキストから SponsorHint を推論 |
 | `output/` | CSV 出力（`current/` と `snapshots/`） |
 | `cache/` | 日次 API レスポンス・XBRL ZIP のキャッシュ |
 

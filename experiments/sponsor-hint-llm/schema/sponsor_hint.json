@@ -1,0 +1,25 @@
+{
+  "description": "Structured sponsor identification for TOB cases",
+  "fields": [
+    {
+      "name": "sponsor_type",
+      "label": "スポンサー種別",
+      "hint": "listed_company | pe_fund | unlisted_spv | offeror_direct | unknown"
+    },
+    {
+      "name": "sponsor_name",
+      "label": "スポンサー正式名称",
+      "hint": "PE名または親会社名。不明・非上場SPVのみの場合は空文字"
+    },
+    {
+      "name": "confidence",
+      "label": "確信度",
+      "hint": "high | medium | low"
+    },
+    {
+      "name": "reason",
+      "label": "根拠",
+      "hint": "1文"
+    }
+  ]
+}
