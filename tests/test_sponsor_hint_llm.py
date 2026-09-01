@@ -105,7 +105,7 @@ class SponsorHintLlmTests(unittest.TestCase):
             save_sponsor_hint_llm_overlay(
                 {"S100TEST": {"SponsorHintLLM": "KKR", "SponsorHintRule": ""}},
                 path,
-                model="gemini-2.0-flash",
+                model="gemini-2.5-flash",
             )
             loaded = load_sponsor_hint_llm_overlay(path)
             self.assertEqual(loaded["S100TEST"]["SponsorHintLLM"], "KKR")
