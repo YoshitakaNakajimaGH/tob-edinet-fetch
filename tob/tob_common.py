@@ -82,14 +82,39 @@ DOC_TYPE_TO_TAXONOMY = {
 DEFAULT_RECENT_DAYS = 35
 
 EDINET_VIEW_BASE = "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx"
+EDINET_PDF_BASE = "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/"
+
+EDINET_DOC_ID_RE = re.compile(r"(S100[A-Z0-9]{4,})", re.I)
+
+
+def parse_edinet_doc_id(value: str) -> str:
+    """Extract DocID (e.g. S100MBZL) from a plain ID or EDINET viewer/PDF URL."""
+    text = (value or "").strip()
+    if not text:
+        return ""
+    if text.upper().startswith("S100") and "://" not in text and "?" not in text:
+        return text.upper()
+    match = EDINET_DOC_ID_RE.search(text)
+    return match.group(1).upper() if match else ""
+
+
+def edinet_pdf_url(doc_id: str) -> str:
+    """Return the public EDINET PDF URL for a docID (no API key required)."""
+    parsed = parse_edinet_doc_id(doc_id)
+    if not parsed:
+        return ""
+    return f"{EDINET_PDF_BASE}{parsed}.pdf"
 
 
 def edinet_view_url(doc_id: str) -> str:
-    """Return the EDINET web viewer URL for a docID (no API key required)."""
-    text = (doc_id or "").strip()
-    if not text:
-        return ""
-    return f"{EDINET_VIEW_BASE}?{text}"
+    """Return the EDINET document URL written to CSV columns (PDF direct link)."""
+    return edinet_pdf_url(doc_id)
+
+
+def normalize_edinet_doc_url(value: str) -> str:
+    """Convert a viewer/PDF/docID value to the canonical PDF URL."""
+    parsed = parse_edinet_doc_id(value)
+    return edinet_pdf_url(parsed) if parsed else (value or "")
 
 
 # API metadata only. Fetch upsert overwrites these, and keeps extraction columns.

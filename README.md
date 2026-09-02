@@ -167,15 +167,21 @@ output/
 | OpinionStance | 賛同 / 反対 など |
 | **FinalResultNote** | `成立` / `成立（按分）` / `不成立` / `撤回` |
 | TargetDelistingNote | 上場廃止関連 |
-| **LatestFilingUrl** | 届出書（240/250 の最新・訂正含む）の EDINET 閲覧 URL |
-| **LatestOutcomeUrl** | 報告書（270/280）または撤回書（260）の最新の EDINET 閲覧 URL |
+| **LatestFilingUrl** | 届出書（240/250 の最新・訂正含む）の EDINET PDF URL |
+| **LatestOutcomeUrl** | 報告書（270/280）または撤回書（260）の最新の EDINET PDF URL |
 | FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |
 | CaseID / LatestFilingDocID など | 内部 ID |
 
 **案件 CSV に載せないもの:** `ApplicationCount` / `PurchaseCount` / `ProrataUsed`  
 按分の有無は **`FinalResultNote` が `成立（按分）` かどうか** で判断します。応募数・買付数の詳細が必要なときは `tob_list.csv` の報告書行（または EDINET リンク）を参照してください。
 
-**URL 形式:** `https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?{DocID}`（API キー不要。提出から約 10 年以内が目安）
+**URL 形式:** `https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/{DocID}.pdf`（API キー不要。提出から約 10 年以内が目安）
+
+既存 CSV のリンクを PDF 形式に揃える場合:
+
+```bash
+python -m tob.refresh_edinet_urls
+```
 
 ---
 
@@ -184,7 +190,7 @@ output/
 | 列 | 意味 |
 |----|------|
 | DocTypeName | 書類種別名 |
-| **EdinetDocUrl** | その行の書類への EDINET 閲覧 URL |
+| **EdinetDocUrl** | その行の書類への EDINET PDF URL |
 | OfferorName / TargetName など | 抽出済みの値 |
 | FinalResultNote / ApplicationCount など | その **書類** から取れた値（報告書行のみ数値あり） |
 | DocID / CaseID | 書類 ID |
