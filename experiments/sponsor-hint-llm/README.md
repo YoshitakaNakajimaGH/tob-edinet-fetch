@@ -46,14 +46,15 @@ python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --case-id S1
 
 ## GitHub Actions
 
-Workflow: **Sponsor Hint LLM**（手動 `workflow_dispatch`）
+Workflow: **Sponsor Hint LLM** — **入力なし。Run workflow を押すだけ。**
 
-| 入力 | 説明 |
+1 回の実行で最大 **10 件**（SponsorHint が空の案件を優先 → 未処理案件）。
+完了したらもう一度 Run を押して次の 10 件。全件終わるまで繰り返します。
+
+| 以前（複雑） | 現在（簡素） |
 |---|---|
-| `mode` | `blank` / `batch` / `all` / `dry_run` |
-| `limit` | batch モードの件数（既定 50） |
-| `offset` | batch オフセット |
-| `apply_cases` | 完了後 `tob_cases.csv` を更新 |
+| mode / limit / offset / model を選ぶ | **入力なし** |
+| モデル名を手動更新 | **API が使えるモデルを自動選択** |
 
 ## 出力ファイル
 
@@ -72,14 +73,16 @@ Workflow: **Sponsor Hint LLM**（手動 `workflow_dispatch`）
 
 Enrich / Fetch 再実行後も sidecar が残れば `build_cases()` で LLM 結果が反映されます。
 
-## トラブルシューティング
+## なぜ何度も失敗していたか（根本原因）
 
-| 症状 | 原因 | 対処 |
-|---|---|---|
-| `HTTP 404` / model not available | **古いモデル名**（2.x は新規 API キーで不可） | 既定 `gemini-3.6-flash` を使用。`--list-models` で確認 |
-| `invalid int value: '--limit 10'` | workflow の **offset に `--limit 10` と入力** | offset は `0` / `10` など数字のみ。件数は limit 欄 |
-| `HTTP 429` | **レート制限**（RPM/RPD） | `mode=batch`, `limit=10`, 翌日再開。`--sleep 10` |
-| 16 秒で失敗 | 上記の設定ミス or 404。**データ量超過ではない** | 1 件目の API 呼び出し前に落ちている |
+| # | 現象 | 原因 | 対策（今回） |
+|---|---|---|---|
+| 1 | HTTP 404 | ハードコードしたモデル名が **API キー世代ごとに異なる** | ListModels API から **自動選択** |
+| 2 | 16秒で即失敗 | workflow **offset に `--limit 10` と入力** | **入力欄を廃止** |
+| 3 | UnboundLocalError | `gemini_client.py` の **バグ**（404/429 後に payload 未設定のまま処理） | ループ構造を修正 |
+| 4 | （将来）429 | 無料枠 RPM | 1 回 **10 件** + リトライ |
+
+**Gemini が難しいのではなく**、「モデル名の陳腐化」「UI の入力ミス」「未テストのエラー経路」が重なっていました。
 
 ### データ量の目安
 

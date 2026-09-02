@@ -123,19 +123,66 @@ def apply_to_cases_csv(cases_csv: Path, sidecar: dict[str, dict]) -> int:
     return updated
 
 
+def pick_workflow_batch(
+    *,
+    cases_csv: Path,
+    list_csv: Path,
+    sidecar: dict[str, dict],
+    batch_size: int = 10,
+) -> list[dict]:
+    """Select up to batch_size cases: blank SponsorHint first, then no sidecar."""
+    docs_by_case = group_docs_by_case(list_csv)
+    edinet = ensure_edinet_code_list()
+    blank: list[dict] = []
+    pending: list[dict] = []
+    for row in read_csv(cases_csv):
+        cid = (row.get("CaseID") or "").strip()
+        if not cid:
+            continue
+        docs = docs_by_case.get(cid, [])
+        if not docs:
+            continue
+        item = {
+            "case_row": row,
+            "docs": docs,
+            "rule_hint": case_rule_hint(docs, edinet),
+        }
+        current_hint = (row.get("SponsorHint") or "").strip()
+        entry = sidecar.get(cid) or {}
+        llm_hint = (entry.get("SponsorHintLLM") or "").strip()
+        if not current_hint:
+            if not llm_hint:
+                blank.append(item)
+            continue
+        if not llm_hint:
+            pending.append(item)
+    selected = blank + pending
+    return selected[:batch_size]
+
+
 def run(args: argparse.Namespace) -> int:
     sidecar_path = Path(args.sidecar)
     sidecar = load_sponsor_hint_llm_overlay(sidecar_path)
-    selected = pick_cases(
-        cases_csv=Path(args.cases_csv),
-        list_csv=Path(args.list_csv),
-        only_blank=args.only_blank,
-        only_diff=args.only_diff,
-        sidecar=sidecar,
-        case_id=(args.case_id or "").strip(),
-    )
-    if args.limit:
-        selected = selected[args.offset : args.offset + args.limit]
+
+    if args.workflow:
+        selected = pick_workflow_batch(
+            cases_csv=Path(args.cases_csv),
+            list_csv=Path(args.list_csv),
+            sidecar=sidecar,
+            batch_size=args.batch_size,
+        )
+        args.apply_cases = True
+    else:
+        selected = pick_cases(
+            cases_csv=Path(args.cases_csv),
+            list_csv=Path(args.list_csv),
+            only_blank=args.only_blank,
+            only_diff=args.only_diff,
+            sidecar=sidecar,
+            case_id=(args.case_id or "").strip(),
+        )
+        if args.limit:
+            selected = selected[args.offset : args.offset + args.limit]
 
     if not selected:
         print("No cases selected.")
@@ -145,6 +192,13 @@ def run(args: argparse.Namespace) -> int:
     if not api_key and not args.dry_run:
         print("GEMINI_API_KEY is not set.", file=sys.stderr)
         return 1
+
+    from llm_common import resolve_gemini_model  # noqa: E402
+
+    model = args.model
+    if not args.dry_run:
+        model = resolve_gemini_model(api_key, preferred=args.model)
+        print(f"Using Gemini model: {model}")
 
     edinet = ensure_edinet_code_list()
     diff_rows: list[dict] = []
@@ -179,7 +233,7 @@ def run(args: argparse.Namespace) -> int:
             llm_raw = call_gemini_json(
                 prompt=prompt,
                 api_key=api_key,
-                model=args.model,
+                model=model,
             )
             llm_hint = finalize_llm_sponsor_hint(
                 llm_raw,
@@ -200,7 +254,7 @@ def run(args: argparse.Namespace) -> int:
             "sponsor_name": llm_raw.get("sponsor_name", ""),
             "confidence": llm_raw.get("confidence", ""),
             "reason": llm_raw.get("reason", ""),
-            "model": args.model,
+            "model": model,
             "updated_at": now,
         }
         diff_rows.append(
@@ -215,7 +269,7 @@ def run(args: argparse.Namespace) -> int:
                 "SponsorType": llm_raw.get("sponsor_type", ""),
                 "Confidence": llm_raw.get("confidence", ""),
                 "Reason": llm_raw.get("reason", ""),
-                "Model": args.model if not args.dry_run else "",
+                "Model": model if not args.dry_run else "",
                 "ProcessedAt": now if not args.dry_run else "",
             }
         )
@@ -223,7 +277,7 @@ def run(args: argparse.Namespace) -> int:
             print(f"{cid}: rule={rule_hint!r} llm={llm_hint!r} type={llm_raw.get('sponsor_type')}")
 
     if not args.dry_run:
-        save_sponsor_hint_llm_overlay(sidecar, sidecar_path, model=args.model)
+        save_sponsor_hint_llm_overlay(sidecar, sidecar_path, model=model)
         diff_path = Path(args.diff_csv)
         write_csv(diff_path, diff_rows, DIFF_FIELDS)
         print(f"Saved sidecar: {sidecar_path} ({len(sidecar)} cases)")
@@ -248,9 +302,15 @@ def main() -> None:
     parser.add_argument("--only-diff", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--apply-cases", action="store_true")
-    parser.add_argument("--model", default=DEFAULT_GEMINI_MODEL)
+    parser.add_argument("--model", default=DEFAULT_GEMINI_MODEL, help="Optional model override")
     parser.add_argument("--max-chars", type=int, default=14_000)
     parser.add_argument("--sleep", type=float, default=DEFAULT_SLEEP)
+    parser.add_argument(
+        "--workflow",
+        action="store_true",
+        help="GitHub Actions default: up to --batch-size cases (blank first, then pending)",
+    )
+    parser.add_argument("--batch-size", type=int, default=10)
     parser.add_argument(
         "--list-models",
         action="store_true",
