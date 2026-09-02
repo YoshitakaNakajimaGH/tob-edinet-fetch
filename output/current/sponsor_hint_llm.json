@@ -1,0 +1,106 @@
+{
+  "updated_at": "2026-09-02T05:16:30+00:00",
+  "model": "gemini-3.6-flash",
+  "cases": {
+    "S100M436": {
+      "SponsorHintLLM": "HoulihanLokey,Inc.",
+      "SponsorHintRule": "",
+      "sponsor_type": "offeror_direct",
+      "sponsor_name": "Houlihan Lokey, Inc.",
+      "confidence": "high",
+      "reason": "公開買付者であるHoulihan Lokey, Inc.が直接対象者株式を取得し完全子会社化を図る取引であり、別体の実質的スポンサーは存在しないため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:13:17+00:00"
+    },
+    "S100N2Z7": {
+      "SponsorHintLLM": "",
+      "SponsorHintRule": "",
+      "sponsor_type": "pe_fund",
+      "sponsor_name": "Mohammed Bin Salman Bin Abdulaziz Al Saud Foundation",
+      "confidence": "high",
+      "reason": "公開買付者の発行済株式の全数を所有しているMohammed Bin Salman Bin Abdulaziz Al Saud Foundation（ミスク財団）が実質的な買収主体であるため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:13:31+00:00"
+    },
+    "S100OY3H": {
+      "SponsorHintLLM": "丸井織物株式会社",
+      "SponsorHintRule": "",
+      "sponsor_type": "offeror_direct",
+      "sponsor_name": "丸井織物株式会社",
+      "confidence": "high",
+      "reason": "公開買付者である丸井織物株式会社が、ファンド等の支援を受けず自ら直接対象者株式を取得して完全子会社化を目指しているため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:13:42+00:00"
+    },
+    "S100P9U1": {
+      "SponsorHintLLM": "Accentureplc",
+      "SponsorHintRule": "",
+      "sponsor_type": "listed_company",
+      "sponsor_name": "Accenture plc",
+      "confidence": "high",
+      "reason": "公開買付者であるアクセンチュア株式会社の最終親会社は、ニューヨーク証券取引所に上場しているAccenture plcであるため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:13:52+00:00"
+    },
+    "S100Q34A": {
+      "SponsorHintLLM": "株式会社コンコルディア・フィナンシャルグループ",
+      "SponsorHintRule": "",
+      "sponsor_type": "listed_company",
+      "sponsor_name": "株式会社コンコルディア・フィナンシャルグループ",
+      "confidence": "high",
+      "reason": "公開買付者である株式会社横浜銀行の完全親会社であり、東証プライム市場に上場している株式会社コンコルディア・フィナンシャルグループが実質的なスポンサーであるため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:14:01+00:00"
+    },
+    "S100QBV1": {
+      "SponsorHintLLM": "ExponentPrivateEquityPartners(Holdings)LLP",
+      "SponsorHintRule": "",
+      "sponsor_type": "pe_fund",
+      "sponsor_name": "Exponent Private Equity Partners (Holdings) LLP",
+      "confidence": "high",
+      "reason": "公開買付者の親会社グループの議決権85%を英国の投資顧問会社であるExponentが投資助言を行うPEファンドが所有しているため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:14:11+00:00"
+    },
+    "S100QRVF": {
+      "SponsorHintLLM": "非上場",
+      "SponsorHintRule": "",
+      "sponsor_type": "unlisted_spv",
+      "sponsor_name": "サイブリッジホールディングス株式会社",
+      "confidence": "high",
+      "reason": "公開買付者であるサイブリッジ合同会社は本公開買付けを目的に設立された合同会社であり、サイブリッジホールディングス株式会社がその持分の全てを保有しているため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:14:44+00:00"
+    },
+    "S100RTM5": {
+      "SponsorHintLLM": "日本電信電話株式会社",
+      "SponsorHintRule": "",
+      "sponsor_type": "listed_company",
+      "sponsor_name": "日本電信電話株式会社",
+      "confidence": "high",
+      "reason": "公開買付者である株式会社NTTドコモの完全親会社であり上場会社である日本電信電話株式会社（NTT）が最上位の経済的スポンサーに該当するため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:14:54+00:00"
+    },
+    "S100SPAO": {
+      "SponsorHintLLM": "太陽鉱工株式会社",
+      "SponsorHintRule": "",
+      "sponsor_type": "offeror_direct",
+      "sponsor_name": "太陽鉱工株式会社",
+      "confidence": "high",
+      "reason": "対象者の筆頭株主である太陽鉱工株式会社が、対象者を完全子会社化することを目指して直接公開買付けを行うため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:15:24+00:00"
+    },
+    "S100TA4K": {
+      "SponsorHintLLM": "非上場",
+      "SponsorHintRule": "",
+      "sponsor_type": "unlisted_spv",
+      "sponsor_name": "いなよしキャピタルパートナーズ株式会社",
+      "confidence": "high",
+      "reason": "公開買付者は代表取締役である稲吉正樹氏が議決権100%を所有する非上場の持株会社であり、上場親会社やPEファンド等の運用主体が存在しないため。",
+      "model": "gemini-3.6-flash",
+      "updated_at": "2026-09-02T05:16:30+00:00"
+    }
+  }
+}
