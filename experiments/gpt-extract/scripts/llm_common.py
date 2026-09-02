@@ -8,7 +8,7 @@ import re
 import urllib.request
 from pathlib import Path
 
-from tob.tob_common import read_csv, write_csv
+from tob.tob_common import parse_edinet_doc_id, read_csv, write_csv
 
 LAB_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCHEMA = LAB_ROOT / "schema" / "extract_fields.json"
@@ -36,21 +36,6 @@ OUTPUT_FIELDS = [
     "PdfCount",
     "ExtractedAt",
 ]
-
-EDINET_VIEWER_RE = re.compile(
-    r"(?:disclosure2\.edinet-fsa\.go\.jp/WZEK0040\.aspx\?)?(S100[A-Z0-9]{4,})",
-    re.I,
-)
-
-
-def parse_edinet_doc_id(url_or_doc_id: str) -> str:
-    text = (url_or_doc_id or "").strip()
-    if not text:
-        return ""
-    if text.startswith("S100") and "://" not in text:
-        return text
-    match = EDINET_VIEWER_RE.search(text)
-    return match.group(1).upper() if match else ""
 
 
 def load_schema(path: Path = DEFAULT_SCHEMA) -> dict:

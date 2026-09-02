@@ -18,10 +18,13 @@ from tob.tob_common import (
     SELF_LIST_FIELDS,
     assign_case_ids,
     build_cases,
+    edinet_pdf_url,
     edinet_view_url,
     latest_outcome_doc,
     merge_document_rows,
     normalize_doc_row,
+    normalize_edinet_doc_url,
+    parse_edinet_doc_id,
     partition_issuer_tenders,
     resolve_range,
 )
@@ -609,6 +612,39 @@ class TaxonomyCatalogTests(unittest.TestCase):
         self.assertEqual(year, "2021")
         self.assertEqual(tax_date, "2020-11-01")
         self.assertEqual(source, "parent")
+
+
+class EdinetUrlTests(unittest.TestCase):
+    def test_parse_viewer_url(self) -> None:
+        self.assertEqual(
+            parse_edinet_doc_id(
+                "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100MBZL"
+            ),
+            "S100MBZL",
+        )
+
+    def test_parse_pdf_url(self) -> None:
+        self.assertEqual(
+            parse_edinet_doc_id(
+                "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100MBZL.pdf"
+            ),
+            "S100MBZL",
+        )
+
+    def test_pdf_url_format(self) -> None:
+        self.assertEqual(
+            edinet_pdf_url("S100MBZL"),
+            "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100MBZL.pdf",
+        )
+        self.assertEqual(edinet_view_url("S100MBZL"), edinet_pdf_url("S100MBZL"))
+
+    def test_normalize_viewer_to_pdf(self) -> None:
+        self.assertEqual(
+            normalize_edinet_doc_url(
+                "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100MBZL"
+            ),
+            "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100MBZL.pdf",
+        )
 
 
 if __name__ == "__main__":
