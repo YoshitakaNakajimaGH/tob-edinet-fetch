@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import urllib.request
 from pathlib import Path
 
 from tob.tob_common import read_csv, write_csv
@@ -140,10 +141,25 @@ def resolve_gemini_api_key() -> str:
     return ""
 
 
-# gemini-2.0-flash was retired (404 as of mid-2026). Prefer current Flash models.
-DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+# Google retires Flash models frequently. New API keys (2026+) may only access 3.x models.
+# See: https://ai.google.dev/gemini-api/docs/models
+DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"
 GEMINI_MODEL_FALLBACKS = (
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
-    "gemini-1.5-flash",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
 )
+
+
+def list_gemini_models(api_key: str) -> list[str]:
+    """Return model IDs that support generateContent for this API key."""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+    with urllib.request.urlopen(url, timeout=60) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+    models: list[str] = []
+    for item in payload.get("models") or []:
+        name = str(item.get("name") or "")
+        methods = item.get("supportedGenerationMethods") or []
+        if "generateContent" in methods:
+            models.append(name.removeprefix("models/"))
+    return sorted(models)

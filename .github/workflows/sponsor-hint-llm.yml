@@ -15,12 +15,12 @@ on:
           - batch
           - all
       limit:
-        description: "Batch size (batch mode)"
+        description: "Batch size — integer only, e.g. 10 (batch mode)"
         required: false
-        default: "50"
+        default: "10"
         type: string
       offset:
-        description: "Batch offset (batch mode)"
+        description: "Start index — integer only, e.g. 0 (batch mode). Do NOT type --limit here."
         required: false
         default: "0"
         type: string
@@ -30,9 +30,9 @@ on:
         default: ""
         type: string
       model:
-        description: "Gemini model"
+        description: "Gemini model (default gemini-3.6-flash for new API keys)"
         required: false
-        default: "gemini-2.5-flash"
+        default: "gemini-3.6-flash"
         type: string
       apply_cases:
         description: "Write SponsorHint to output/current/tob_cases.csv"
@@ -49,6 +49,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Validate batch inputs
+        if: inputs.mode == 'batch'
+        run: |
+          if ! [[ "${{ inputs.limit }}" =~ ^[0-9]+$ ]]; then
+            echo "limit must be an integer (got: '${{ inputs.limit }}')"
+            exit 1
+          fi
+          if ! [[ "${{ inputs.offset }}" =~ ^[0-9]+$ ]]; then
+            echo "offset must be an integer (got: '${{ inputs.offset }}'). Example: 0, 10, 20"
+            exit 1
+          fi
 
       - name: Run sponsor hint LLM
         env:

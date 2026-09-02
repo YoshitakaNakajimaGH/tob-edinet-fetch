@@ -78,7 +78,7 @@ python experiments/gpt-extract/scripts/fetch_case_pdfs.py --case-id S100M232
 
 # 2) Gemini で 3 件試験（URL 経由 vs CaseID 経由）
 python experiments/gpt-extract/scripts/trial_three_cases.py --dry-run
-python experiments/gpt-extract/scripts/trial_three_cases.py --limit 3 --model gemini-2.5-flash
+python experiments/gpt-extract/scripts/trial_three_cases.py --limit 3 --model gemini-3.6-flash
 
 # 3) Gemini で 1 案件
 export GEMINI_API_KEY=...

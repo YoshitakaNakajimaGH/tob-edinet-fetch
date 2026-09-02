@@ -251,7 +251,22 @@ def main() -> None:
     parser.add_argument("--model", default=DEFAULT_GEMINI_MODEL)
     parser.add_argument("--max-chars", type=int, default=14_000)
     parser.add_argument("--sleep", type=float, default=DEFAULT_SLEEP)
+    parser.add_argument(
+        "--list-models",
+        action="store_true",
+        help="Print Gemini models available for this API key and exit",
+    )
     args = parser.parse_args()
+    if args.list_models:
+        api_key = resolve_gemini_api_key()
+        if not api_key:
+            print("GEMINI_API_KEY is not set.", file=sys.stderr)
+            raise SystemExit(1)
+        from llm_common import list_gemini_models  # noqa: E402
+
+        for name in list_gemini_models(api_key):
+            print(name)
+        raise SystemExit(0)
     raise SystemExit(run(args))
 
 
