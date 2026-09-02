@@ -72,6 +72,28 @@ Workflow: **Sponsor Hint LLM**（手動 `workflow_dispatch`）
 
 Enrich / Fetch 再実行後も sidecar が残れば `build_cases()` で LLM 結果が反映されます。
 
+## トラブルシューティング
+
+| 症状 | 原因 | 対処 |
+|---|---|---|
+| `HTTP 404` / model not available | **古いモデル名**（2.x は新規 API キーで不可） | 既定 `gemini-3.6-flash` を使用。`--list-models` で確認 |
+| `invalid int value: '--limit 10'` | workflow の **offset に `--limit 10` と入力** | offset は `0` / `10` など数字のみ。件数は limit 欄 |
+| `HTTP 429` | **レート制限**（RPM/RPD） | `mode=batch`, `limit=10`, 翌日再開。`--sleep 10` |
+| 16 秒で失敗 | 上記の設定ミス or 404。**データ量超過ではない** | 1 件目の API 呼び出し前に落ちている |
+
+### データ量の目安
+
+- 1 案件 ≒ テキスト **~4,000〜14,000 文字**（`PurposesRaw` 中心）
+- blank 17 件 ≒ **~17 API 呼び出し**（無料枠 250 RPD 内）
+- 全 465 件 ≒ **2 日程度**（10 件/回 × 分割実行推奨）
+
+Gemini が難しいのではなく、**モデル名の更新頻度**と **workflow 入力**に注意が必要です。
+
+```bash
+# 利用可能モデル一覧（API キー要）
+python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --list-models
+```
+
 ## モジュール
 
 - `tob/sponsor_hint_llm.py` — テキスト集約、プロンプト、post-process、sidecar I/O
