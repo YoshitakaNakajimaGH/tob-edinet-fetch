@@ -4,6 +4,9 @@ name: Sponsor Hint LLM
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   sponsor-hint-llm:
     runs-on: ubuntu-latest
