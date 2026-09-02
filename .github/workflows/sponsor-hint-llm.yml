@@ -1,44 +1,8 @@
 name: Sponsor Hint LLM
 
-# Enriched CSV テキストから Gemini で SponsorHint を推論（手動）
+# SponsorHint が空の案件を優先し、最大10件ずつ Gemini で推論（入力不要・Run のみ）
 on:
   workflow_dispatch:
-    inputs:
-      mode:
-        description: "Run mode"
-        required: true
-        default: "batch"
-        type: choice
-        options:
-          - dry_run
-          - blank
-          - batch
-          - all
-      limit:
-        description: "Batch size — integer only, e.g. 10 (batch mode)"
-        required: false
-        default: "10"
-        type: string
-      offset:
-        description: "Start index — integer only, e.g. 0 (batch mode). Do NOT type --limit here."
-        required: false
-        default: "0"
-        type: string
-      case_id:
-        description: "Single CaseID (overrides mode when set)"
-        required: false
-        default: ""
-        type: string
-      model:
-        description: "Gemini model (default gemini-3.6-flash for new API keys)"
-        required: false
-        default: "gemini-3.6-flash"
-        type: string
-      apply_cases:
-        description: "Write SponsorHint to output/current/tob_cases.csv"
-        required: false
-        default: true
-        type: boolean
 
 jobs:
   sponsor-hint-llm:
@@ -50,49 +14,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate batch inputs
-        if: inputs.mode == 'batch'
-        run: |
-          if ! [[ "${{ inputs.limit }}" =~ ^[0-9]+$ ]]; then
-            echo "limit must be an integer (got: '${{ inputs.limit }}')"
-            exit 1
-          fi
-          if ! [[ "${{ inputs.offset }}" =~ ^[0-9]+$ ]]; then
-            echo "offset must be an integer (got: '${{ inputs.offset }}'). Example: 0, 10, 20"
-            exit 1
-          fi
-
-      - name: Run sponsor hint LLM
+      - name: Run SponsorHint LLM
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          SCRIPT=experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py
-          ARGS=(--model "${{ inputs.model }}")
-          if [ "${{ inputs.apply_cases }}" = "true" ]; then
-            ARGS+=(--apply-cases)
-          fi
-          if [ -n "${{ inputs.case_id }}" ]; then
-            python "$SCRIPT" --case-id "${{ inputs.case_id }}" "${ARGS[@]}"
-            exit 0
-          fi
-          case "${{ inputs.mode }}" in
-            dry_run)
-              python "$SCRIPT" --dry-run --limit 5 "${ARGS[@]}"
-              ;;
-            blank)
-              python "$SCRIPT" --only-blank "${ARGS[@]}"
-              ;;
-            batch)
-              python "$SCRIPT" --limit "${{ inputs.limit }}" --offset "${{ inputs.offset }}" "${ARGS[@]}"
-              ;;
-            all)
-              python "$SCRIPT" "${ARGS[@]}"
-              ;;
-            *)
-              echo "Unknown mode: ${{ inputs.mode }}"
-              exit 1
-              ;;
-          esac
+          python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --workflow --apply-cases
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -103,8 +29,7 @@ jobs:
             experiments/sponsor-hint-llm/output/sponsor_hint_diff.csv
           if-no-files-found: warn
 
-      - name: Commit sidecar and cases CSV
-        if: inputs.mode != 'dry_run' && inputs.apply_cases
+      - name: Commit results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

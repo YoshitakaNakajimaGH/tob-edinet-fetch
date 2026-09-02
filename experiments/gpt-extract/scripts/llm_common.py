@@ -141,18 +141,27 @@ def resolve_gemini_api_key() -> str:
     return ""
 
 
-# Google retires Flash models frequently. New API keys (2026+) may only access 3.x models.
-# See: https://ai.google.dev/gemini-api/docs/models
-DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"
-GEMINI_MODEL_FALLBACKS = (
+# Hints only — resolve_gemini_model() picks from the live ListModels API first.
+DEFAULT_GEMINI_MODEL = ""
+GEMINI_MODEL_PREFERENCES = (
     "gemini-3.6-flash",
     "gemini-3.5-flash",
     "gemini-3.5-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
 )
+# Backward-compatible alias for tests / callers
+GEMINI_MODEL_FALLBACKS = GEMINI_MODEL_PREFERENCES
+
+
+_MODEL_LIST_CACHE: dict[str, list[str]] = {}
 
 
 def list_gemini_models(api_key: str) -> list[str]:
     """Return model IDs that support generateContent for this API key."""
+    cached = _MODEL_LIST_CACHE.get(api_key)
+    if cached is not None:
+        return cached
     url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
     with urllib.request.urlopen(url, timeout=60) as resp:
         payload = json.loads(resp.read().decode("utf-8"))
@@ -162,4 +171,34 @@ def list_gemini_models(api_key: str) -> list[str]:
         methods = item.get("supportedGenerationMethods") or []
         if "generateContent" in methods:
             models.append(name.removeprefix("models/"))
-    return sorted(models)
+    sorted_models = sorted(models)
+    _MODEL_LIST_CACHE[api_key] = sorted_models
+    return sorted_models
+
+
+def _model_score(name: str) -> tuple[int, int, int, int, int, str]:
+    """Higher is better: flash > non-flash, stable > preview, newer version."""
+    lower = name.lower()
+    nums = [int(part) for part in re.findall(r"\d+", name)]
+    major = nums[0] if nums else 0
+    minor = nums[1] if len(nums) > 1 else 0
+    patch = nums[2] if len(nums) > 2 else 0
+    is_flash = 1 if "flash" in lower else 0
+    is_stable = 0 if ("preview" in lower or "exp" in lower) else 1
+    return (is_flash, is_stable, major, minor, patch, name)
+
+
+def resolve_gemini_model(api_key: str, preferred: str = "") -> str:
+    """Pick the best generateContent model available for this API key."""
+    available = list_gemini_models(api_key)
+    if not available:
+        raise RuntimeError(
+            "No Gemini generateContent models available for this API key. "
+            "Check GEMINI_API_KEY and Google AI Studio project access."
+        )
+    if preferred and preferred in available:
+        return preferred
+    for candidate in GEMINI_MODEL_PREFERENCES:
+        if candidate in available:
+            return candidate
+    return max(available, key=_model_score)
