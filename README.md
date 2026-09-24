@@ -172,8 +172,14 @@ output/
 | FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |
 | CaseID / LatestFilingDocID など | 内部 ID |
 
-**案件 CSV に載せないもの:** `ApplicationCount` / `PurchaseCount` / `ProrataUsed`  
-按分の有無は **`FinalResultNote` が `成立（按分）` かどうか** で判断します。応募数・買付数の詳細が必要なときは `tob_list.csv` の報告書行（または EDINET リンク）を参照してください。
+**案件 CSV に載せないもの:** `ProrataUsed`  
+按分の有無は **`FinalResultNote` が `成立（按分）` かどうか** で判断します。
+
+報告書から取れた応募株数・買付株数は `ApplicationCount` / `PurchaseCount` です。買付株数は、報告書が「全部の買付け等を行います」と書いているときだけ応募株数と同じ値を入れます。按分のときは空欄です。
+
+価格や買付代金が訂正で変わったときだけ `PriceChangeHistory` / `ConsiderationChangeHistory` に日付付きで残します。算定機関が2社以上、名前つきでレンジを書いているときだけ `ValuationAdvisors` に分けます。
+
+`ReferencePricePriorClose` は「公表日の前営業日」の終値、`ReferencePrice1M` はその同じ文の1か月平均です。プレミアムはその書類の買付価格から計算します。事例のプレミアム率や、提出日の前営業日の株価は使いません。候補が複数で食い違うときは空欄です。
 
 **URL 形式:** `https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/{DocID}.pdf`（API キー不要。提出から約 10 年以内が目安）
 

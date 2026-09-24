@@ -22,9 +22,14 @@ from tob.extract_fields import (
     judge_self_tob_result,
     judge_tob_result,
     normalize_name,
+    build_value_history,
+    format_premium,
+    parse_offer_report_counts,
     parse_planned_purchase_counts,
     parse_purchase_consideration,
+    parse_reference_market_prices,
     parse_self_tob_report_counts,
+    parse_valuation_advisors,
     parse_valuation_from_sources,
     resolve_sponsor_hint,
     summarize_price,
@@ -158,6 +163,11 @@ LIST_FIELDS = [
     "ValuationComparableMax",
     "ValuationDCFMin",
     "ValuationDCFMax",
+    "ValuationAdvisors",
+    "ReferencePricePriorClose",
+    "ReferencePrice1M",
+    "PremiumVsPriorClose",
+    "PremiumVs1M",
     "PlannedSharesMin",
     "PlannedSharesMax",
     "PlannedSharesPlanned",
@@ -293,6 +303,11 @@ ENRICH_FIELD_GROUPS: dict[str, frozenset[str]] = {
             "ValuationComparableMax",
             "ValuationDCFMin",
             "ValuationDCFMax",
+            "ValuationAdvisors",
+            "ReferencePricePriorClose",
+            "ReferencePrice1M",
+            "PremiumVsPriorClose",
+            "PremiumVs1M",
             "ValuationBasisRaw",
             "PurposesRaw",
             "PurposesElement",
@@ -458,6 +473,13 @@ CASE_FIELDS = [
     "ValuationComparableMax",
     "ValuationDCFMin",
     "ValuationDCFMax",
+    "ValuationAdvisors",
+    "ReferencePricePriorClose",
+    "ReferencePrice1M",
+    "PremiumVsPriorClose",
+    "PremiumVs1M",
+    "PriceChangeHistory",
+    "ConsiderationChangeHistory",
     "PlannedSharesMin",
     "PlannedSharesMax",
     "PlannedSharesPlanned",
@@ -465,6 +487,8 @@ CASE_FIELDS = [
     "TenderOfferAgent",
     "OpinionStance",
     "FinalResultNote",
+    "ApplicationCount",
+    "PurchaseCount",
     "TargetDelistingNote",
     "LatestFilingUrl",
     "LatestOutcomeUrl",
@@ -493,6 +517,8 @@ _SELF_CASE_EXCLUDE = frozenset(
         "IsMBO",
         "OpinionStance",
         "FinalResultNote",
+        "ApplicationCount",
+        "PurchaseCount",
         "HasOpinion",
         "LatestOpinionDocID",
     }
@@ -933,6 +959,23 @@ def refresh_derived_list_fields(
                     purposes_basis = extract_valuation_from_purposes(purposes_raw)
                     if purposes_basis:
                         row["ValuationBasisRaw"] = purposes_basis[:2500]
+            advisors = parse_valuation_advisors(valuation_text, raw_price, purposes_raw, overview_raw, opinion_raw)
+            if should_update_field("ValuationAdvisors", selected) and advisors:
+                row["ValuationAdvisors"] = advisors
+        if selected is None or selected & {
+            "ReferencePricePriorClose",
+            "ReferencePrice1M",
+            "PremiumVsPriorClose",
+            "PremiumVs1M",
+        }:
+            refs = parse_reference_market_prices("\n".join((raw_price, purposes_raw)))
+            if refs["ReferencePricePriorClose"]:
+                row["ReferencePricePriorClose"] = refs["ReferencePricePriorClose"]
+                row["ReferencePrice1M"] = refs["ReferencePrice1M"]
+                row["PremiumVsPriorClose"] = format_premium(
+                    row.get("OfferPrice") or "", refs["ReferencePricePriorClose"]
+                )
+                row["PremiumVs1M"] = format_premium(row.get("OfferPrice") or "", refs["ReferencePrice1M"])
         if should_update_field("SponsorHint", selected):
             row["SponsorHint"] = resolve_sponsor_hint(
                 offeror_name=row.get("OfferorName") or row.get("FilerName") or "",
@@ -980,6 +1023,8 @@ def refresh_derived_list_fields(
                     row["FinalResultNote"] = judge_self_tob_result(acquired_raw, prorata_raw)
                 elif raw:
                     row["FinalResultNote"] = judge_tob_result(raw)
+                    if selected is None or selected & {"ApplicationCount", "PurchaseCount"}:
+                        row.update(parse_offer_report_counts(raw, row.get("AcquiredSharesRaw") or ""))
 
 
 def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
@@ -999,6 +1044,15 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         "ValuationComparableMax": "",
         "ValuationDCFMin": "",
         "ValuationDCFMax": "",
+        "ValuationAdvisors": "",
+        "ReferencePricePriorClose": "",
+        "ReferencePrice1M": "",
+        "PremiumVsPriorClose": "",
+        "PremiumVs1M": "",
+        "PriceChangeHistory": "",
+        "ConsiderationChangeHistory": "",
+        "ApplicationCount": "",
+        "PurchaseCount": "",
         "PlannedSharesMin": "",
         "PlannedSharesMax": "",
         "PlannedSharesPlanned": "",
@@ -1032,6 +1086,14 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         if type_code in FILING_SIDE:
             if doc.get("OfferPrice"):
                 out["OfferPrice"] = doc["OfferPrice"]
+            if not out["ReferencePricePriorClose"] and doc.get("ReferencePricePriorClose"):
+                out["ReferencePricePriorClose"] = doc["ReferencePricePriorClose"]
+                out["ReferencePrice1M"] = doc.get("ReferencePrice1M") or ""
+                out["PremiumVsPriorClose"] = doc.get("PremiumVsPriorClose") or ""
+                out["PremiumVs1M"] = doc.get("PremiumVs1M") or ""
+            advisors = doc.get("ValuationAdvisors") or ""
+            if advisors.count("（") > out["ValuationAdvisors"].count("（"):
+                out["ValuationAdvisors"] = advisors
             if doc.get("OfferPeriodStart"):
                 out["OfferPeriodStart"] = doc["OfferPeriodStart"]
             if doc.get("OfferPeriodEnd"):
@@ -1064,6 +1126,9 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["OpinionStance"] = doc["OpinionStance"]
             if doc.get("IsMBO") == "Yes":
                 out["IsMBO"] = "Yes"
+            advisors = doc.get("ValuationAdvisors") or ""
+            if advisors.count("（") > out["ValuationAdvisors"].count("（"):
+                out["ValuationAdvisors"] = advisors
         elif type_code in REPORT_SIDE:
             if doc.get("FinalResultRaw"):
                 result_raw = doc["FinalResultRaw"]
@@ -1079,6 +1144,10 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
                 out["OfferPeriodEnd"] = doc["OfferPeriodEnd"]
             if doc.get("AfterPurchaseRatio") or doc.get("OwnershipRatio"):
                 report_after = doc.get("AfterPurchaseRatio") or format_pct(doc.get("OwnershipRatio") or "")
+            if doc.get("ApplicationCount"):
+                out["ApplicationCount"] = doc["ApplicationCount"]
+            if doc.get("PurchaseCount"):
+                out["PurchaseCount"] = doc["PurchaseCount"]
 
     if acquired_raw or prorata_raw:
         result = judge_self_tob_result(acquired_raw, prorata_raw, withdrawn=withdrawn)
@@ -1093,6 +1162,8 @@ def overlay_case_from_docs(docs_sorted: list[dict]) -> dict[str, str]:
         out["AfterPurchaseRatio"] = ""
 
     out["LastEnrichedDocID"] = last_enriched
+    out["PriceChangeHistory"] = build_value_history(docs_sorted, "OfferPrice")
+    out["ConsiderationChangeHistory"] = build_value_history(docs_sorted, "PurchaseConsideration")
     return out
 
 
