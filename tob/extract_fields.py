@@ -1024,6 +1024,219 @@ def parse_valuation_from_sources(*texts: str) -> dict[str, str]:
     return _empty_valuation_ranges()
 
 
+_METHOD_LABELS = (
+    ("市場株価", "市場株価法"),
+    ("類似", "類似会社比較法"),
+    ("ＤＣＦ", "DCF法"),
+    ("DCF", "DCF法"),
+    ("ディスカウント", "DCF法"),
+)
+
+
+def _method_label(raw: str) -> str:
+    for needle, label in _METHOD_LABELS:
+        if needle in raw:
+            return label
+    return ""
+
+
+def parse_valuation_advisors(*texts: str) -> str:
+    """Return per-advisor ranges when two or more advisors are explicit.
+
+    A single advisor stays in the existing Valuation* columns. This string is
+    blank unless at least two named advisors each have one or more ranges.
+    """
+    plain = re.sub(r"\s+", "", strip_html("\n".join(text for text in texts if text)))
+    if not plain:
+        return ""
+    range_re = re.compile(
+        r"(市場株価(?:平均法|基準方式|法)|類似(?:上場)?(?:会社)?比(?:較|準)(?:法|方式)|"
+        r"(?:ディスカウンテッド・キャッシュ・フロー|DCF|ＤＣＦ)(?:法|方式))"
+        r"[：:]([\d,，]+)円(?:から|～|〜|~|-|－)([\d,，]+)円"
+    )
+    name_re = re.compile(r"([^。、（）()]{2,40})(?:は|による)")
+    reject = ("公開買付", "対象者", "市場株価", "算定結果", "下記", "以下")
+    advisors: list[tuple[str, list[str]]] = []
+    current_name = ""
+    current_parts: list[str] = []
+    last_end = -1
+    for match in range_re.finditer(plain):
+        gap = match.start() - last_end if last_end >= 0 else 0
+        lookback = plain[max(0, match.start() - 80) : match.start()]
+        name = ""
+        found = name_re.findall(lookback)
+        if found:
+            candidate = found[-1]
+            if not any(word in candidate for word in reject) and len(candidate) <= 40:
+                name = candidate
+        if name and name != current_name:
+            if current_name and current_parts:
+                advisors.append((current_name, current_parts))
+            current_name = name
+            current_parts = []
+        elif gap > 180 and current_parts:
+            if current_name:
+                advisors.append((current_name, current_parts))
+            current_name = name
+            current_parts = []
+        label = _method_label(match.group(1))
+        if not label or not current_name:
+            last_end = match.end()
+            continue
+        piece = f"{label} {_comma_number(match.group(2))}〜{_comma_number(match.group(3))}円"
+        if piece not in current_parts:
+            current_parts.append(piece)
+        last_end = match.end()
+    if current_name and current_parts:
+        advisors.append((current_name, current_parts))
+    unique: list[tuple[str, list[str]]] = []
+    seen: set[str] = set()
+    for name, parts in advisors:
+        if name in seen or not parts:
+            continue
+        seen.add(name)
+        unique.append((name, parts))
+    if len(unique) < 2:
+        return ""
+    return "; ".join(f"{name}（{'、'.join(parts)}）" for name, parts in unique)
+
+
+def _yen_amount(raw: str) -> str:
+    return _comma_number(raw)
+
+
+def parse_reference_market_prices(text: str) -> dict[str, str]:
+    """Extract announcement prior-close and 1-month average, or blanks.
+
+    Only the clause that states 公表日の前営業日 and then 終値 is accepted.
+    Precedent-premium sentences and 本書提出日の前営業日 are ignored.
+    Conflicting closes in the same text yield blanks.
+    """
+    empty = {"ReferencePricePriorClose": "", "ReferencePrice1M": ""}
+    plain = re.sub(r"\s+", "", strip_html(text or ""))
+    if "公表日" not in plain or "前営業日" not in plain:
+        return empty
+    closes: set[str] = set()
+    months: set[str] = set()
+    month_re = re.compile(
+        r"(?:直近|過去)?[1１][ヶかカ]月間、(?:直近|過去)?[3３][ヶかカ]月間及び"
+        r"(?:直近|過去)?[6６][ヶかカ]月間の終値単純平均値[（(]"
+        r"([\d,，]+)円[、，]([\d,，]+)円(?:及び|[、，])([\d,，]+)円"
+    )
+    single_month_re = re.compile(
+        r"(?:直近|過去)[1１][ヶかカ]月間の終値単純平均値[（(]?([\d,，]+)円"
+    )
+    for match in re.finditer(r"公表日の前営業日|公表日前営業日", plain):
+        window = plain[match.end() : match.end() + 420]
+        stop = re.search(r"。|公表日の前営業日|公表日前営業日", window)
+        if stop:
+            window = window[: stop.start()]
+        window = plain[match.start() : match.end()] + window
+        head = window[:90]
+        if any(word in head for word in ("実例", "中央値", "事例", "プレミアムの")):
+            continue
+        before_average = re.split(r"終値単純平均|終値の単純平均", window, maxsplit=1)[0]
+        found = re.findall(r"終値[（(]([\d,，]+)円[)）]", before_average)
+        if not found:
+            found = re.findall(r"(?<!平均)終値([\d,，]+)円", before_average)
+        if len(set(found)) != 1:
+            continue
+        closes.add(_yen_amount(found[0]))
+        triple = month_re.search(window)
+        if triple:
+            months.add(_yen_amount(triple.group(1)))
+            continue
+        single = single_month_re.search(window)
+        if not single:
+            continue
+        preceding = window[max(0, single.start() - 24) : single.start()]
+        if re.search(r"[3３6６][ヶかカ]月", preceding):
+            continue
+        if "％" in window[single.end() : single.end() + 6]:
+            continue
+        months.add(_yen_amount(single.group(1)))
+    if len(closes) != 1:
+        return empty
+    month = next(iter(months)) if len(months) == 1 else ""
+    return {
+        "ReferencePricePriorClose": f"{next(iter(closes))}円",
+        "ReferencePrice1M": f"{month}円" if month else "",
+    }
+
+
+def parse_offer_yen_per_share(offer_price: str) -> int | None:
+    """Return yen per share only for a single cash price, not a range or stock deal."""
+    text = re.sub(r"\s+", "", offer_price or "")
+    match = re.fullmatch(r"([\d,，]+)円(?:/株)?", text)
+    if not match:
+        return None
+    return _parse_int(match.group(1))
+
+
+def format_premium(offer_price: str, reference_yen: str) -> str:
+    """Premium of the same document's offer price versus a reference yen price.
+
+    Blank unless both values are a single yen amount and the result is within
+    -90% to +1000%. No premium is inferred from a percentage already in the text.
+    """
+    offer = parse_offer_yen_per_share(offer_price)
+    reference = _parse_int(re.sub(r"[^\d]", "", reference_yen or ""))
+    if offer is None or reference is None or reference <= 0 or offer <= 0:
+        return ""
+    pct = (offer - reference) / reference * 100
+    if pct < -90 or pct > 1000:
+        return ""
+    sign = "+" if pct >= 0 else ""
+    return f"{sign}{pct:.1f}%"
+
+
+def parse_offer_report_counts(result_text: str, acquired_text: str = "") -> dict[str, str]:
+    """Tendered and purchased shares from a tender-offer report.
+
+    Purchased shares are copied from the tendered count only when the report
+    states that every tendered share is purchased. Proration leaves the
+    purchased count blank unless the acquired-shares text has its own number.
+    """
+    empty = {"ApplicationCount": "", "PurchaseCount": ""}
+    tendered, _, _ = parse_tob_result_counts(result_text)
+    acquired = re.sub(r"\s+", "", strip_html(acquired_text or ""))
+    purchase = _first_count(
+        acquired,
+        (
+            r"買付(?:け等)?(?:株数|数|普通株式数)[（(]([\d,，]+)(?:株|口|個)",
+            r"買付け等を行った株券等の数[（(]([\d,，]+)(?:株|口|個)",
+        ),
+    )
+    compact = re.sub(r"\s+", "", strip_html(result_text or ""))
+    buy_all = "全部の買付け等を行います" in compact or "全部の買付けを行います" in compact
+    prorata = "あん分比例" in compact or "按分比例" in compact
+    if purchase is None and tendered is not None and buy_all and not prorata:
+        purchase = tendered
+    if tendered is None and purchase is None:
+        return empty
+    return {
+        "ApplicationCount": f"{tendered:,}" if tendered is not None else "",
+        "PurchaseCount": f"{purchase:,}" if purchase is not None else "",
+    }
+
+
+def build_value_history(docs: list[dict], field: str) -> str:
+    """Filing-order history of a field. Blank unless the value actually changes."""
+    points: list[str] = []
+    previous = ""
+    filings = [doc for doc in docs if (doc.get("DocTypeCode") or "") in {"240", "250"}]
+    for doc in filings:
+        value = (doc.get(field) or "").strip()
+        if not value or value == previous:
+            continue
+        day = (doc.get("SubmitDateTime") or "")[:10]
+        points.append(f"{day} {value}".strip())
+        previous = value
+    if len(points) < 2:
+        return ""
+    return " → ".join(points)
+
+
 def _is_dash_count(token: str) -> bool:
     stripped = (token or "").strip()
     if not stripped:
