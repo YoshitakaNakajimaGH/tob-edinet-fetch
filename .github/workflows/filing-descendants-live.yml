@@ -54,7 +54,7 @@ jobs:
             DAYS="183"
             SLEEP="0.5"
           fi
-          python experiments/filing-descendants/fetch_from_api.py \
+          PYTHONPATH=. python experiments/filing-descendants/fetch_from_api.py \
             --month "$MONTH" \
             --within-days "$DAYS" \
             --sleep "$SLEEP" \

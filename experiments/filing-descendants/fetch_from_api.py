@@ -19,6 +19,10 @@ from calendar import monthrange
 from datetime import date, timedelta
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from edinet.edinet_code_list import EdinetCodeList, ensure_edinet_code_list
 from tob.fetch_tob import fetch_day, row_from_doc
 from tob.tob_common import is_issuer_tender

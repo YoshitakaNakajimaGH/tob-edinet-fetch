@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import subprocess
 import sys
 import unittest
 from datetime import date
@@ -42,6 +44,21 @@ class WindowTests(unittest.TestCase):
         start, end = window_for_month("2026-01", 183)
         self.assertEqual(start, date(2026, 1, 1))
         self.assertEqual(end, date(2026, 8, 2))
+
+    def test_script_imports_when_cwd_is_not_the_repo(self) -> None:
+        script = Path(__file__).resolve().parents[1] / "experiments" / "filing-descendants" / "fetch_from_api.py"
+        env = os.environ.copy()
+        env.pop("PYTHONPATH", None)
+        proc = subprocess.run(
+            [sys.executable, str(script), "--help"],
+            cwd="/tmp",
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("documents.json", proc.stdout)
 
 
 class ReportTests(unittest.TestCase):
