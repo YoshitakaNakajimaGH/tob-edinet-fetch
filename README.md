@@ -139,6 +139,35 @@ Fetch を実行しないと Enrich は `fetch_meta.json` が無くて失敗し�
 
 ---
 
+### 5. 案件JSON — 抽出結果の保管
+
+IDリストの次に、書類ごとのXBRLから読み取った値を **1案件1ファイル** にします。CSVやIDリストとは別のフォルダです。
+
+```
+output/cases/YYYY/MM/{届出書DocID}.json
+```
+
+例: `output/cases/2026/03/S100AAAA.json`
+
+このJSONをローカルへコピーすれば、リポジトリの外で一覧・価格・プレミアムの分析用アプリを作れます。中身は次のとおりです。
+
+| 場所 | 内容 |
+|------|------|
+| `core` | 最終の買付価格・期間・保有比率・意見・結果。不明は `null`、本当の0は `0`。比率は `0.3538` のような小数 |
+| `referencePrices` / `premiums` | 公表日前営業日の終値と1・3・6か月平均。プレミアムは `(買付価格-基準)/基準` |
+| `valuations` | 算定機関ごとの市場株価法・類似会社比較法・DCF。買付者側と対象会社側は別レコード。レンジは足し合わせない |
+| `changes` | 価格・期間・意見などの変更。同じ訂正書類の変更は同じ `changeNo` |
+| `timeline` | 届出・意見・訂正・報告・撤回 |
+| `documents` | 各書類のタクソノミ本文（CSVのような文字数カットなし） |
+
+市場株価法とDCFに専用の数値要素はありません。価格・目的・意見のテキストブロックの中のレンジを読みます。株価は `PriceOfPurchaseEtcTextBlock` に加え、`最近の株価及び株式売買高` と `株価の状況` の要素も見ます。
+
+`IsHostileInitial` は最初の意見表明だけを見ます。あとから賛同に変わっても書き換えません。`ExistingHoldingRatio` は公開買付者自身の議決権割合で、特別関係者分は足しません。`AfterPurchaseRatio` は書類に書いてある割合だけを使い、議決権から再計算しません。
+
+生成AIの要約や、スポンサー名の外部推定はこのJSONに入れません。
+
+---
+
 ## 出力フォルダの構造
 
 ```
@@ -150,6 +179,7 @@ output/
     self_tob_cases.csv
     fetch_meta.json
   id_lists/         … 届出月ごとの書類IDリスト（YYYY-MM.json）
+  cases/YYYY/MM/    … 抽出済みの案件JSON（届出書DocID.json）
   snapshots/        … 履歴（tob_list_202001-202012_0001.csv 形式）
   snapshots/trash/  … 古い履歴
 ```

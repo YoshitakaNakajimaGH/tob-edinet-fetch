@@ -1040,6 +1040,120 @@ def _method_label(raw: str) -> str:
     return ""
 
 
+def parse_board_opinion(text: str) -> str:
+    """Board conclusion inside an opinion text block.
+
+    One of 賛同・応募推奨 / 賛同 / 反対 / 中立 / 判断留保, or blank when the
+    opening of the block does not state a conclusion. Later narrative that
+    mentions both 賛同 and 反対 does not override the earliest conclusion.
+    """
+    if not text:
+        return ""
+    compact = re.sub(r"\s+", "", strip_html(text))
+    head = compact[:1200]
+    if not head:
+        return ""
+    patterns = (
+        ("oppose", re.compile(r"反対する旨|反対の意見|本公開買付けに反対|応募しないことを推奨")),
+        ("support", re.compile(r"賛同する旨|賛同の意見|本公開買付けに賛同")),
+        ("reserve", re.compile(r"意見を留保|意見留保|判断を留保|判断留保")),
+        ("neutral", re.compile(r"中立")),
+    )
+    found: list[tuple[int, str]] = []
+    for label, pattern in patterns:
+        match = pattern.search(head)
+        if match:
+            found.append((match.start(), label))
+    if not found:
+        return ""
+    found.sort()
+    kind = found[0][1]
+    if kind == "oppose":
+        return "反対"
+    if kind == "reserve":
+        return "判断留保"
+    if kind == "neutral":
+        return "中立"
+    recommend = re.search(r"応募することを推奨|応募を推奨|応募推奨", head)
+    support = next(item for item in found if item[1] == "support")
+    if recommend and abs(recommend.start() - support[0]) <= 80:
+        return "賛同・応募推奨"
+    return "賛同"
+
+
+def hostile_from_opinion(stance: str) -> str:
+    """Yes / No from the initial board stance. Blank when the stance is not a yes/no."""
+    if stance == "反対":
+        return "Yes"
+    if stance in {"賛同", "賛同・応募推奨"}:
+        return "No"
+    return ""
+
+
+def parse_valuation_records(text: str) -> list[dict[str, object]]:
+    """One record per named advisor. Ranges are not merged across advisors.
+
+    A passage with ranges but no advisor name becomes one record with an empty
+    advisor. A second range for the same method on the same advisor is ignored.
+    """
+    plain = re.sub(r"\s+", "", strip_html(text or ""))
+    if not plain:
+        return []
+    range_re = re.compile(
+        r"(市場株価(?:平均法|基準方式|法)|類似(?:上場)?(?:会社)?比(?:較|準)(?:法|方式)|"
+        r"(?:ディスカウンテッド・キャッシュ・フロー|DCF|ＤＣＦ)(?:法|方式))"
+        r"[：:]?([\d,，]+)円(?:から|～|〜|~|-|－)([\d,，]+)円"
+    )
+    name_re = re.compile(r"([^。、（）()]{2,40})(?:は|による)")
+    reject = ("公開買付", "対象者", "市場株価", "算定結果", "下記", "以下", "本意見")
+    records: list[dict[str, object]] = []
+    current: dict[str, object] | None = None
+
+    def start(name: str) -> dict[str, object]:
+        return {
+            "advisor": name,
+            "marketMin": None,
+            "marketMax": None,
+            "comparableMin": None,
+            "comparableMax": None,
+            "dcfMin": None,
+            "dcfMax": None,
+        }
+
+    def assign(record: dict[str, object], label: str, low: str, high: str) -> None:
+        method = _method_label(label)
+        key = {"市場株価法": "market", "類似会社比較法": "comparable", "DCF法": "dcf"}.get(method)
+        if not key:
+            return
+        min_key = f"{key}Min"
+        max_key = f"{key}Max"
+        if record[min_key] is not None:
+            return
+        record[min_key] = _parse_int(low)
+        record[max_key] = _parse_int(high)
+
+    for match in range_re.finditer(plain):
+        lookback = plain[max(0, match.start() - 80) : match.start()]
+        name = ""
+        found = name_re.findall(lookback)
+        if found:
+            candidate = found[-1]
+            if not any(word in candidate for word in reject) and len(candidate) <= 40:
+                name = candidate
+        if current is None:
+            current = start(name)
+            records.append(current)
+        elif name and name != current["advisor"]:
+            current = start(name)
+            records.append(current)
+        assign(current, match.group(1), match.group(2), match.group(3))
+    return [record for record in records if any(record[key] is not None for key in (
+        "marketMin",
+        "comparableMin",
+        "dcfMin",
+    ))]
+
+
 def parse_valuation_advisors(*texts: str) -> str:
     """Return per-advisor ranges when two or more advisors are explicit.
 
@@ -1105,19 +1219,20 @@ def _yen_amount(raw: str) -> str:
     return _comma_number(raw)
 
 
-def parse_reference_market_prices(text: str) -> dict[str, str]:
-    """Extract announcement prior-close and 1-month average, or blanks.
+def parse_reference_market_price_details(text: str) -> dict[str, str]:
+    """Announcement prior-close and 1/3/6-month averages, without a 円 suffix.
 
     Only the clause that states 公表日の前営業日 and then 終値 is accepted.
     Precedent-premium sentences and 本書提出日の前営業日 are ignored.
-    Conflicting closes in the same text yield blanks.
+    Conflicting closes, or conflicting averages, stay blank.
     """
-    empty = {"ReferencePricePriorClose": "", "ReferencePrice1M": ""}
+    empty = {"priorClose": "", "avg1m": "", "avg3m": "", "avg6m": ""}
     plain = re.sub(r"\s+", "", strip_html(text or ""))
     if "公表日" not in plain or "前営業日" not in plain:
         return empty
     closes: set[str] = set()
-    months: set[str] = set()
+    triples: set[tuple[str, str, str]] = set()
+    singles: set[str] = set()
     month_re = re.compile(
         r"(?:直近|過去)?[1１][ヶかカ]月間、(?:直近|過去)?[3３][ヶかカ]月間及び"
         r"(?:直近|過去)?[6６][ヶかカ]月間の終値単純平均値[（(]"
@@ -1144,7 +1259,13 @@ def parse_reference_market_prices(text: str) -> dict[str, str]:
         closes.add(_yen_amount(found[0]))
         triple = month_re.search(window)
         if triple:
-            months.add(_yen_amount(triple.group(1)))
+            triples.add(
+                (
+                    _yen_amount(triple.group(1)),
+                    _yen_amount(triple.group(2)),
+                    _yen_amount(triple.group(3)),
+                )
+            )
             continue
         single = single_month_re.search(window)
         if not single:
@@ -1154,13 +1275,28 @@ def parse_reference_market_prices(text: str) -> dict[str, str]:
             continue
         if "％" in window[single.end() : single.end() + 6]:
             continue
-        months.add(_yen_amount(single.group(1)))
+        singles.add(_yen_amount(single.group(1)))
     if len(closes) != 1:
         return empty
-    month = next(iter(months)) if len(months) == 1 else ""
+    avg1m = avg3m = avg6m = ""
+    if len(triples) == 1 and not singles:
+        avg1m, avg3m, avg6m = next(iter(triples))
+    elif len(triples) == 0 and len(singles) == 1:
+        avg1m = next(iter(singles))
     return {
-        "ReferencePricePriorClose": f"{next(iter(closes))}円",
-        "ReferencePrice1M": f"{month}円" if month else "",
+        "priorClose": next(iter(closes)),
+        "avg1m": avg1m,
+        "avg3m": avg3m,
+        "avg6m": avg6m,
+    }
+
+
+def parse_reference_market_prices(text: str) -> dict[str, str]:
+    """Extract announcement prior-close and 1-month average, or blanks."""
+    details = parse_reference_market_price_details(text)
+    return {
+        "ReferencePricePriorClose": f"{details['priorClose']}円" if details["priorClose"] else "",
+        "ReferencePrice1M": f"{details['avg1m']}円" if details["avg1m"] else "",
     }
 
 
