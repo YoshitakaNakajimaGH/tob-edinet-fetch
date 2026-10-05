@@ -13,6 +13,12 @@
     "offer_price_text": [
       "jptoo-ton_cor:PriceOfPurchaseEtcTextBlock"
     ],
+    "recent_share_prices_text": [
+      "jptoo-ton_cor:InformationAboutRecentSharePricesAndTradingVolumeTextBlock"
+    ],
+    "stock_prices_text": [
+      "jptoo-ton_cor:InformationAboutStockPricesTextBlock"
+    ],
     "period_text": [
       "jptoo-ton_cor:PeriodOfPurchaseEtcTextBlock",
       "jptoo-ton_cor:OriginalPeriodAtFilingTextBlock"
