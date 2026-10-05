@@ -24,7 +24,6 @@ from edinet.edinet_code_list import EdinetCodeList, ensure_edinet_code_list
 from tob.fetch_tob import fetch_day, row_from_doc
 from tob.tob_common import is_issuer_tender
 
-DEFAULT_LAG_MONTHS = 4
 DEFAULT_WITHIN_DAYS = 183
 DEFAULT_OUT_DIR = "output/id_lists"
 MAX_MONTHS = 24
@@ -48,9 +47,20 @@ def shift_month(day: date, delta: int) -> date:
     return date(year, month0 + 1, 1)
 
 
-def default_filing_month(today: date, lag_months: int = DEFAULT_LAG_MONTHS) -> str:
-    shifted = shift_month(date(today.year, today.month, 1), -lag_months)
-    return f"{shifted.year:04d}-{shifted.month:02d}"
+def default_filing_month(today: date, within_days: int = DEFAULT_WITHIN_DAYS) -> str:
+    """Newest filing month whose document window has fully elapsed.
+
+    A month is ready when today is on or after (last day + within_days).
+    Stored cases reached a report within 182 days, so 183 days covers them.
+    """
+    cursor = date(today.year, today.month, 1)
+    for _ in range(36):
+        cursor = shift_month(cursor, -1)
+        label = f"{cursor.year:04d}-{cursor.month:02d}"
+        _, horizon = window_for_month(label, within_days)
+        if today >= horizon:
+            return label
+    raise ValueError("183日の窓が閉じた月が見つかりません")
 
 
 def resolve_months(
@@ -58,12 +68,12 @@ def resolve_months(
     end: str,
     *,
     today: date,
-    lag_months: int = DEFAULT_LAG_MONTHS,
+    within_days: int = DEFAULT_WITHIN_DAYS,
 ) -> tuple[str, str]:
     start_text = (start or "").strip()
     end_text = (end or "").strip()
     if not start_text:
-        start_text = default_filing_month(today, lag_months)
+        start_text = default_filing_month(today, within_days)
     else:
         start_text = parse_month(start_text)
     if not end_text:
@@ -412,7 +422,7 @@ def _print_summary(report: dict) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--from-month", default="", help="開始月 YYYY-MM。空なら実行日から4ヶ月前")
+    parser.add_argument("--from-month", default="", help="開始月 YYYY-MM。空なら183日の窓が閉じた直近の月")
     parser.add_argument("--to-month", default="", help="終了月 YYYY-MM。空なら開始月と同じ")
     parser.add_argument("--within-days", type=int, default=DEFAULT_WITHIN_DAYS)
     parser.add_argument("--sleep", type=float, default=0.5)
@@ -427,7 +437,12 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         today = date.fromisoformat(args.as_of) if args.as_of else date.today()
-        start_month, end_month = resolve_months(args.from_month, args.to_month, today=today)
+        start_month, end_month = resolve_months(
+            args.from_month,
+            args.to_month,
+            today=today,
+            within_days=args.within_days,
+        )
         months = iter_months(start_month, end_month)
         fetch_start, fetch_end = fetch_bounds(months, args.within_days, today)
     except ValueError as exc:
