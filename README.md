@@ -166,6 +166,14 @@ output/cases/YYYY/MM/{届出書DocID}.json
 
 生成AIの要約や、スポンサー名の外部推定はこのJSONに入れません。
 
+各案件の `pdfLinks` に、公開買付届出書・意見表明報告書・公開買付報告書などの PDF 直リンクを入れます。XBRLが取れなくても、DocID からリンクは残します。形式は `https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/{DocID}.pdf` です。
+
+**Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。
+
+```bash
+python -m tob.case_json --from-month 2026-03
+```
+
 ---
 
 ## 出力フォルダの構造
@@ -282,7 +290,7 @@ python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --only-blank
 
 | パス | 内容 |
 |------|------|
-| [`tob/`](tob/) | TOB パイプライン（Fetch / Enrich / タクソノミ / 抽出ロジック） |
+| [`tob/`](tob/) | TOB パイプライン（Fetch / Enrich / IDリスト / 案件JSON / タクソノミ） |
 | [`edinet/`](edinet/) | EDINET 提出者リスト等の共有ユーティリティ |
 | [`stock_swap/`](stock_swap/) | 株式交換パイプライン（将来追加予定） |
 | [`experiments/`](experiments/) | **試作・検証用**（本番 `output/` に影響しない） |

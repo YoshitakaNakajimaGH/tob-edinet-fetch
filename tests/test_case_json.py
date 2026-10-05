@@ -1,8 +1,19 @@
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-from tob.case_json import build_case_json, case_output_path, document_from_xbrl, write_case_json
+from tob.case_json import (
+    build_case_json,
+    case_output_path,
+    document_from_xbrl,
+    documents_from_id_case,
+    main,
+    write_case_json,
+)
+from tob.taxonomy import TaxonomyCatalog
 from tob.extract_fields import parse_board_opinion, parse_reference_market_price_details, parse_valuation_records
 
 
@@ -151,6 +162,30 @@ class CaseJsonTests(unittest.TestCase):
             core["DocIDList"],
             ["S100AAAA", "S100CCCC", "S100BBBB", "S100DDDD", "S100EEEE"],
         )
+        links = case["pdfLinks"]
+        self.assertEqual(
+            links["firstFiling"],
+            "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100AAAA.pdf",
+        )
+        self.assertEqual(
+            links["latestFiling"],
+            "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100BBBB.pdf",
+        )
+        self.assertEqual(
+            links["firstOpinion"],
+            "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100CCCC.pdf",
+        )
+        self.assertEqual(
+            links["latestOpinion"],
+            "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100DDDD.pdf",
+        )
+        self.assertEqual(
+            links["latestReport"],
+            "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100EEEE.pdf",
+        )
+        self.assertIsNone(links["withdrawal"])
+        self.assertEqual(len(links["documents"]), 5)
+        self.assertTrue(all(item["pdfUrl"].endswith(".pdf") for item in links["documents"]))
 
     def test_premiums_use_reference_prices_not_a_scraped_percent(self) -> None:
         case = self._case()
@@ -243,6 +278,61 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(len(doc["texts"]["offerPrice"]), 6000)
         self.assertEqual(doc["texts"]["recentSharePrices"], "終値")
         self.assertTrue(doc["pdfUrl"].endswith("S100ZZZZ.pdf"))
+
+    def test_pdf_links_remain_when_xbrl_is_missing(self) -> None:
+        case = {
+            "case_id": "S100AAAA",
+            "issuer_tender": False,
+            "offeror_name": "買付者株式会社",
+            "target_name": "対象株式会社",
+            "offeror_edinet_code": "E00001",
+            "target_edinet_code": "E00002",
+            "documents": [
+                {
+                    "doc_id": "S100AAAA",
+                    "doc_type_code": "240",
+                    "submit_date": "2026-03-02",
+                    "parent_doc_id": "",
+                },
+                {
+                    "doc_id": "S100CCCC",
+                    "doc_type_code": "290",
+                    "submit_date": "2026-03-02",
+                    "parent_doc_id": "S100AAAA",
+                },
+            ],
+        }
+        built = build_case_json(
+            "2026-03",
+            documents_from_id_case(case, {"S100AAAA": None, "S100CCCC": None}, TaxonomyCatalog()),
+            case_id="S100AAAA",
+        )
+        self.assertEqual(built["core"]["OfferorName"], "買付者株式会社")
+        self.assertEqual(built["core"]["TargetEdinetCode"], "E00002")
+        self.assertTrue(built["pdfLinks"]["firstFiling"].endswith("/S100AAAA.pdf"))
+        self.assertTrue(built["pdfLinks"]["firstOpinion"].endswith("/S100CCCC.pdf"))
+        self.assertEqual(built["documents"][0]["xbrlStatus"], "no_xbrl")
+
+    def test_missing_id_list_stops_before_the_api(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            code = main(
+                ["--from-month", "2026-03", "--id-list-dir", tmp, "--as-of", "2026-10-05"]
+            )
+        self.assertEqual(code, 1)
+
+    def test_module_help(self) -> None:
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1])
+        result = subprocess.run(
+            [sys.executable, "-m", "tob.case_json", "--help"],
+            cwd=tempfile.gettempdir(),
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("--from-month", result.stdout)
 
 
 if __name__ == "__main__":

@@ -7,14 +7,20 @@ IDリスト（output/id_lists）とは別の output/cases/YYYY/MM/{届出DocID}.
 
 from __future__ import annotations
 
+import argparse
 import json
+import os
 import re
+import sys
+import time
+import zipfile
 from pathlib import Path
 
-from tob.enrich_tob import first_fact
+from tob.enrich_tob import AMENDMENT_TYPES, fetch_document_zip, first_fact, parse_xbrl_csv_from_zip
 from tob.extract_fields import (
     LISTING_MAINTAINED,
     DELISTING_PLANNED,
+    clean_extracted_name,
     extract_parent_company_name,
     extract_pe_sponsor_name,
     extract_special_committee_valuation,
@@ -38,6 +44,8 @@ from tob.extract_fields import (
     judge_tob_result,
     _parse_int,
 )
+from tob.id_list import iter_months, resolve_months
+from tob.taxonomy import TaxonomyCatalog, resolve_taxonomy_year
 from tob.tob_common import (
     ANSWER_SIDE,
     DOC_TYPE_NAMES,
@@ -50,6 +58,7 @@ from tob.tob_common import (
 
 CASE_SCHEMA = "tob-case-1"
 DEFAULT_CASE_DIR = Path("output/cases")
+DEFAULT_ID_LIST_DIR = Path("output/id_lists")
 
 _TEXT_FIELDS = (
     ("offer_price_text", "offerPrice"),
@@ -129,15 +138,20 @@ def document_from_xbrl(row: dict, facts: dict[str, list[str]], mapping: dict) ->
     special_votes, _ = first_fact(facts, fields.get("special_voting_rights", []))
     total_votes, _ = first_fact(facts, fields.get("total_voting_rights", []))
     doc_id = str(row.get("DocID") or row.get("docId") or "")
-    submit = str(row.get("SubmitDateTime") or row.get("submitDateTime") or "")[:10]
+    submit = str(row.get("SubmitDateTime") or row.get("submitDateTime") or row.get("submitDate") or "")[:10]
+    offeror_fact, _ = first_fact(facts, fields.get("offeror_name", []))
+    target_fact, _ = first_fact(facts, fields.get("target_name", []))
+    offeror_name = clean_extracted_name(offeror_fact.split("\n")[0]) if offeror_fact else ""
+    target_name = clean_extracted_name(target_fact.split("\n")[0]) if target_fact else ""
     return {
         "docId": doc_id,
         "docTypeCode": type_code,
         "submitDate": submit,
-        "parentDocId": str(row.get("ParentDocID") or row.get("parentDocID") or ""),
-        "pdfUrl": str(row.get("pdfUrl") or "") or edinet_pdf_url(doc_id),
-        "offerorName": str(row.get("OfferorName") or row.get("offerorName") or ""),
-        "targetName": str(row.get("TargetName") or row.get("targetName") or ""),
+        "parentDocId": str(row.get("ParentDocID") or row.get("parentDocID") or row.get("parentDocId") or ""),
+        "pdfUrl": edinet_pdf_url(doc_id),
+        "xbrlStatus": str(row.get("xbrlStatus") or ""),
+        "offerorName": offeror_name or str(row.get("OfferorName") or row.get("offerorName") or ""),
+        "targetName": target_name or str(row.get("TargetName") or row.get("targetName") or ""),
         "offerorEdinetCode": str(row.get("OfferorEdinetCode") or row.get("FilerEdinetCode") or ""),
         "targetEdinetCode": str(row.get("TargetEdinetCode") or row.get("SubjectEdinetCode") or ""),
         "issuerTender": bool(row.get("issuerTender") or row.get("IssuerTender")),
@@ -239,14 +253,15 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
             "ApplicationCount": _count_or_none(counts.get("ApplicationCount", "")),
             "PurchaseCount": _count_or_none(counts.get("PurchaseCount", "")),
             "TargetDelistingNote": _delisting_note(result_note, purposes, result_text),
-            "DocIDList": [item["docId"] for item in docs if item["docId"]],
+            "DocIDList": [item["docId"] for item in docs_by_date if item["docId"]],
         },
+        "pdfLinks": _pdf_links(docs_by_date),
         "referencePrices": references,
         "premiums": premiums,
         "valuations": valuations,
         "changes": changes,
         "timeline": _timeline(docs_by_date),
-        "documents": [_public_document(item) for item in docs],
+        "documents": [_public_document(item) for item in docs_by_date],
     }
 
 
@@ -271,7 +286,8 @@ def _normalize_document(raw: dict) -> dict:
         "docTypeCode": str(raw.get("docTypeCode") or raw.get("DocTypeCode") or ""),
         "submitDate": submit,
         "parentDocId": str(raw.get("parentDocId") or raw.get("ParentDocID") or ""),
-        "pdfUrl": str(raw.get("pdfUrl") or "") or edinet_pdf_url(str(raw.get("docId") or raw.get("DocID") or "")),
+        "pdfUrl": edinet_pdf_url(str(raw.get("docId") or raw.get("DocID") or "")) or str(raw.get("pdfUrl") or ""),
+        "xbrlStatus": str(raw.get("xbrlStatus") or ""),
         "offerorName": str(raw.get("offerorName") or raw.get("OfferorName") or ""),
         "targetName": str(raw.get("targetName") or raw.get("TargetName") or ""),
         "offerorEdinetCode": str(raw.get("offerorEdinetCode") or raw.get("OfferorEdinetCode") or ""),
@@ -290,7 +306,43 @@ def _public_document(item: dict) -> dict:
         "submitDate": item["submitDate"] or None,
         "parentDocId": item["parentDocId"] or None,
         "pdfUrl": item["pdfUrl"] or None,
+        "xbrlStatus": item.get("xbrlStatus") or None,
         "texts": {key: value or None for key, value in item["texts"].items()},
+    }
+
+
+def _first_url(docs: list[dict], codes: set[str]) -> str | None:
+    for item in docs:
+        if item["docTypeCode"] in codes and item.get("pdfUrl"):
+            return item["pdfUrl"]
+    return None
+
+
+def _last_url(docs: list[dict], codes: set[str]) -> str | None:
+    found = [item["pdfUrl"] for item in docs if item["docTypeCode"] in codes and item.get("pdfUrl")]
+    return found[-1] if found else None
+
+
+def _pdf_links(docs: list[dict]) -> dict:
+    """Public PDF URLs. These come from the DocID and do not need XBRL."""
+    return {
+        "firstFiling": _first_url(docs, {"240"}),
+        "latestFiling": _last_url(docs, FILING_SIDE),
+        "firstOpinion": _first_url(docs, {"290"}),
+        "latestOpinion": _last_url(docs, OPINION_SIDE),
+        "latestReport": _last_url(docs, REPORT_SIDE),
+        "withdrawal": _last_url(docs, WITHDRAW_SIDE),
+        "documents": [
+            {
+                "docId": item["docId"],
+                "docTypeCode": item["docTypeCode"],
+                "docTypeName": DOC_TYPE_NAMES.get(item["docTypeCode"], ""),
+                "submitDate": item["submitDate"] or None,
+                "pdfUrl": item["pdfUrl"] or None,
+            }
+            for item in docs
+            if item.get("docId")
+        ],
     }
 
 
@@ -647,6 +699,173 @@ def _status(result_note: str, reports: list[dict], withdrawals: list[dict]) -> s
     return "公開買付中"
 
 
+def id_list_path(month: str, directory: Path | None = None) -> Path:
+    year_month = f"{_split_month(month)[0]}-{_split_month(month)[1]}"
+    base = Path(directory) if directory is not None else DEFAULT_ID_LIST_DIR
+    return base / f"{year_month}.json"
+
+
+def documents_from_id_case(
+    case: dict,
+    bundles: dict[str, tuple[dict[str, list[str]], str] | None],
+    catalog: TaxonomyCatalog,
+) -> list[dict]:
+    """Turn one ID-list case into document dicts. Missing XBRL still keeps the PDF URL."""
+    issuer = bool(case.get("issuer_tender"))
+    parent_year = ""
+    documents: list[dict] = []
+    for raw in case.get("documents") or []:
+        doc_id = str(raw.get("doc_id") or raw.get("docId") or "")
+        type_code = str(raw.get("doc_type_code") or raw.get("docTypeCode") or "")
+        bundle = bundles.get(doc_id)
+        facts: dict[str, list[str]] = {}
+        zip_text = ""
+        if bundle:
+            facts, zip_text = bundle
+        year = ""
+        mapping: dict = {}
+        if facts or zip_text:
+            year, _tax_date, _source = resolve_taxonomy_year(
+                catalog,
+                submit_datetime=str(raw.get("submit_date") or ""),
+                parent_year=parent_year,
+                facts=facts,
+                zip_text=zip_text,
+                is_amendment=type_code in AMENDMENT_TYPES,
+                issuer=issuer,
+                doc_type_code=type_code,
+            )
+            mapping = catalog.merged_mapping_for_doc(year, type_code, issuer=issuer)
+            if type_code == "240" and year:
+                parent_year = year
+        if bundle is None:
+            status = "no_xbrl"
+        elif facts:
+            status = "ok"
+        else:
+            status = "empty"
+        row = {
+            "DocID": doc_id,
+            "DocTypeCode": type_code,
+            "submitDate": str(raw.get("submit_date") or "")[:10],
+            "ParentDocID": str(raw.get("parent_doc_id") or ""),
+            "OfferorName": case.get("offeror_name") or "",
+            "TargetName": case.get("target_name") or "",
+            "OfferorEdinetCode": case.get("offeror_edinet_code") or "",
+            "TargetEdinetCode": case.get("target_edinet_code") or "",
+            "issuerTender": issuer,
+            "xbrlStatus": status,
+        }
+        documents.append(document_from_xbrl(row, facts, mapping))
+    return documents
+
+
+def build_cases_for_month(
+    report: dict,
+    *,
+    catalog: TaxonomyCatalog,
+    api_key: str,
+    cache_dir: Path,
+    out_dir: Path,
+    force: bool = False,
+    sleep: float = 0.5,
+) -> tuple[list[Path], list[str]]:
+    """Download each document's XBRL and write output/cases/YYYY/MM/{DocID}.json."""
+    month = str(report.get("month") or "")
+    written: list[Path] = []
+    failures: list[str] = []
+    for case in report.get("cases") or []:
+        case_id = str(case.get("case_id") or "")
+        bundles: dict[str, tuple[dict[str, list[str]], str] | None] = {}
+        for raw in case.get("documents") or []:
+            doc_id = str(raw.get("doc_id") or "")
+            if not doc_id:
+                continue
+            cached = (cache_dir / f"{doc_id}.zip").exists() and not force
+            zip_path = fetch_document_zip(doc_id, api_key, cache_dir, force)
+            if not cached and sleep:
+                time.sleep(sleep)
+            if zip_path is None:
+                bundles[doc_id] = None
+                failures.append(doc_id)
+                continue
+            try:
+                bundles[doc_id] = parse_xbrl_csv_from_zip(zip_path)
+            except (zipfile.BadZipFile, OSError) as exc:
+                print(f"  unreadable zip {doc_id}: {exc}", file=sys.stderr)
+                bundles[doc_id] = None
+                failures.append(doc_id)
+        documents = documents_from_id_case(case, bundles, catalog)
+        payload = build_case_json(month, documents, case_id=case_id)
+        payload["issuerTender"] = bool(case.get("issuer_tender")) or payload["issuerTender"]
+        path = write_case_json(payload, out_dir)
+        written.append(path)
+        print(f"Wrote {path}", flush=True)
+    return written, failures
+
+
+def _load_id_list(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="IDリストの月ごとに、案件JSONをXBRLから作る")
+    parser.add_argument("--from-month", default="", help="開始月 YYYY-MM。空欄なら183日の窓が閉じた直近の月")
+    parser.add_argument("--to-month", default="", help="終了月 YYYY-MM。空欄なら開始月と同じ")
+    parser.add_argument("--id-list-dir", default=str(DEFAULT_ID_LIST_DIR))
+    parser.add_argument("--out-dir", default=str(DEFAULT_CASE_DIR))
+    parser.add_argument("--cache-dir", default="cache/docs")
+    parser.add_argument("--sleep", type=float, default=0.5)
+    parser.add_argument("--force", action="store_true", help="キャッシュ済みXBRLも再取得する")
+    parser.add_argument("--as-of", default="", help="開始月を決める基準日 YYYY-MM-DD。空なら今日")
+    args = parser.parse_args(argv)
+
+    from datetime import date
+
+    try:
+        today = date.fromisoformat(args.as_of) if args.as_of else date.today()
+        start_month, end_month = resolve_months(args.from_month, args.to_month, today=today)
+        months = iter_months(start_month, end_month)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+
+    id_dir = Path(args.id_list_dir)
+    missing = [month for month in months if not id_list_path(month, id_dir).is_file()]
+    if missing:
+        print(
+            "IDリストがありません: " + ", ".join(missing) + "。先にIDリスト作成フローを実行してください。",
+            file=sys.stderr,
+        )
+        return 1
+
+    api_key = os.environ.get("EDINET_API_KEY", "").strip()
+    if not api_key:
+        print("EDINET_API_KEY がありません。", file=sys.stderr)
+        return 1
+
+    catalog = TaxonomyCatalog()
+    cache_dir = Path(args.cache_dir)
+    out_dir = Path(args.out_dir)
+    failures: list[str] = []
+    for month in months:
+        report = _load_id_list(id_list_path(month, id_dir))
+        print(f"cases {month} filings={report.get('filing_count')}", flush=True)
+        _written, month_failures = build_cases_for_month(
+            report,
+            catalog=catalog,
+            api_key=api_key,
+            cache_dir=cache_dir,
+            out_dir=out_dir,
+            force=args.force,
+            sleep=args.sleep,
+        )
+        failures.extend(month_failures)
+    if failures:
+        print(f"XBRLを取れなかった書類: {len(failures)}", file=sys.stderr)
+    return 0
+
+
 def _delisting_note(result_note: str, purposes: str, result_text: str) -> str | None:
     if result_note in {"不成立", "撤回"}:
         return None
@@ -658,3 +877,7 @@ def _delisting_note(result_note: str, purposes: str, result_text: str) -> str | 
     if has_delisting_planned_signal(combined):
         return DELISTING_PLANNED
     return None
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
