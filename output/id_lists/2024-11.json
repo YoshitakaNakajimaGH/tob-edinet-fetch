@@ -1,0 +1,1561 @@
+{
+  "source": "edinet-api-v2-documents.json",
+  "read_saved_list_csv": false,
+  "month": "2024-11",
+  "within_days": 183,
+  "as_of": "2026-10-05",
+  "fetched_from": "2024-11-01",
+  "fetched_to": "2025-06-01",
+  "horizon_end": "2025-06-01",
+  "window_closed": true,
+  "failed_days": [],
+  "daily_tob_counts": {
+    "2024-11-01": 5,
+    "2024-11-02": 0,
+    "2024-11-03": 0,
+    "2024-11-04": 0,
+    "2024-11-05": 4,
+    "2024-11-06": 3,
+    "2024-11-07": 4,
+    "2024-11-08": 6,
+    "2024-11-09": 0,
+    "2024-11-10": 0,
+    "2024-11-11": 1,
+    "2024-11-12": 4,
+    "2024-11-13": 5,
+    "2024-11-14": 6,
+    "2024-11-15": 15,
+    "2024-11-16": 0,
+    "2024-11-17": 0,
+    "2024-11-18": 4,
+    "2024-11-19": 1,
+    "2024-11-20": 4,
+    "2024-11-21": 2,
+    "2024-11-22": 0,
+    "2024-11-23": 0,
+    "2024-11-24": 0,
+    "2024-11-25": 1,
+    "2024-11-26": 1,
+    "2024-11-27": 3,
+    "2024-11-28": 0,
+    "2024-11-29": 0,
+    "2024-11-30": 0,
+    "2024-12-01": 0,
+    "2024-12-02": 4,
+    "2024-12-03": 5,
+    "2024-12-04": 0,
+    "2024-12-05": 1,
+    "2024-12-06": 2,
+    "2024-12-07": 0,
+    "2024-12-08": 0,
+    "2024-12-09": 2,
+    "2024-12-10": 3,
+    "2024-12-11": 4,
+    "2024-12-12": 3,
+    "2024-12-13": 2,
+    "2024-12-14": 0,
+    "2024-12-15": 0,
+    "2024-12-16": 8,
+    "2024-12-17": 2,
+    "2024-12-18": 1,
+    "2024-12-19": 2,
+    "2024-12-20": 6,
+    "2024-12-21": 0,
+    "2024-12-22": 0,
+    "2024-12-23": 1,
+    "2024-12-24": 3,
+    "2024-12-25": 2,
+    "2024-12-26": 4,
+    "2024-12-27": 2,
+    "2024-12-28": 0,
+    "2024-12-29": 0,
+    "2024-12-30": 0,
+    "2024-12-31": 0,
+    "2025-01-01": 0,
+    "2025-01-02": 0,
+    "2025-01-03": 0,
+    "2025-01-04": 0,
+    "2025-01-05": 0,
+    "2025-01-06": 1,
+    "2025-01-07": 1,
+    "2025-01-08": 1,
+    "2025-01-09": 2,
+    "2025-01-10": 1,
+    "2025-01-11": 0,
+    "2025-01-12": 0,
+    "2025-01-13": 0,
+    "2025-01-14": 4,
+    "2025-01-15": 2,
+    "2025-01-16": 1,
+    "2025-01-17": 2,
+    "2025-01-18": 0,
+    "2025-01-19": 0,
+    "2025-01-20": 1,
+    "2025-01-21": 2,
+    "2025-01-22": 0,
+    "2025-01-23": 1,
+    "2025-01-24": 1,
+    "2025-01-25": 0,
+    "2025-01-26": 0,
+    "2025-01-27": 1,
+    "2025-01-28": 3,
+    "2025-01-29": 3,
+    "2025-01-30": 0,
+    "2025-01-31": 4,
+    "2025-02-01": 0,
+    "2025-02-02": 0,
+    "2025-02-03": 13,
+    "2025-02-04": 5,
+    "2025-02-05": 9,
+    "2025-02-06": 5,
+    "2025-02-07": 6,
+    "2025-02-08": 0,
+    "2025-02-09": 0,
+    "2025-02-10": 4,
+    "2025-02-11": 0,
+    "2025-02-12": 1,
+    "2025-02-13": 7,
+    "2025-02-14": 2,
+    "2025-02-15": 0,
+    "2025-02-16": 0,
+    "2025-02-17": 9,
+    "2025-02-18": 5,
+    "2025-02-19": 4,
+    "2025-02-20": 2,
+    "2025-02-21": 0,
+    "2025-02-22": 0,
+    "2025-02-23": 0,
+    "2025-02-24": 0,
+    "2025-02-25": 3,
+    "2025-02-26": 1,
+    "2025-02-27": 3,
+    "2025-02-28": 2,
+    "2025-03-01": 0,
+    "2025-03-02": 0,
+    "2025-03-03": 4,
+    "2025-03-04": 6,
+    "2025-03-05": 3,
+    "2025-03-06": 4,
+    "2025-03-07": 1,
+    "2025-03-08": 0,
+    "2025-03-09": 0,
+    "2025-03-10": 2,
+    "2025-03-11": 3,
+    "2025-03-12": 0,
+    "2025-03-13": 2,
+    "2025-03-14": 3,
+    "2025-03-15": 0,
+    "2025-03-16": 0,
+    "2025-03-17": 6,
+    "2025-03-18": 3,
+    "2025-03-19": 7,
+    "2025-03-20": 0,
+    "2025-03-21": 3,
+    "2025-03-22": 0,
+    "2025-03-23": 0,
+    "2025-03-24": 6,
+    "2025-03-25": 2,
+    "2025-03-26": 3,
+    "2025-03-27": 2,
+    "2025-03-28": 0,
+    "2025-03-29": 0,
+    "2025-03-30": 0,
+    "2025-03-31": 2,
+    "2025-04-01": 2,
+    "2025-04-02": 1,
+    "2025-04-03": 1,
+    "2025-04-04": 4,
+    "2025-04-05": 0,
+    "2025-04-06": 0,
+    "2025-04-07": 2,
+    "2025-04-08": 2,
+    "2025-04-09": 0,
+    "2025-04-10": 2,
+    "2025-04-11": 8,
+    "2025-04-12": 0,
+    "2025-04-13": 0,
+    "2025-04-14": 3,
+    "2025-04-15": 3,
+    "2025-04-16": 1,
+    "2025-04-17": 1,
+    "2025-04-18": 1,
+    "2025-04-19": 0,
+    "2025-04-20": 0,
+    "2025-04-21": 2,
+    "2025-04-22": 2,
+    "2025-04-23": 2,
+    "2025-04-24": 0,
+    "2025-04-25": 2,
+    "2025-04-26": 0,
+    "2025-04-27": 0,
+    "2025-04-28": 3,
+    "2025-04-29": 0,
+    "2025-04-30": 1,
+    "2025-05-01": 0,
+    "2025-05-02": 3,
+    "2025-05-03": 0,
+    "2025-05-04": 0,
+    "2025-05-05": 0,
+    "2025-05-06": 0,
+    "2025-05-07": 2,
+    "2025-05-08": 5,
+    "2025-05-09": 6,
+    "2025-05-10": 0,
+    "2025-05-11": 0,
+    "2025-05-12": 5,
+    "2025-05-13": 3,
+    "2025-05-14": 2,
+    "2025-05-15": 11,
+    "2025-05-16": 3,
+    "2025-05-17": 0,
+    "2025-05-18": 0,
+    "2025-05-19": 0,
+    "2025-05-20": 0,
+    "2025-05-21": 2,
+    "2025-05-22": 6,
+    "2025-05-23": 4,
+    "2025-05-24": 0,
+    "2025-05-25": 0,
+    "2025-05-26": 1,
+    "2025-05-27": 6,
+    "2025-05-28": 5,
+    "2025-05-29": 5,
+    "2025-05-30": 3,
+    "2025-05-31": 0,
+    "2025-06-01": 0
+  },
+  "tob_document_count": 415,
+  "filing_count": 29,
+  "issuer_filing_count": 6,
+  "other_filing_count": 23,
+  "filings_with_outcome": 29,
+  "issuer_filings_with_outcome": 6,
+  "other_filings_with_outcome": 23,
+  "cases": [
+    {
+      "case_id": "S100UM58",
+      "filing_date": "2024-11-01",
+      "offeror_name": "株式会社外為どっとコム",
+      "target_name": "株式会社マネーパートナーズグループ",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40203",
+      "target_edinet_code": "E03747",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UM58",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-01",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UM5P",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-01",
+          "parent_doc_id": "S100UM58"
+        },
+        {
+          "doc_id": "S100UY95",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-16",
+          "parent_doc_id": "S100UM58"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UM6Z",
+      "filing_date": "2024-11-01",
+      "offeror_name": "新光商事株式会社",
+      "target_name": "新光商事株式会社",
+      "target_sec_code": "8141",
+      "offeror_edinet_code": "E02664",
+      "target_edinet_code": "E02664",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UM6Z",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-01",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UVV3",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-03",
+          "parent_doc_id": "S100UM6Z"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100UMIE",
+      "filing_date": "2024-11-05",
+      "offeror_name": "ＤＭＧ森精機株式会社",
+      "target_name": "株式会社太陽工機",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E01502",
+      "target_edinet_code": "E02360",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UMIE",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-05",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UMLL",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-05",
+          "parent_doc_id": "S100UMIE"
+        },
+        {
+          "doc_id": "S100UYIQ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-17",
+          "parent_doc_id": "S100UMIE"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UMMQ",
+      "filing_date": "2024-11-05",
+      "offeror_name": "株式会社タクミナ",
+      "target_name": "株式会社タクミナ",
+      "target_sec_code": "6322",
+      "offeror_edinet_code": "E01711",
+      "target_edinet_code": "E01711",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UMMQ",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-05",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UW2K",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-03",
+          "parent_doc_id": "S100UMMQ"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100UNF4",
+      "filing_date": "2024-11-07",
+      "offeror_name": "ＳＣＳＫ株式会社",
+      "target_name": "ネットワンシステムズ株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E04830",
+      "target_edinet_code": "E04966",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UNF4",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-07",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UNQC",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-07",
+          "parent_doc_id": "S100UNF4"
+        },
+        {
+          "doc_id": "S100UZ9E",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-19",
+          "parent_doc_id": "S100UNF4"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UNOI",
+      "filing_date": "2024-11-07",
+      "offeror_name": "セントラルフォレストグループ株式会社",
+      "target_name": "セントラルフォレストグループ株式会社",
+      "target_sec_code": "7675",
+      "offeror_edinet_code": "E34565",
+      "target_edinet_code": "E34565",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UNOI",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-07",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UWH9",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-05",
+          "parent_doc_id": "S100UNOI"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100UO6K",
+      "filing_date": "2024-11-08",
+      "offeror_name": "ＵＤＯＮ株式会社",
+      "target_name": "Ｉ‐ＰＥＸ株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40197",
+      "target_edinet_code": "E01876",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UO6K",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-08",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UO9K",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-08",
+          "parent_doc_id": "S100UO6K"
+        },
+        {
+          "doc_id": "S100UZFS",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-20",
+          "parent_doc_id": "S100UO6K"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UOLV",
+      "filing_date": "2024-11-08",
+      "offeror_name": "株式会社サーラコーポレーション",
+      "target_name": "株式会社安江工務店",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E03408",
+      "target_edinet_code": "E32906",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UOLV",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-08",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UON9",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-08",
+          "parent_doc_id": "S100UOLV"
+        },
+        {
+          "doc_id": "S100UZOX",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-20",
+          "parent_doc_id": "S100UOLV"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UPCH",
+      "filing_date": "2024-11-11",
+      "offeror_name": "スターツコーポレーション株式会社",
+      "target_name": "スターツコーポレーション株式会社",
+      "target_sec_code": "8850",
+      "offeror_edinet_code": "E03945",
+      "target_edinet_code": "E03945",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UPCH",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-11",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UXEW",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-10",
+          "parent_doc_id": "S100UPCH"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100UQ5O",
+      "filing_date": "2024-11-12",
+      "offeror_name": "株式会社Ｔコーポレーション",
+      "target_name": "大和重工株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40191",
+      "target_edinet_code": "E01238",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UQ5O",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-12",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UQ7D",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-12",
+          "parent_doc_id": "S100UQ5O"
+        },
+        {
+          "doc_id": "S100V09U",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-24",
+          "parent_doc_id": "S100UQ5O"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UQ09",
+      "filing_date": "2024-11-12",
+      "offeror_name": "ワイエス商事株式会社",
+      "target_name": "西本Ｗｉｓｍｅｔｔａｃホールディングス株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40188",
+      "target_edinet_code": "E33381",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UQ09",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-12",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UQ7F",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-12",
+          "parent_doc_id": "S100UQ09"
+        },
+        {
+          "doc_id": "S100V0BD",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-24",
+          "parent_doc_id": "S100UQ09"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UR58",
+      "filing_date": "2024-11-13",
+      "offeror_name": "出光興産株式会社",
+      "target_name": "アグロ　カネショウ株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E01084",
+      "target_edinet_code": "E00860",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UR58",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-13",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UR6S",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-13",
+          "parent_doc_id": "S100UR58"
+        },
+        {
+          "doc_id": "S100UU27",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-11-25",
+          "parent_doc_id": "S100UR58"
+        },
+        {
+          "doc_id": "S100V0IC",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-25",
+          "parent_doc_id": "S100UR58"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UR9C",
+      "filing_date": "2024-11-13",
+      "offeror_name": "Ｏｎｔａｒｉｏ合同会社",
+      "target_name": "常磐興産株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40027",
+      "target_edinet_code": "E00033",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UR9C",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-13",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UREC",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-13",
+          "parent_doc_id": "S100UR9C"
+        },
+        {
+          "doc_id": "S100UXL8",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-11",
+          "parent_doc_id": "S100UR9C"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100US7R",
+      "filing_date": "2024-11-14",
+      "offeror_name": "マネーフォワードクラウド経営管理コンサルティング株式会社",
+      "target_name": "アウトルックコンサルティング株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40229",
+      "target_edinet_code": "E39126",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100US7R",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-14",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USDU",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-14",
+          "parent_doc_id": "S100US7R"
+        },
+        {
+          "doc_id": "S100UXT2",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-12",
+          "parent_doc_id": "S100US7R"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100US8U",
+      "filing_date": "2024-11-14",
+      "offeror_name": "ＴＣＳ‐１投資事業有限責任組合",
+      "target_name": "ＭＵＴＯＨホールディングス株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40208",
+      "target_edinet_code": "E02305",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100US8U",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-14",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USBA",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-14",
+          "parent_doc_id": "S100US8U"
+        },
+        {
+          "doc_id": "S100UXTN",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-12",
+          "parent_doc_id": "S100US8U"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USBC",
+      "filing_date": "2024-11-14",
+      "offeror_name": "株式会社Ｓｕｎｎｙ",
+      "target_name": "元旦ビューティ工業株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40181",
+      "target_edinet_code": "E01433",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USBC",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-14",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USCU",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-14",
+          "parent_doc_id": "S100USBC"
+        },
+        {
+          "doc_id": "S100V105",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-26",
+          "parent_doc_id": "S100USBC"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USN9",
+      "filing_date": "2024-11-15",
+      "offeror_name": "ＳＢＩＦＳ合同会社",
+      "target_name": "ＳＢＩ　ＦｉｎＴｅｃｈ　Ｓｏｌｕｔｉｏｎｓ株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40198",
+      "target_edinet_code": "E27562",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USN9",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USNV",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": "S100USN9"
+        },
+        {
+          "doc_id": "S100V1WJ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-01-08",
+          "parent_doc_id": "S100USN9"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USNW",
+      "filing_date": "2024-11-15",
+      "offeror_name": "東急不動産株式会社",
+      "target_name": "リニューアブル・ジャパン株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E03857",
+      "target_edinet_code": "E37205",
+      "doc_count": 6,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "300": 2,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USNW",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USNZ",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": "S100USNW"
+        },
+        {
+          "doc_id": "S100UW2M",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2024-12-03",
+          "parent_doc_id": "S100USNZ"
+        },
+        {
+          "doc_id": "S100UY96",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-12-16",
+          "parent_doc_id": "S100USNW"
+        },
+        {
+          "doc_id": "S100UY9S",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2024-12-16",
+          "parent_doc_id": "S100USNZ"
+        },
+        {
+          "doc_id": "S100V2DZ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-01-09",
+          "parent_doc_id": "S100USNW"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USO6",
+      "filing_date": "2024-11-15",
+      "offeror_name": "株式会社ティーケーピー",
+      "target_name": "株式会社オンザページ",
+      "target_sec_code": "9160",
+      "offeror_edinet_code": "E20616",
+      "target_edinet_code": "E32664",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USO6",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USQD",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": "S100USO6"
+        },
+        {
+          "doc_id": "S100UY4B",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-13",
+          "parent_doc_id": "S100USO6"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USPQ",
+      "filing_date": "2024-11-15",
+      "offeror_name": "株式会社フリークアウト・ホールディングス",
+      "target_name": "ＵＵＵＭ株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E30648",
+      "target_edinet_code": "E33359",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USPQ",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USPX",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": "S100USPQ"
+        },
+        {
+          "doc_id": "S100USYT",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-11-18",
+          "parent_doc_id": "S100USPQ"
+        },
+        {
+          "doc_id": "S100UWTE",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-12-06",
+          "parent_doc_id": "S100USPQ"
+        },
+        {
+          "doc_id": "S100V17R",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-27",
+          "parent_doc_id": "S100USPQ"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USPR",
+      "filing_date": "2024-11-15",
+      "offeror_name": "株式会社Ｇｅｎｅｓｉｓ１",
+      "target_name": "株式会社フェイス",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E36938",
+      "target_edinet_code": "E05209",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USPR",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USQ7",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": "S100USPR"
+        },
+        {
+          "doc_id": "S100V190",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-27",
+          "parent_doc_id": "S100USPR"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USPY",
+      "filing_date": "2024-11-15",
+      "offeror_name": "ＴＪ１株式会社",
+      "target_name": "株式会社マクロミル",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40199",
+      "target_edinet_code": "E05372",
+      "doc_count": 13,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 5,
+        "300": 5,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USPY",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USQ6",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": "S100USPY"
+        },
+        {
+          "doc_id": "S100V0VW",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-12-26",
+          "parent_doc_id": "S100USPY"
+        },
+        {
+          "doc_id": "S100V0X0",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2024-12-26",
+          "parent_doc_id": "S100USQ6"
+        },
+        {
+          "doc_id": "S100V3WA",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-01-17",
+          "parent_doc_id": "S100USPY"
+        },
+        {
+          "doc_id": "S100V3WC",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-01-17",
+          "parent_doc_id": "S100USQ6"
+        },
+        {
+          "doc_id": "S100V6AD",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-02-03",
+          "parent_doc_id": "S100USPY"
+        },
+        {
+          "doc_id": "S100V6BB",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-02-03",
+          "parent_doc_id": "S100USQ6"
+        },
+        {
+          "doc_id": "S100V9ES",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-02-17",
+          "parent_doc_id": "S100USPY"
+        },
+        {
+          "doc_id": "S100V9GE",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-02-17",
+          "parent_doc_id": "S100USQ6"
+        },
+        {
+          "doc_id": "S100VCD4",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-03-04",
+          "parent_doc_id": "S100USPY"
+        },
+        {
+          "doc_id": "S100VCEP",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-03-05",
+          "parent_doc_id": "S100USQ6"
+        },
+        {
+          "doc_id": "S100VFHF",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-03-19",
+          "parent_doc_id": "S100USPY"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100USP5",
+      "filing_date": "2024-11-15",
+      "offeror_name": "ＡＩフュージョンキャピタルグループ株式会社",
+      "target_name": "株式会社ショーケース",
+      "target_sec_code": "3909",
+      "offeror_edinet_code": "E39737",
+      "target_edinet_code": "E27894",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100USP5",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100USRB",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-15",
+          "parent_doc_id": "S100USP5"
+        },
+        {
+          "doc_id": "S100UY1R",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-13",
+          "parent_doc_id": "S100USP5"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UT0P",
+      "filing_date": "2024-11-18",
+      "offeror_name": "株式会社歯愛メディカル",
+      "target_name": "株式会社白鳩",
+      "target_sec_code": "3192",
+      "offeror_edinet_code": "E32453",
+      "target_edinet_code": "E30504",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UT0P",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-18",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UT13",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-18",
+          "parent_doc_id": "S100UT0P"
+        },
+        {
+          "doc_id": "S100UYA7",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-16",
+          "parent_doc_id": "S100UT0P"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UT7W",
+      "filing_date": "2024-11-19",
+      "offeror_name": "株式会社帝国電機製作所",
+      "target_name": "株式会社ＴＥＩＫＯＫＵ",
+      "target_sec_code": "6333",
+      "offeror_edinet_code": "E01761",
+      "target_edinet_code": "E01761",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UT7W",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-19",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UYLY",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-17",
+          "parent_doc_id": "S100UT7W"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100UTEH",
+      "filing_date": "2024-11-20",
+      "offeror_name": "東京海上ホールディングス株式会社",
+      "target_name": "ＩＤ＆Ｅホールディングス株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E03847",
+      "target_edinet_code": "E38017",
+      "doc_count": 7,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 3,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UTEH",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-20",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UTEQ",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-20",
+          "parent_doc_id": "S100UTEH"
+        },
+        {
+          "doc_id": "S100UZWJ",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-12-23",
+          "parent_doc_id": "S100UTEH"
+        },
+        {
+          "doc_id": "S100V3DM",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-01-15",
+          "parent_doc_id": "S100UTEH"
+        },
+        {
+          "doc_id": "S100V3D2",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-01-15",
+          "parent_doc_id": "S100UTEQ"
+        },
+        {
+          "doc_id": "S100V419",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-01-20",
+          "parent_doc_id": "S100UTEH"
+        },
+        {
+          "doc_id": "S100V74R",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-02-06",
+          "parent_doc_id": "S100UTEH"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UTHI",
+      "filing_date": "2024-11-20",
+      "offeror_name": "ＦＫ株式会社",
+      "target_name": "富士ソフト株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40040",
+      "target_edinet_code": "E04810",
+      "doc_count": 12,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 4,
+        "300": 5,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UTHI",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-20",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UTI4",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-20",
+          "parent_doc_id": "S100UTHI"
+        },
+        {
+          "doc_id": "S100UZA6",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-12-19",
+          "parent_doc_id": "S100UTHI"
+        },
+        {
+          "doc_id": "S100UZH1",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2024-12-20",
+          "parent_doc_id": "S100UTI4"
+        },
+        {
+          "doc_id": "S100V2F3",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-01-09",
+          "parent_doc_id": "S100UTHI"
+        },
+        {
+          "doc_id": "S100V2H3",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-01-10",
+          "parent_doc_id": "S100UTI4"
+        },
+        {
+          "doc_id": "S100V4UK",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-01-24",
+          "parent_doc_id": "S100UTHI"
+        },
+        {
+          "doc_id": "S100V4XW",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-01-27",
+          "parent_doc_id": "S100UTI4"
+        },
+        {
+          "doc_id": "S100V6JB",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-02-04",
+          "parent_doc_id": "S100UTHI"
+        },
+        {
+          "doc_id": "S100V6WQ",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-02-05",
+          "parent_doc_id": "S100UTI4"
+        },
+        {
+          "doc_id": "S100V7N3",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-02-10",
+          "parent_doc_id": "S100UTI4"
+        },
+        {
+          "doc_id": "S100VA4N",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-02-20",
+          "parent_doc_id": "S100UTHI"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100UUFN",
+      "filing_date": "2024-11-26",
+      "offeror_name": "株式会社ティーガイア",
+      "target_name": "株式会社ティーガイア",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E05392",
+      "target_edinet_code": "E05392",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UUFN",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-26",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100V09J",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-12-24",
+          "parent_doc_id": "S100UUFN"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100UUP8",
+      "filing_date": "2024-11-27",
+      "offeror_name": "ＫＤＤＩ株式会社",
+      "target_name": "株式会社ラック",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E04425",
+      "target_edinet_code": "E05720",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100UUP8",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-11-27",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100UUPZ",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-11-27",
+          "parent_doc_id": "S100UUP8"
+        },
+        {
+          "doc_id": "S100V3OE",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-01-16",
+          "parent_doc_id": "S100UUP8"
+        }
+      ],
+      "issuer_tender": false
+    }
+  ]
+}

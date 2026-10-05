@@ -1,0 +1,899 @@
+{
+  "source": "edinet-api-v2-documents.json",
+  "read_saved_list_csv": false,
+  "month": "2024-05",
+  "within_days": 183,
+  "as_of": "2026-10-05",
+  "fetched_from": "2024-05-01",
+  "fetched_to": "2024-11-30",
+  "horizon_end": "2024-11-30",
+  "window_closed": true,
+  "failed_days": [],
+  "daily_tob_counts": {
+    "2024-05-01": 0,
+    "2024-05-02": 2,
+    "2024-05-03": 0,
+    "2024-05-04": 0,
+    "2024-05-05": 0,
+    "2024-05-06": 0,
+    "2024-05-07": 0,
+    "2024-05-08": 1,
+    "2024-05-09": 4,
+    "2024-05-10": 1,
+    "2024-05-11": 0,
+    "2024-05-12": 0,
+    "2024-05-13": 6,
+    "2024-05-14": 3,
+    "2024-05-15": 1,
+    "2024-05-16": 3,
+    "2024-05-17": 5,
+    "2024-05-18": 0,
+    "2024-05-19": 0,
+    "2024-05-20": 2,
+    "2024-05-21": 2,
+    "2024-05-22": 1,
+    "2024-05-23": 2,
+    "2024-05-24": 3,
+    "2024-05-25": 0,
+    "2024-05-26": 0,
+    "2024-05-27": 2,
+    "2024-05-28": 2,
+    "2024-05-29": 0,
+    "2024-05-30": 2,
+    "2024-05-31": 4,
+    "2024-06-01": 0,
+    "2024-06-02": 0,
+    "2024-06-03": 4,
+    "2024-06-04": 3,
+    "2024-06-05": 3,
+    "2024-06-06": 0,
+    "2024-06-07": 2,
+    "2024-06-08": 0,
+    "2024-06-09": 0,
+    "2024-06-10": 1,
+    "2024-06-11": 4,
+    "2024-06-12": 1,
+    "2024-06-13": 0,
+    "2024-06-14": 3,
+    "2024-06-15": 0,
+    "2024-06-16": 0,
+    "2024-06-17": 3,
+    "2024-06-18": 0,
+    "2024-06-19": 3,
+    "2024-06-20": 4,
+    "2024-06-21": 6,
+    "2024-06-22": 0,
+    "2024-06-23": 0,
+    "2024-06-24": 2,
+    "2024-06-25": 4,
+    "2024-06-26": 4,
+    "2024-06-27": 2,
+    "2024-06-28": 4,
+    "2024-06-29": 0,
+    "2024-06-30": 0,
+    "2024-07-01": 1,
+    "2024-07-02": 1,
+    "2024-07-03": 0,
+    "2024-07-04": 0,
+    "2024-07-05": 1,
+    "2024-07-06": 0,
+    "2024-07-07": 0,
+    "2024-07-08": 0,
+    "2024-07-09": 1,
+    "2024-07-10": 1,
+    "2024-07-11": 0,
+    "2024-07-12": 0,
+    "2024-07-13": 0,
+    "2024-07-14": 0,
+    "2024-07-15": 0,
+    "2024-07-16": 5,
+    "2024-07-17": 4,
+    "2024-07-18": 3,
+    "2024-07-19": 3,
+    "2024-07-20": 0,
+    "2024-07-21": 0,
+    "2024-07-22": 1,
+    "2024-07-23": 0,
+    "2024-07-24": 3,
+    "2024-07-25": 2,
+    "2024-07-26": 2,
+    "2024-07-27": 0,
+    "2024-07-28": 0,
+    "2024-07-29": 2,
+    "2024-07-30": 0,
+    "2024-07-31": 1,
+    "2024-08-01": 1,
+    "2024-08-02": 0,
+    "2024-08-03": 0,
+    "2024-08-04": 0,
+    "2024-08-05": 3,
+    "2024-08-06": 3,
+    "2024-08-07": 2,
+    "2024-08-08": 0,
+    "2024-08-09": 12,
+    "2024-08-10": 0,
+    "2024-08-11": 0,
+    "2024-08-12": 0,
+    "2024-08-13": 3,
+    "2024-08-14": 2,
+    "2024-08-15": 5,
+    "2024-08-16": 1,
+    "2024-08-17": 0,
+    "2024-08-18": 0,
+    "2024-08-19": 0,
+    "2024-08-20": 1,
+    "2024-08-21": 2,
+    "2024-08-22": 2,
+    "2024-08-23": 3,
+    "2024-08-24": 0,
+    "2024-08-25": 0,
+    "2024-08-26": 0,
+    "2024-08-27": 6,
+    "2024-08-28": 3,
+    "2024-08-29": 0,
+    "2024-08-30": 2,
+    "2024-08-31": 0,
+    "2024-09-01": 0,
+    "2024-09-02": 0,
+    "2024-09-03": 1,
+    "2024-09-04": 1,
+    "2024-09-05": 2,
+    "2024-09-06": 3,
+    "2024-09-07": 0,
+    "2024-09-08": 0,
+    "2024-09-09": 2,
+    "2024-09-10": 2,
+    "2024-09-11": 0,
+    "2024-09-12": 1,
+    "2024-09-13": 1,
+    "2024-09-14": 0,
+    "2024-09-15": 0,
+    "2024-09-16": 0,
+    "2024-09-17": 3,
+    "2024-09-18": 3,
+    "2024-09-19": 3,
+    "2024-09-20": 2,
+    "2024-09-21": 0,
+    "2024-09-22": 0,
+    "2024-09-23": 0,
+    "2024-09-24": 1,
+    "2024-09-25": 4,
+    "2024-09-26": 1,
+    "2024-09-27": 2,
+    "2024-09-28": 0,
+    "2024-09-29": 0,
+    "2024-09-30": 3,
+    "2024-10-01": 5,
+    "2024-10-02": 0,
+    "2024-10-03": 1,
+    "2024-10-04": 1,
+    "2024-10-05": 0,
+    "2024-10-06": 0,
+    "2024-10-07": 1,
+    "2024-10-08": 1,
+    "2024-10-09": 0,
+    "2024-10-10": 1,
+    "2024-10-11": 2,
+    "2024-10-12": 0,
+    "2024-10-13": 0,
+    "2024-10-14": 0,
+    "2024-10-15": 4,
+    "2024-10-16": 0,
+    "2024-10-17": 1,
+    "2024-10-18": 1,
+    "2024-10-19": 0,
+    "2024-10-20": 0,
+    "2024-10-21": 4,
+    "2024-10-22": 3,
+    "2024-10-23": 2,
+    "2024-10-24": 1,
+    "2024-10-25": 0,
+    "2024-10-26": 0,
+    "2024-10-27": 0,
+    "2024-10-28": 0,
+    "2024-10-29": 0,
+    "2024-10-30": 6,
+    "2024-10-31": 1,
+    "2024-11-01": 5,
+    "2024-11-02": 0,
+    "2024-11-03": 0,
+    "2024-11-04": 0,
+    "2024-11-05": 4,
+    "2024-11-06": 3,
+    "2024-11-07": 4,
+    "2024-11-08": 6,
+    "2024-11-09": 0,
+    "2024-11-10": 0,
+    "2024-11-11": 1,
+    "2024-11-12": 4,
+    "2024-11-13": 5,
+    "2024-11-14": 6,
+    "2024-11-15": 15,
+    "2024-11-16": 0,
+    "2024-11-17": 0,
+    "2024-11-18": 4,
+    "2024-11-19": 1,
+    "2024-11-20": 4,
+    "2024-11-21": 2,
+    "2024-11-22": 0,
+    "2024-11-23": 0,
+    "2024-11-24": 0,
+    "2024-11-25": 1,
+    "2024-11-26": 1,
+    "2024-11-27": 3,
+    "2024-11-28": 0,
+    "2024-11-29": 0,
+    "2024-11-30": 0
+  },
+  "tob_document_count": 320,
+  "filing_count": 16,
+  "issuer_filing_count": 8,
+  "other_filing_count": 8,
+  "filings_with_outcome": 16,
+  "issuer_filings_with_outcome": 8,
+  "other_filings_with_outcome": 8,
+  "cases": [
+    {
+      "case_id": "S100TCRY",
+      "filing_date": "2024-05-02",
+      "offeror_name": "ＡＺ－ＣＯＭ丸和ホールディングス株式会社",
+      "target_name": "株式会社Ｃ＆Ｆロジホールディングス",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E30443",
+      "target_edinet_code": "E31635",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "300": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TCRY",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-02",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TDC4",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-08",
+          "parent_doc_id": "S100TCRY"
+        },
+        {
+          "doc_id": "S100TJL2",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2024-05-31",
+          "parent_doc_id": "S100TDC4"
+        },
+        {
+          "doc_id": "S100TKBH",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-06-05",
+          "parent_doc_id": "S100TCRY"
+        },
+        {
+          "doc_id": "S100TOLY",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-20",
+          "parent_doc_id": "S100TCRY"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100TCTB",
+      "filing_date": "2024-05-02",
+      "offeror_name": "日本ライフライン株式会社",
+      "target_name": "日本ライフライン株式会社",
+      "target_sec_code": "7575",
+      "offeror_edinet_code": "E02881",
+      "target_edinet_code": "E02881",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TCTB",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-02",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TK3N",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-04",
+          "parent_doc_id": "S100TCTB"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100TEQ5",
+      "filing_date": "2024-05-13",
+      "offeror_name": "ＪＡＦホールディングス株式会社",
+      "target_name": "ジャパンフーズ株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E39687",
+      "target_edinet_code": "E00421",
+      "doc_count": 6,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TEQ5",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-13",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TEW8",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-13",
+          "parent_doc_id": "S100TEQ5"
+        },
+        {
+          "doc_id": "S100TOTH",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-06-20",
+          "parent_doc_id": "S100TEQ5"
+        },
+        {
+          "doc_id": "S100TOWJ",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2024-06-20",
+          "parent_doc_id": "S100TEW8"
+        },
+        {
+          "doc_id": "S100TR8Z",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-06-24",
+          "parent_doc_id": "S100TEQ5"
+        },
+        {
+          "doc_id": "S100U0S4",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-07-09",
+          "parent_doc_id": "S100TEQ5"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100TEQT",
+      "filing_date": "2024-05-13",
+      "offeror_name": "テイ・エス　テック株式会社",
+      "target_name": "テイ・エス　テック株式会社",
+      "target_sec_code": "7313",
+      "offeror_edinet_code": "E02380",
+      "target_edinet_code": "E02380",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TEQT",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-13",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TLEJ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-11",
+          "parent_doc_id": "S100TEQT"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100TET7",
+      "filing_date": "2024-05-13",
+      "offeror_name": "ＫＤＤＩ株式会社",
+      "target_name": "ＫＤＤＩ株式会社",
+      "target_sec_code": "9433",
+      "offeror_edinet_code": "E04425",
+      "target_edinet_code": "E04425",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TET7",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-13",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TLBF",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-11",
+          "parent_doc_id": "S100TET7"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100TEWF",
+      "filing_date": "2024-05-13",
+      "offeror_name": "日本アビオニクス株式会社",
+      "target_name": "日本アビオニクス株式会社",
+      "target_sec_code": "6946",
+      "offeror_edinet_code": "E01968",
+      "target_edinet_code": "E01968",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TEWF",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-13",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TLC0",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-11",
+          "parent_doc_id": "S100TEWF"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100TFBA",
+      "filing_date": "2024-05-14",
+      "offeror_name": "カメイ株式会社",
+      "target_name": "カメイ株式会社",
+      "target_sec_code": "8037",
+      "offeror_edinet_code": "E02682",
+      "target_edinet_code": "E02682",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TFBA",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-14",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TLEK",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-11",
+          "parent_doc_id": "S100TFBA"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100TFGR",
+      "filing_date": "2024-05-14",
+      "offeror_name": "株式会社図研",
+      "target_name": "図研エルミック株式会社",
+      "target_sec_code": "",
+      "offeror_edinet_code": "E01966",
+      "target_edinet_code": "E05106",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TFGR",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-14",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TFJP",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-14",
+          "parent_doc_id": "S100TFGR"
+        },
+        {
+          "doc_id": "S100TS9Q",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-25",
+          "parent_doc_id": "S100TFGR"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100TGB8",
+      "filing_date": "2024-05-16",
+      "offeror_name": "トモエ株式会社",
+      "target_name": "株式会社エスライングループ本社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E39721",
+      "target_edinet_code": "E04199",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TGB8",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-16",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TGBI",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-16",
+          "parent_doc_id": "S100TGB8"
+        },
+        {
+          "doc_id": "S100TJM5",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-05-31",
+          "parent_doc_id": "S100TGB8"
+        },
+        {
+          "doc_id": "S100TJMD",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2024-05-31",
+          "parent_doc_id": "S100TGBI"
+        },
+        {
+          "doc_id": "S100TGBQ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-27",
+          "parent_doc_id": "S100TGB8"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100TGFP",
+      "filing_date": "2024-05-17",
+      "offeror_name": "麻布台１号有限責任事業組合",
+      "target_name": "ホリイフードサービス株式会社",
+      "target_sec_code": "3077",
+      "offeror_edinet_code": "E39704",
+      "target_edinet_code": "E03505",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TGFP",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-17",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TGI9",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-17",
+          "parent_doc_id": "S100TGFP"
+        },
+        {
+          "doc_id": "S100TMA2",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-14",
+          "parent_doc_id": "S100TGFP"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100TGHS",
+      "filing_date": "2024-05-17",
+      "offeror_name": "コタ株式会社",
+      "target_name": "コタ株式会社",
+      "target_sec_code": "4923",
+      "offeror_edinet_code": "E01059",
+      "target_edinet_code": "E01059",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TGHS",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-17",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TMDX",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-14",
+          "parent_doc_id": "S100TGHS"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100TGIU",
+      "filing_date": "2024-05-17",
+      "offeror_name": "ハウス食品グループ本社株式会社",
+      "target_name": "ハウス食品グループ本社株式会社",
+      "target_sec_code": "2810",
+      "offeror_edinet_code": "E00462",
+      "target_edinet_code": "E00462",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TGIU",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-17",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TMIX",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-14",
+          "parent_doc_id": "S100TGIU"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100TGPD",
+      "filing_date": "2024-05-20",
+      "offeror_name": "株式会社ティーケーピー",
+      "target_name": "リリカラ株式会社",
+      "target_sec_code": "9827",
+      "offeror_edinet_code": "E20616",
+      "target_edinet_code": "E02743",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TGPD",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-20",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TGPG",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-20",
+          "parent_doc_id": "S100TGPD"
+        },
+        {
+          "doc_id": "S100TJKA",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-05-31",
+          "parent_doc_id": "S100TGPD"
+        },
+        {
+          "doc_id": "S100TMSK",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-17",
+          "parent_doc_id": "S100TGPD"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100TH2F",
+      "filing_date": "2024-05-21",
+      "offeror_name": "株式会社クリスピー",
+      "target_name": "日本ＫＦＣホールディングス株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E39692",
+      "target_edinet_code": "E03157",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100TH2F",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-21",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TH2M",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-21",
+          "parent_doc_id": "S100TH2F"
+        },
+        {
+          "doc_id": "S100TSLQ",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-06-25",
+          "parent_doc_id": "S100TH2F"
+        },
+        {
+          "doc_id": "S100U12A",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-07-10",
+          "parent_doc_id": "S100TH2F"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100THFC",
+      "filing_date": "2024-05-23",
+      "offeror_name": "マルシアンホールディングス合同会社",
+      "target_name": "日本ハウズイング株式会社",
+      "target_sec_code": "",
+      "offeror_edinet_code": "E39655",
+      "target_edinet_code": "E05121",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100THFC",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-23",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100THI0",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2024-05-23",
+          "parent_doc_id": "S100THFC"
+        },
+        {
+          "doc_id": "S100TIE7",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-05-28",
+          "parent_doc_id": "S100THFC"
+        },
+        {
+          "doc_id": "S100TJ8S",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2024-05-30",
+          "parent_doc_id": "S100THFC"
+        },
+        {
+          "doc_id": "S100TPMB",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-21",
+          "parent_doc_id": "S100THFC"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100THT5",
+      "filing_date": "2024-05-24",
+      "offeror_name": "エレコム株式会社",
+      "target_name": "エレコム株式会社",
+      "target_sec_code": "6750",
+      "offeror_edinet_code": "E02066",
+      "target_edinet_code": "E02066",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100THT5",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2024-05-24",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100TPEF",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2024-06-21",
+          "parent_doc_id": "S100THT5"
+        }
+      ],
+      "issuer_tender": true
+    }
+  ]
+}

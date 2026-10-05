@@ -1,0 +1,705 @@
+{
+  "source": "edinet-api-v2-documents.json",
+  "read_saved_list_csv": false,
+  "month": "2025-06",
+  "within_days": 183,
+  "as_of": "2026-10-05",
+  "fetched_from": "2025-06-01",
+  "fetched_to": "2025-12-30",
+  "horizon_end": "2025-12-30",
+  "window_closed": true,
+  "failed_days": [],
+  "daily_tob_counts": {
+    "2025-06-01": 0,
+    "2025-06-02": 4,
+    "2025-06-03": 0,
+    "2025-06-04": 3,
+    "2025-06-05": 2,
+    "2025-06-06": 2,
+    "2025-06-07": 0,
+    "2025-06-08": 0,
+    "2025-06-09": 4,
+    "2025-06-10": 4,
+    "2025-06-11": 2,
+    "2025-06-12": 4,
+    "2025-06-13": 4,
+    "2025-06-14": 0,
+    "2025-06-15": 0,
+    "2025-06-16": 0,
+    "2025-06-17": 9,
+    "2025-06-18": 4,
+    "2025-06-19": 3,
+    "2025-06-20": 5,
+    "2025-06-21": 0,
+    "2025-06-22": 0,
+    "2025-06-23": 5,
+    "2025-06-24": 5,
+    "2025-06-25": 7,
+    "2025-06-26": 4,
+    "2025-06-27": 4,
+    "2025-06-28": 0,
+    "2025-06-29": 0,
+    "2025-06-30": 1,
+    "2025-07-01": 6,
+    "2025-07-02": 1,
+    "2025-07-03": 0,
+    "2025-07-04": 3,
+    "2025-07-05": 0,
+    "2025-07-06": 0,
+    "2025-07-07": 2,
+    "2025-07-08": 2,
+    "2025-07-09": 3,
+    "2025-07-10": 2,
+    "2025-07-11": 1,
+    "2025-07-12": 0,
+    "2025-07-13": 0,
+    "2025-07-14": 2,
+    "2025-07-15": 6,
+    "2025-07-16": 4,
+    "2025-07-17": 1,
+    "2025-07-18": 0,
+    "2025-07-19": 0,
+    "2025-07-20": 0,
+    "2025-07-21": 0,
+    "2025-07-22": 0,
+    "2025-07-23": 3,
+    "2025-07-24": 2,
+    "2025-07-25": 1,
+    "2025-07-26": 0,
+    "2025-07-27": 0,
+    "2025-07-28": 6,
+    "2025-07-29": 1,
+    "2025-07-30": 4,
+    "2025-07-31": 0,
+    "2025-08-01": 7,
+    "2025-08-02": 0,
+    "2025-08-03": 0,
+    "2025-08-04": 3,
+    "2025-08-05": 4,
+    "2025-08-06": 5,
+    "2025-08-07": 9,
+    "2025-08-08": 8,
+    "2025-08-09": 0,
+    "2025-08-10": 0,
+    "2025-08-11": 0,
+    "2025-08-12": 11,
+    "2025-08-13": 4,
+    "2025-08-14": 4,
+    "2025-08-15": 8,
+    "2025-08-16": 0,
+    "2025-08-17": 0,
+    "2025-08-18": 3,
+    "2025-08-19": 1,
+    "2025-08-20": 2,
+    "2025-08-21": 2,
+    "2025-08-22": 3,
+    "2025-08-23": 0,
+    "2025-08-24": 0,
+    "2025-08-25": 3,
+    "2025-08-26": 2,
+    "2025-08-27": 3,
+    "2025-08-28": 6,
+    "2025-08-29": 2,
+    "2025-08-30": 0,
+    "2025-08-31": 0,
+    "2025-09-01": 4,
+    "2025-09-02": 2,
+    "2025-09-03": 3,
+    "2025-09-04": 3,
+    "2025-09-05": 2,
+    "2025-09-06": 0,
+    "2025-09-07": 0,
+    "2025-09-08": 5,
+    "2025-09-09": 3,
+    "2025-09-10": 0,
+    "2025-09-11": 1,
+    "2025-09-12": 5,
+    "2025-09-13": 0,
+    "2025-09-14": 0,
+    "2025-09-15": 0,
+    "2025-09-16": 1,
+    "2025-09-17": 5,
+    "2025-09-18": 3,
+    "2025-09-19": 6,
+    "2025-09-20": 0,
+    "2025-09-21": 0,
+    "2025-09-22": 1,
+    "2025-09-23": 0,
+    "2025-09-24": 3,
+    "2025-09-25": 7,
+    "2025-09-26": 7,
+    "2025-09-27": 0,
+    "2025-09-28": 0,
+    "2025-09-29": 1,
+    "2025-09-30": 4,
+    "2025-10-01": 1,
+    "2025-10-02": 1,
+    "2025-10-03": 6,
+    "2025-10-04": 0,
+    "2025-10-05": 0,
+    "2025-10-06": 2,
+    "2025-10-07": 1,
+    "2025-10-08": 5,
+    "2025-10-09": 0,
+    "2025-10-10": 1,
+    "2025-10-11": 0,
+    "2025-10-12": 0,
+    "2025-10-13": 0,
+    "2025-10-14": 3,
+    "2025-10-15": 3,
+    "2025-10-16": 4,
+    "2025-10-17": 2,
+    "2025-10-18": 0,
+    "2025-10-19": 0,
+    "2025-10-20": 1,
+    "2025-10-21": 1,
+    "2025-10-22": 1,
+    "2025-10-23": 2,
+    "2025-10-24": 0,
+    "2025-10-25": 0,
+    "2025-10-26": 0,
+    "2025-10-27": 0,
+    "2025-10-28": 2,
+    "2025-10-29": 5,
+    "2025-10-30": 3,
+    "2025-10-31": 8,
+    "2025-11-01": 0,
+    "2025-11-02": 0,
+    "2025-11-03": 0,
+    "2025-11-04": 5,
+    "2025-11-05": 2,
+    "2025-11-06": 1,
+    "2025-11-07": 6,
+    "2025-11-08": 0,
+    "2025-11-09": 0,
+    "2025-11-10": 2,
+    "2025-11-11": 2,
+    "2025-11-12": 1,
+    "2025-11-13": 13,
+    "2025-11-14": 8,
+    "2025-11-15": 0,
+    "2025-11-16": 0,
+    "2025-11-17": 2,
+    "2025-11-18": 4,
+    "2025-11-19": 4,
+    "2025-11-20": 1,
+    "2025-11-21": 2,
+    "2025-11-22": 0,
+    "2025-11-23": 0,
+    "2025-11-24": 0,
+    "2025-11-25": 0,
+    "2025-11-26": 4,
+    "2025-11-27": 1,
+    "2025-11-28": 2,
+    "2025-11-29": 0,
+    "2025-11-30": 0,
+    "2025-12-01": 3,
+    "2025-12-02": 4,
+    "2025-12-03": 1,
+    "2025-12-04": 6,
+    "2025-12-05": 1,
+    "2025-12-06": 0,
+    "2025-12-07": 0,
+    "2025-12-08": 3,
+    "2025-12-09": 0,
+    "2025-12-10": 1,
+    "2025-12-11": 1,
+    "2025-12-12": 2,
+    "2025-12-13": 0,
+    "2025-12-14": 0,
+    "2025-12-15": 6,
+    "2025-12-16": 8,
+    "2025-12-17": 2,
+    "2025-12-18": 3,
+    "2025-12-19": 6,
+    "2025-12-20": 0,
+    "2025-12-21": 0,
+    "2025-12-22": 4,
+    "2025-12-23": 4,
+    "2025-12-24": 2,
+    "2025-12-25": 4,
+    "2025-12-26": 8,
+    "2025-12-27": 0,
+    "2025-12-28": 0,
+    "2025-12-29": 0,
+    "2025-12-30": 0
+  },
+  "tob_document_count": 463,
+  "filing_count": 10,
+  "issuer_filing_count": 2,
+  "other_filing_count": 8,
+  "filings_with_outcome": 10,
+  "issuer_filings_with_outcome": 2,
+  "other_filings_with_outcome": 8,
+  "cases": [
+    {
+      "case_id": "S100VV7Y",
+      "filing_date": "2025-06-02",
+      "offeror_name": "加賀電子株式会社",
+      "target_name": "協栄産業株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E02676",
+      "target_edinet_code": "E01619",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VV7Y",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-02",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VV92",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-02",
+          "parent_doc_id": "S100VV7Y"
+        },
+        {
+          "doc_id": "S100W7HE",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-26",
+          "parent_doc_id": "S100VV7Y"
+        },
+        {
+          "doc_id": "S100WCWX",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-14",
+          "parent_doc_id": "S100VV7Y"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100VWJ8",
+      "filing_date": "2025-06-09",
+      "offeror_name": "株式会社宇佐美鉱油",
+      "target_name": "株式会社　フジ・コーポレーション",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E39618",
+      "target_edinet_code": "E03315",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VWJ8",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-09",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VWKT",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-09",
+          "parent_doc_id": "S100VWJ8"
+        },
+        {
+          "doc_id": "S100WEF9",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-23",
+          "parent_doc_id": "S100VWJ8"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100VWRK",
+      "filing_date": "2025-06-10",
+      "offeror_name": "株式会社ＮＳＳＫ－Ｊ１",
+      "target_name": "株式会社ウィザス",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40740",
+      "target_edinet_code": "E04850",
+      "doc_count": 8,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 4,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VWRK",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-10",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VWTA",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-10",
+          "parent_doc_id": "S100VWRK"
+        },
+        {
+          "doc_id": "S100VXXM",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-13",
+          "parent_doc_id": "S100VWRK"
+        },
+        {
+          "doc_id": "S100W0AL",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-19",
+          "parent_doc_id": "S100VWRK"
+        },
+        {
+          "doc_id": "S100W8YR",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-27",
+          "parent_doc_id": "S100VWRK"
+        },
+        {
+          "doc_id": "S100WBCZ",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-07-04",
+          "parent_doc_id": "S100VWRK"
+        },
+        {
+          "doc_id": "S100WBDX",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-07-04",
+          "parent_doc_id": "S100VWTA"
+        },
+        {
+          "doc_id": "S100WEFZ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-23",
+          "parent_doc_id": "S100VWRK"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100VX09",
+      "filing_date": "2025-06-11",
+      "offeror_name": "ＴＣＧ２５０５株式会社",
+      "target_name": "株式会社トライト",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40754",
+      "target_edinet_code": "E37764",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VX09",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-11",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VX0Z",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-11",
+          "parent_doc_id": "S100VX09"
+        },
+        {
+          "doc_id": "S100WELH",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-24",
+          "parent_doc_id": "S100VX09"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100VYMT",
+      "filing_date": "2025-06-17",
+      "offeror_name": "ヒューリック株式会社",
+      "target_name": "鉱研工業株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E00523",
+      "target_edinet_code": "E01699",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VYMT",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-17",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VYNU",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-17",
+          "parent_doc_id": "S100VYMT"
+        },
+        {
+          "doc_id": "S100W3UH",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-24",
+          "parent_doc_id": "S100VYMT"
+        },
+        {
+          "doc_id": "S100W5NU",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2025-06-25",
+          "parent_doc_id": "S100VYNU"
+        },
+        {
+          "doc_id": "S100WFOW",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-30",
+          "parent_doc_id": "S100VYMT"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100VYQG",
+      "filing_date": "2025-06-17",
+      "offeror_name": "エムキャップ十五号株式会社",
+      "target_name": "中野冷機株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E40743",
+      "target_edinet_code": "E01671",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VYQG",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-17",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VYRE",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-17",
+          "parent_doc_id": "S100VYQG"
+        },
+        {
+          "doc_id": "S100WFKQ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-30",
+          "parent_doc_id": "S100VYQG"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100VYQI",
+      "filing_date": "2025-06-17",
+      "offeror_name": "ＯＰＩ・１８株式会社",
+      "target_name": "アセンテック株式会社",
+      "target_sec_code": "3565",
+      "offeror_edinet_code": "E40761",
+      "target_edinet_code": "E33109",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VYQI",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-17",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VYU7",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-17",
+          "parent_doc_id": "S100VYQI"
+        },
+        {
+          "doc_id": "S100WGLE",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-08-05",
+          "parent_doc_id": "S100VYQI"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100VZMU",
+      "filing_date": "2025-06-18",
+      "offeror_name": "株式会社セリア",
+      "target_name": "株式会社セリア",
+      "target_sec_code": "2782",
+      "offeror_edinet_code": "E03418",
+      "target_edinet_code": "E03418",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100VZMU",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-18",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100VZOY",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-25",
+          "parent_doc_id": "S100VZMU"
+        },
+        {
+          "doc_id": "S100WDJZ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-16",
+          "parent_doc_id": "S100VZMU"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100W0BP",
+      "filing_date": "2025-06-19",
+      "offeror_name": "三井松島ホールディングス株式会社",
+      "target_name": "三井松島ホールディングス株式会社",
+      "target_sec_code": "1518",
+      "offeror_edinet_code": "E00037",
+      "target_edinet_code": "E00037",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100W0BP",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-19",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100W15J",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-20",
+          "parent_doc_id": "S100W0BP"
+        },
+        {
+          "doc_id": "S100WDR3",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-07-17",
+          "parent_doc_id": "S100W0BP"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100W2KK",
+      "filing_date": "2025-06-23",
+      "offeror_name": "株式会社ＮＦＫホールディングス",
+      "target_name": "株式会社キャストリコ",
+      "target_sec_code": "6695",
+      "offeror_edinet_code": "E01648",
+      "target_edinet_code": "E33345",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100W2KK",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2025-06-23",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100W2RJ",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2025-06-23",
+          "parent_doc_id": "S100W2KK"
+        },
+        {
+          "doc_id": "S100W7CN",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2025-06-26",
+          "parent_doc_id": "S100W2KK"
+        },
+        {
+          "doc_id": "S100WGPE",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2025-08-05",
+          "parent_doc_id": "S100W2KK"
+        }
+      ],
+      "issuer_tender": false
+    }
+  ]
+}
