@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       start_month:
-        description: "開始月 YYYY-MM。空欄なら実行日から4ヶ月前の月"
+        description: "開始月 YYYY-MM。空欄なら183日の窓が閉じた直近の月"
         required: false
         default: ""
         type: string

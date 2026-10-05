@@ -49,10 +49,10 @@ class WindowTests(unittest.TestCase):
         self.assertEqual(start, date(2026, 1, 1))
         self.assertEqual(end, date(2026, 8, 2))
 
-    def test_default_month_is_four_months_before_today(self) -> None:
-        self.assertEqual(default_filing_month(date(2026, 10, 5)), "2026-06")
+    def test_default_month_is_the_latest_month_whose_window_has_closed(self) -> None:
+        self.assertEqual(default_filing_month(date(2026, 10, 5)), "2026-03")
         start, end = resolve_months("", "", today=date(2026, 10, 5))
-        self.assertEqual((start, end), ("2026-06", "2026-06"))
+        self.assertEqual((start, end), ("2026-03", "2026-03"))
 
     def test_explicit_month_range(self) -> None:
         start, end = resolve_months("2026-01", "2026-03", today=date(2026, 10, 5))
