@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""List documents that hang off tender-offer filings in one month.
+"""Replay a filing-rooted document list from a local list CSV.
 
-Starting point is doc type 240. Related documents are those whose
-ParentDocID chain leads back to that filing, searched only in the local
-list CSV (EDINET has no child-document query).
+This does not call EDINET. A from-scratch run is
+`fetch_from_api.py`, which downloads documents.json and then uses
+`collect()` below. Related documents are those whose ParentDocID chain
+leads back to a doc type 240 filing.
 """
 
 from __future__ import annotations

@@ -1,0 +1,70 @@
+name: Filing descendants live trial
+
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "届出書の提出月 YYYY-MM"
+        required: true
+        default: "2026-01"
+        type: string
+      within_days:
+        description: "届出日から何日以内の書類を残すか"
+        required: true
+        default: "183"
+        type: string
+      sleep_seconds:
+        description: "API呼び出し間隔（秒）"
+        required: false
+        default: "0.5"
+        type: string
+  push:
+    branches:
+      - cursor/filing-descendant-trial-172a
+    paths:
+      - experiments/filing-descendants/fetch_from_api.py
+      - .github/workflows/filing-descendants-live.yml
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch filing descendants from the EDINET list API
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MONTH="${{ github.event.inputs.month }}"
+            DAYS="${{ github.event.inputs.within_days }}"
+            SLEEP="${{ github.event.inputs.sleep_seconds }}"
+          else
+            MONTH="2026-01"
+            DAYS="183"
+            SLEEP="0.5"
+          fi
+          python experiments/filing-descendants/fetch_from_api.py \
+            --month "$MONTH" \
+            --within-days "$DAYS" \
+            --sleep "$SLEEP" \
+            --out "experiments/filing-descendants/output/${MONTH}_from_api.json"
+
+      - name: Upload JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: filing-descendants-from-api
+          path: experiments/filing-descendants/output/*_from_api.json
+          retention-days: 14
+          if-no-files-found: warn
