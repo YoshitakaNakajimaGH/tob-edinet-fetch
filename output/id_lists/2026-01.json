@@ -1,0 +1,821 @@
+{
+  "source": "edinet-api-v2-documents.json",
+  "read_saved_list_csv": false,
+  "month": "2026-01",
+  "within_days": 183,
+  "as_of": "2026-10-05",
+  "fetched_from": "2026-01-01",
+  "fetched_to": "2026-08-02",
+  "horizon_end": "2026-08-02",
+  "window_closed": true,
+  "failed_days": [],
+  "daily_tob_counts": {
+    "2026-01-01": 0,
+    "2026-01-02": 0,
+    "2026-01-03": 0,
+    "2026-01-04": 0,
+    "2026-01-05": 4,
+    "2026-01-06": 3,
+    "2026-01-07": 7,
+    "2026-01-08": 1,
+    "2026-01-09": 4,
+    "2026-01-10": 0,
+    "2026-01-11": 0,
+    "2026-01-12": 0,
+    "2026-01-13": 1,
+    "2026-01-14": 3,
+    "2026-01-15": 3,
+    "2026-01-16": 1,
+    "2026-01-17": 0,
+    "2026-01-18": 0,
+    "2026-01-19": 1,
+    "2026-01-20": 4,
+    "2026-01-21": 4,
+    "2026-01-22": 2,
+    "2026-01-23": 1,
+    "2026-01-24": 0,
+    "2026-01-25": 0,
+    "2026-01-26": 5,
+    "2026-01-27": 2,
+    "2026-01-28": 5,
+    "2026-01-29": 2,
+    "2026-01-30": 0,
+    "2026-01-31": 0,
+    "2026-02-01": 0,
+    "2026-02-02": 4,
+    "2026-02-03": 2,
+    "2026-02-04": 5,
+    "2026-02-05": 6,
+    "2026-02-06": 4,
+    "2026-02-07": 0,
+    "2026-02-08": 0,
+    "2026-02-09": 6,
+    "2026-02-10": 4,
+    "2026-02-11": 0,
+    "2026-02-12": 2,
+    "2026-02-13": 7,
+    "2026-02-14": 0,
+    "2026-02-15": 0,
+    "2026-02-16": 6,
+    "2026-02-17": 4,
+    "2026-02-18": 3,
+    "2026-02-19": 7,
+    "2026-02-20": 7,
+    "2026-02-21": 0,
+    "2026-02-22": 0,
+    "2026-02-23": 0,
+    "2026-02-24": 2,
+    "2026-02-25": 4,
+    "2026-02-26": 6,
+    "2026-02-27": 1,
+    "2026-02-28": 0,
+    "2026-03-01": 0,
+    "2026-03-02": 4,
+    "2026-03-03": 3,
+    "2026-03-04": 5,
+    "2026-03-05": 3,
+    "2026-03-06": 5,
+    "2026-03-07": 0,
+    "2026-03-08": 0,
+    "2026-03-09": 2,
+    "2026-03-10": 2,
+    "2026-03-11": 5,
+    "2026-03-12": 1,
+    "2026-03-13": 1,
+    "2026-03-14": 0,
+    "2026-03-15": 0,
+    "2026-03-16": 4,
+    "2026-03-17": 3,
+    "2026-03-18": 1,
+    "2026-03-19": 0,
+    "2026-03-20": 0,
+    "2026-03-21": 0,
+    "2026-03-22": 0,
+    "2026-03-23": 1,
+    "2026-03-24": 6,
+    "2026-03-25": 5,
+    "2026-03-26": 3,
+    "2026-03-27": 1,
+    "2026-03-28": 0,
+    "2026-03-29": 0,
+    "2026-03-30": 2,
+    "2026-03-31": 2,
+    "2026-04-01": 4,
+    "2026-04-02": 1,
+    "2026-04-03": 2,
+    "2026-04-04": 0,
+    "2026-04-05": 0,
+    "2026-04-06": 0,
+    "2026-04-07": 6,
+    "2026-04-08": 1,
+    "2026-04-09": 3,
+    "2026-04-10": 2,
+    "2026-04-11": 0,
+    "2026-04-12": 0,
+    "2026-04-13": 0,
+    "2026-04-14": 3,
+    "2026-04-15": 1,
+    "2026-04-16": 1,
+    "2026-04-17": 0,
+    "2026-04-18": 0,
+    "2026-04-19": 0,
+    "2026-04-20": 0,
+    "2026-04-21": 1,
+    "2026-04-22": 3,
+    "2026-04-23": 1,
+    "2026-04-24": 0,
+    "2026-04-25": 0,
+    "2026-04-26": 0,
+    "2026-04-27": 2,
+    "2026-04-28": 3,
+    "2026-04-29": 0,
+    "2026-04-30": 5,
+    "2026-05-01": 1,
+    "2026-05-02": 0,
+    "2026-05-03": 0,
+    "2026-05-04": 0,
+    "2026-05-05": 0,
+    "2026-05-06": 0,
+    "2026-05-07": 0,
+    "2026-05-08": 0,
+    "2026-05-09": 0,
+    "2026-05-10": 0,
+    "2026-05-11": 0,
+    "2026-05-12": 5,
+    "2026-05-13": 5,
+    "2026-05-14": 6,
+    "2026-05-15": 5,
+    "2026-05-16": 0,
+    "2026-05-17": 0,
+    "2026-05-18": 8,
+    "2026-05-19": 6,
+    "2026-05-20": 0,
+    "2026-05-21": 4,
+    "2026-05-22": 0,
+    "2026-05-23": 0,
+    "2026-05-24": 0,
+    "2026-05-25": 2,
+    "2026-05-26": 4,
+    "2026-05-27": 2,
+    "2026-05-28": 0,
+    "2026-05-29": 3,
+    "2026-05-30": 0,
+    "2026-05-31": 0,
+    "2026-06-01": 2,
+    "2026-06-02": 5,
+    "2026-06-03": 1,
+    "2026-06-04": 1,
+    "2026-06-05": 1,
+    "2026-06-06": 0,
+    "2026-06-07": 0,
+    "2026-06-08": 0,
+    "2026-06-09": 0,
+    "2026-06-10": 3,
+    "2026-06-11": 1,
+    "2026-06-12": 1,
+    "2026-06-13": 0,
+    "2026-06-14": 0,
+    "2026-06-15": 3,
+    "2026-06-16": 2,
+    "2026-06-17": 1,
+    "2026-06-18": 3,
+    "2026-06-19": 2,
+    "2026-06-20": 0,
+    "2026-06-21": 0,
+    "2026-06-22": 3,
+    "2026-06-23": 2,
+    "2026-06-24": 3,
+    "2026-06-25": 3,
+    "2026-06-26": 6,
+    "2026-06-27": 0,
+    "2026-06-28": 0,
+    "2026-06-29": 1,
+    "2026-06-30": 6,
+    "2026-07-01": 1,
+    "2026-07-02": 2,
+    "2026-07-03": 2,
+    "2026-07-04": 0,
+    "2026-07-05": 0,
+    "2026-07-06": 1,
+    "2026-07-07": 2,
+    "2026-07-08": 2,
+    "2026-07-09": 4,
+    "2026-07-10": 0,
+    "2026-07-11": 0,
+    "2026-07-12": 0,
+    "2026-07-13": 6,
+    "2026-07-14": 3,
+    "2026-07-15": 1,
+    "2026-07-16": 0,
+    "2026-07-17": 6,
+    "2026-07-18": 0,
+    "2026-07-19": 0,
+    "2026-07-20": 0,
+    "2026-07-21": 2,
+    "2026-07-22": 0,
+    "2026-07-23": 0,
+    "2026-07-24": 0,
+    "2026-07-25": 0,
+    "2026-07-26": 0,
+    "2026-07-27": 0,
+    "2026-07-28": 1,
+    "2026-07-29": 1,
+    "2026-07-30": 3,
+    "2026-07-31": 1,
+    "2026-08-01": 0,
+    "2026-08-02": 0
+  },
+  "tob_document_count": 370,
+  "filing_count": 10,
+  "issuer_filing_count": 2,
+  "other_filing_count": 8,
+  "filings_with_outcome": 10,
+  "issuer_filings_with_outcome": 2,
+  "other_filings_with_outcome": 8,
+  "cases": [
+    {
+      "case_id": "S100XEIP",
+      "filing_date": "2026-01-07",
+      "offeror_name": "Ｔｉｇｅｒ投資事業有限責任組合",
+      "target_name": "サンケイリアルエステート投資法人",
+      "target_sec_code": "",
+      "offeror_edinet_code": "E41348",
+      "target_edinet_code": "E34684",
+      "doc_count": 15,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 6,
+        "300": 6,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XEIP",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-07",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XEKK",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-07",
+          "parent_doc_id": "S100XEIP"
+        },
+        {
+          "doc_id": "S100XMGQ",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-02-19",
+          "parent_doc_id": "S100XEIP"
+        },
+        {
+          "doc_id": "S100XMJT",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-02-20",
+          "parent_doc_id": "S100XEKK"
+        },
+        {
+          "doc_id": "S100XPFO",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-03-06",
+          "parent_doc_id": "S100XEIP"
+        },
+        {
+          "doc_id": "S100XPIK",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-03-09",
+          "parent_doc_id": "S100XEKK"
+        },
+        {
+          "doc_id": "S100XSU1",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-03-23",
+          "parent_doc_id": "S100XEIP"
+        },
+        {
+          "doc_id": "S100XT0H",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-03-24",
+          "parent_doc_id": "S100XEKK"
+        },
+        {
+          "doc_id": "S100XWI5",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-04-02",
+          "parent_doc_id": "S100XEIP"
+        },
+        {
+          "doc_id": "S100XWPG",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-04-03",
+          "parent_doc_id": "S100XEKK"
+        },
+        {
+          "doc_id": "S100XYPA",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-04-14",
+          "parent_doc_id": "S100XEIP"
+        },
+        {
+          "doc_id": "S100XYYC",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-04-15",
+          "parent_doc_id": "S100XEKK"
+        },
+        {
+          "doc_id": "S100Y1GT",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-04-28",
+          "parent_doc_id": "S100XEIP"
+        },
+        {
+          "doc_id": "S100Y1KG",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-04-30",
+          "parent_doc_id": "S100XEKK"
+        },
+        {
+          "doc_id": "S100Y52O",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-05-19",
+          "parent_doc_id": "S100XEIP"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XEKS",
+      "filing_date": "2026-01-07",
+      "offeror_name": "タイヨー興産株式会社",
+      "target_name": "久光製薬株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E41321",
+      "target_edinet_code": "E00944",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XEKS",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-07",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XELY",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-07",
+          "parent_doc_id": "S100XEKS"
+        },
+        {
+          "doc_id": "S100XFSL",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-01-14",
+          "parent_doc_id": "S100XEKS"
+        },
+        {
+          "doc_id": "S100XJ1A",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-02-03",
+          "parent_doc_id": "S100XEKS"
+        },
+        {
+          "doc_id": "S100XMO3",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-02-20",
+          "parent_doc_id": "S100XEKS"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XEUL",
+      "filing_date": "2026-01-09",
+      "offeror_name": "イオン株式会社",
+      "target_name": "株式会社サンデー",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E03061",
+      "target_edinet_code": "E03245",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XEUL",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-09",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XF5N",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-09",
+          "parent_doc_id": "S100XEUL"
+        },
+        {
+          "doc_id": "S100XP1W",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-03-05",
+          "parent_doc_id": "S100XEUL"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XFEE",
+      "filing_date": "2026-01-13",
+      "offeror_name": "シマダヤ株式会社",
+      "target_name": "シマダヤ株式会社",
+      "target_sec_code": "250A0",
+      "offeror_edinet_code": "E00467",
+      "target_edinet_code": "E00467",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XFEE",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-13",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XKDM",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-02-10",
+          "parent_doc_id": "S100XFEE"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100XG4I",
+      "filing_date": "2026-01-15",
+      "offeror_name": "トヨタアセット準備株式会社",
+      "target_name": "株式会社豊田自動織機",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E41388",
+      "target_edinet_code": "E01514",
+      "doc_count": 9,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 3,
+        "300": 3,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XG4I",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XG5E",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-15",
+          "parent_doc_id": "S100XG4I"
+        },
+        {
+          "doc_id": "S100XKO2",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-02-12",
+          "parent_doc_id": "S100XG4I"
+        },
+        {
+          "doc_id": "S100XKRS",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-02-12",
+          "parent_doc_id": "S100XG5E"
+        },
+        {
+          "doc_id": "S100XO5W",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-03-02",
+          "parent_doc_id": "S100XG4I"
+        },
+        {
+          "doc_id": "S100XO80",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-03-02",
+          "parent_doc_id": "S100XG5E"
+        },
+        {
+          "doc_id": "S100XPEK",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-03-06",
+          "parent_doc_id": "S100XG4I"
+        },
+        {
+          "doc_id": "S100XPGA",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-03-06",
+          "parent_doc_id": "S100XG5E"
+        },
+        {
+          "doc_id": "S100XTBR",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-03-24",
+          "parent_doc_id": "S100XG4I"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XGVL",
+      "filing_date": "2026-01-21",
+      "offeror_name": "ＬＶＪホールディングス２合同会社",
+      "target_name": "株式会社ロジスネクスト",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E41302",
+      "target_edinet_code": "E02136",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XGVL",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-21",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XGVZ",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-21",
+          "parent_doc_id": "S100XGVL"
+        },
+        {
+          "doc_id": "S100XH4D",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-01-22",
+          "parent_doc_id": "S100XGVZ"
+        },
+        {
+          "doc_id": "S100XMG1",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-02-19",
+          "parent_doc_id": "S100XGVL"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XH3L",
+      "filing_date": "2026-01-22",
+      "offeror_name": "ＥＣＭ　Ｍａｓｔｅｒ　Ｆｕｎｄ　ＳＰＶ　３",
+      "target_name": "株式会社ソフト９９コーポレーション",
+      "target_sec_code": "4464",
+      "offeror_edinet_code": "E41015",
+      "target_edinet_code": "E01057",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XH3L",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-22",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XHZW",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-28",
+          "parent_doc_id": "S100XH3L"
+        },
+        {
+          "doc_id": "S100XMGP",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-02-19",
+          "parent_doc_id": "S100XH3L"
+        },
+        {
+          "doc_id": "S100XMHC",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-02-19",
+          "parent_doc_id": "S100XHZW"
+        },
+        {
+          "doc_id": "S100XPL1",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-03-09",
+          "parent_doc_id": "S100XH3L"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XHBX",
+      "filing_date": "2026-01-26",
+      "offeror_name": "センコーグループホールディングス株式会社",
+      "target_name": "株式会社丸運",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E04179",
+      "target_edinet_code": "E04182",
+      "doc_count": 6,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XHBX",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-26",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XHCN",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-26",
+          "parent_doc_id": "S100XHBX"
+        },
+        {
+          "doc_id": "S100XHDU",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-01-26",
+          "parent_doc_id": "S100XHBX"
+        },
+        {
+          "doc_id": "S100XM8B",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-02-18",
+          "parent_doc_id": "S100XHBX"
+        },
+        {
+          "doc_id": "S100XMB6",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2026-02-19",
+          "parent_doc_id": "S100XHCN"
+        },
+        {
+          "doc_id": "S100XPEJ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-03-06",
+          "parent_doc_id": "S100XHBX"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XHEV",
+      "filing_date": "2026-01-26",
+      "offeror_name": "Ｒｏｏｄｈａｌｓｇａｎｓ　１株式会社",
+      "target_name": "株式会社豆蔵",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E41378",
+      "target_edinet_code": "E39691",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XHEV",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-26",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XHF4",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2026-01-26",
+          "parent_doc_id": "S100XHEV"
+        },
+        {
+          "doc_id": "S100XMZ5",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2026-02-24",
+          "parent_doc_id": "S100XHEV"
+        },
+        {
+          "doc_id": "S100XQ6Z",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-03-11",
+          "parent_doc_id": "S100XHEV"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100XHMG",
+      "filing_date": "2026-01-27",
+      "offeror_name": "フクダ電子株式会社",
+      "target_name": "フクダ電子株式会社",
+      "target_sec_code": "6960",
+      "offeror_edinet_code": "E02304",
+      "target_edinet_code": "E02304",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100XHMG",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2026-01-27",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100XNML",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2026-02-26",
+          "parent_doc_id": "S100XHMG"
+        }
+      ],
+      "issuer_tender": true
+    }
+  ]
+}
