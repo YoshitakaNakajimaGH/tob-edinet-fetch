@@ -18,12 +18,6 @@ on:
         required: false
         default: "0.5"
         type: string
-  push:
-    branches:
-      - cursor/filing-descendant-trial-172a
-    paths:
-      - experiments/filing-descendants/fetch_from_api.py
-      - .github/workflows/filing-descendants-live.yml
 
 permissions:
   contents: read
@@ -45,16 +39,10 @@ jobs:
         env:
           EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            MONTH="${{ github.event.inputs.month }}"
-            DAYS="${{ github.event.inputs.within_days }}"
-            SLEEP="${{ github.event.inputs.sleep_seconds }}"
-          else
-            MONTH="2026-01"
-            DAYS="183"
-            SLEEP="0.5"
-          fi
-          PYTHONPATH=. python experiments/filing-descendants/fetch_from_api.py \
+          MONTH="${{ github.event.inputs.month }}"
+          DAYS="${{ github.event.inputs.within_days }}"
+          SLEEP="${{ github.event.inputs.sleep_seconds }}"
+          python experiments/filing-descendants/fetch_from_api.py \
             --month "$MONTH" \
             --within-days "$DAYS" \
             --sleep "$SLEEP" \

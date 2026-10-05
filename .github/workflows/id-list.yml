@@ -1,0 +1,73 @@
+name: IDリスト作成フロー
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_month:
+        description: "開始月 YYYY-MM。空欄なら実行日から4ヶ月前の月"
+        required: false
+        default: ""
+        type: string
+      end_month:
+        description: "終了月 YYYY-MM。空欄なら開始月と同じ（その1ヶ月だけ）"
+        required: false
+        default: ""
+        type: string
+      update_results:
+        description: "結果をリポジトリに保存する"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build filing ID lists from the EDINET list API
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+        run: |
+          ARGS=()
+          START="${{ github.event.inputs.start_month }}"
+          END="${{ github.event.inputs.end_month }}"
+          if [ -n "$START" ]; then
+            ARGS+=(--from-month "$START")
+          fi
+          if [ -n "$END" ]; then
+            ARGS+=(--to-month "$END")
+          fi
+          python -m tob.id_list "${ARGS[@]}" --out-dir output/id_lists
+
+      - name: Upload JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: id-lists
+          path: output/id_lists/*.json
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Commit ID lists if requested
+        if: ${{ github.event.inputs.update_results == 'true' && success() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/id_lists
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Update TOB ID lists $(date -u +%Y-%m-%d)"
+            git push
+          fi

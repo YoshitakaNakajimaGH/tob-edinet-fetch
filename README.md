@@ -15,7 +15,7 @@
 
 ---
 
-## 3 つのアクション（GitHub Actions）
+## アクション（GitHub Actions）
 
 Actions タブ → 左のワークフロー名 → **Run workflow** → ブランチ `master` を選んで実行します。  
 完了すると `output/` 以下が更新され、変更があれば自動 commit されます。
@@ -121,6 +121,24 @@ Fetch を実行しないと Enrich は `fetch_meta.json` が無くて失敗し�
 
 ---
 
+### 4. IDリスト作成フロー — 届出書から書類IDを確定
+
+**役割:** 保存済みCSVは読まず、EDINETの一覧APIから、指定した月に出た公開買付届出書（240）と、そこから `ParentDocID` でつながる書類のIDリストをJSONで作る。XBRL本文は取らない。
+
+**入力（Run workflow 時）**
+
+| 入力 | 既定 | 意味 |
+|------|------|------|
+| 開始月 | 空欄 | `YYYY-MM`。空欄なら **実行日から4ヶ月前の月** |
+| 終了月 | 空欄 | `YYYY-MM`。空欄なら開始月と同じ（その1ヶ月だけ） |
+| 結果をリポジトリに保存する | **ON** | OFF のときは実行ログと artifact だけ。`output/id_lists/` は更新しない |
+
+届出日から183日後までを関連書類の範囲にする。その日がまだ来ていなければ実行日まで取り、JSONの `window_closed` は `false` になる。183日を過ぎていて失敗日がなければ `true`。
+
+**出力:** `output/id_lists/YYYY-MM.json`（届出月ごと）
+
+---
+
 ## 出力フォルダの構造
 
 ```
@@ -131,6 +149,7 @@ output/
     self_tob_list.csv
     self_tob_cases.csv
     fetch_meta.json
+  id_lists/         … 届出月ごとの書類IDリスト（YYYY-MM.json）
   snapshots/        … 履歴（tob_list_202001-202012_0001.csv 形式）
   snapshots/trash/  … 古い履歴
 ```
