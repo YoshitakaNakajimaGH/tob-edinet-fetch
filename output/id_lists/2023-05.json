@@ -1,0 +1,857 @@
+{
+  "source": "edinet-api-v2-documents.json",
+  "read_saved_list_csv": false,
+  "month": "2023-05",
+  "within_days": 183,
+  "as_of": "2026-10-05",
+  "fetched_from": "2023-05-01",
+  "fetched_to": "2023-11-30",
+  "horizon_end": "2023-11-30",
+  "window_closed": true,
+  "failed_days": [],
+  "daily_tob_counts": {
+    "2023-05-01": 1,
+    "2023-05-02": 0,
+    "2023-05-03": 0,
+    "2023-05-04": 0,
+    "2023-05-05": 0,
+    "2023-05-06": 0,
+    "2023-05-07": 0,
+    "2023-05-08": 0,
+    "2023-05-09": 0,
+    "2023-05-10": 3,
+    "2023-05-11": 2,
+    "2023-05-12": 2,
+    "2023-05-13": 0,
+    "2023-05-14": 0,
+    "2023-05-15": 8,
+    "2023-05-16": 4,
+    "2023-05-17": 1,
+    "2023-05-18": 1,
+    "2023-05-19": 0,
+    "2023-05-20": 0,
+    "2023-05-21": 0,
+    "2023-05-22": 0,
+    "2023-05-23": 1,
+    "2023-05-24": 2,
+    "2023-05-25": 1,
+    "2023-05-26": 0,
+    "2023-05-27": 0,
+    "2023-05-28": 0,
+    "2023-05-29": 1,
+    "2023-05-30": 2,
+    "2023-05-31": 3,
+    "2023-06-01": 0,
+    "2023-06-02": 0,
+    "2023-06-03": 0,
+    "2023-06-04": 0,
+    "2023-06-05": 0,
+    "2023-06-06": 0,
+    "2023-06-07": 3,
+    "2023-06-08": 1,
+    "2023-06-09": 1,
+    "2023-06-10": 0,
+    "2023-06-11": 0,
+    "2023-06-12": 3,
+    "2023-06-13": 3,
+    "2023-06-14": 2,
+    "2023-06-15": 3,
+    "2023-06-16": 0,
+    "2023-06-17": 0,
+    "2023-06-18": 0,
+    "2023-06-19": 0,
+    "2023-06-20": 0,
+    "2023-06-21": 0,
+    "2023-06-22": 1,
+    "2023-06-23": 0,
+    "2023-06-24": 0,
+    "2023-06-25": 0,
+    "2023-06-26": 2,
+    "2023-06-27": 0,
+    "2023-06-28": 2,
+    "2023-06-29": 1,
+    "2023-06-30": 0,
+    "2023-07-01": 0,
+    "2023-07-02": 0,
+    "2023-07-03": 0,
+    "2023-07-04": 0,
+    "2023-07-05": 2,
+    "2023-07-06": 0,
+    "2023-07-07": 0,
+    "2023-07-08": 0,
+    "2023-07-09": 0,
+    "2023-07-10": 0,
+    "2023-07-11": 1,
+    "2023-07-12": 0,
+    "2023-07-13": 1,
+    "2023-07-14": 0,
+    "2023-07-15": 0,
+    "2023-07-16": 0,
+    "2023-07-17": 0,
+    "2023-07-18": 1,
+    "2023-07-19": 0,
+    "2023-07-20": 0,
+    "2023-07-21": 1,
+    "2023-07-22": 0,
+    "2023-07-23": 0,
+    "2023-07-24": 0,
+    "2023-07-25": 0,
+    "2023-07-26": 0,
+    "2023-07-27": 0,
+    "2023-07-28": 1,
+    "2023-07-29": 0,
+    "2023-07-30": 0,
+    "2023-07-31": 1,
+    "2023-08-01": 0,
+    "2023-08-02": 0,
+    "2023-08-03": 5,
+    "2023-08-04": 0,
+    "2023-08-05": 0,
+    "2023-08-06": 0,
+    "2023-08-07": 3,
+    "2023-08-08": 3,
+    "2023-08-09": 2,
+    "2023-08-10": 4,
+    "2023-08-11": 0,
+    "2023-08-12": 0,
+    "2023-08-13": 0,
+    "2023-08-14": 6,
+    "2023-08-15": 0,
+    "2023-08-16": 0,
+    "2023-08-17": 2,
+    "2023-08-18": 0,
+    "2023-08-19": 0,
+    "2023-08-20": 0,
+    "2023-08-21": 0,
+    "2023-08-22": 2,
+    "2023-08-23": 0,
+    "2023-08-24": 1,
+    "2023-08-25": 0,
+    "2023-08-26": 0,
+    "2023-08-27": 0,
+    "2023-08-28": 3,
+    "2023-08-29": 5,
+    "2023-08-30": 0,
+    "2023-08-31": 0,
+    "2023-09-01": 2,
+    "2023-09-02": 0,
+    "2023-09-03": 0,
+    "2023-09-04": 2,
+    "2023-09-05": 2,
+    "2023-09-06": 2,
+    "2023-09-07": 3,
+    "2023-09-08": 0,
+    "2023-09-09": 0,
+    "2023-09-10": 0,
+    "2023-09-11": 4,
+    "2023-09-12": 0,
+    "2023-09-13": 0,
+    "2023-09-14": 2,
+    "2023-09-15": 1,
+    "2023-09-16": 0,
+    "2023-09-17": 0,
+    "2023-09-18": 0,
+    "2023-09-19": 2,
+    "2023-09-20": 1,
+    "2023-09-21": 2,
+    "2023-09-22": 4,
+    "2023-09-23": 0,
+    "2023-09-24": 0,
+    "2023-09-25": 0,
+    "2023-09-26": 5,
+    "2023-09-27": 0,
+    "2023-09-28": 3,
+    "2023-09-29": 2,
+    "2023-09-30": 0,
+    "2023-10-01": 0,
+    "2023-10-02": 2,
+    "2023-10-03": 2,
+    "2023-10-04": 0,
+    "2023-10-05": 2,
+    "2023-10-06": 0,
+    "2023-10-07": 0,
+    "2023-10-08": 0,
+    "2023-10-09": 0,
+    "2023-10-10": 5,
+    "2023-10-11": 6,
+    "2023-10-12": 0,
+    "2023-10-13": 0,
+    "2023-10-14": 0,
+    "2023-10-15": 0,
+    "2023-10-16": 3,
+    "2023-10-17": 2,
+    "2023-10-18": 3,
+    "2023-10-19": 2,
+    "2023-10-20": 0,
+    "2023-10-21": 0,
+    "2023-10-22": 0,
+    "2023-10-23": 0,
+    "2023-10-24": 0,
+    "2023-10-25": 0,
+    "2023-10-26": 0,
+    "2023-10-27": 2,
+    "2023-10-28": 0,
+    "2023-10-29": 0,
+    "2023-10-30": 0,
+    "2023-10-31": 2,
+    "2023-11-01": 2,
+    "2023-11-02": 0,
+    "2023-11-03": 0,
+    "2023-11-04": 0,
+    "2023-11-05": 0,
+    "2023-11-06": 0,
+    "2023-11-07": 2,
+    "2023-11-08": 2,
+    "2023-11-09": 7,
+    "2023-11-10": 3,
+    "2023-11-11": 0,
+    "2023-11-12": 0,
+    "2023-11-13": 12,
+    "2023-11-14": 7,
+    "2023-11-15": 6,
+    "2023-11-16": 1,
+    "2023-11-17": 0,
+    "2023-11-18": 0,
+    "2023-11-19": 0,
+    "2023-11-20": 0,
+    "2023-11-21": 1,
+    "2023-11-22": 1,
+    "2023-11-23": 0,
+    "2023-11-24": 0,
+    "2023-11-25": 0,
+    "2023-11-26": 0,
+    "2023-11-27": 2,
+    "2023-11-28": 0,
+    "2023-11-29": 2,
+    "2023-11-30": 2
+  },
+  "tob_document_count": 216,
+  "filing_count": 14,
+  "issuer_filing_count": 5,
+  "other_filing_count": 9,
+  "filings_with_outcome": 14,
+  "issuer_filings_with_outcome": 5,
+  "other_filings_with_outcome": 9,
+  "cases": [
+    {
+      "case_id": "S100QPHN",
+      "filing_date": "2023-05-10",
+      "offeror_name": "株式会社オークネット",
+      "target_name": "株式会社オークネット",
+      "target_sec_code": "3964",
+      "offeror_edinet_code": "E21122",
+      "target_edinet_code": "E21122",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QPHN",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-10",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QWK2",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-07",
+          "parent_doc_id": "S100QPHN"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100QPJ4",
+      "filing_date": "2023-05-10",
+      "offeror_name": "株式会社タカラトミー",
+      "target_name": "株式会社タカラトミー",
+      "target_sec_code": "7867",
+      "offeror_edinet_code": "E02450",
+      "target_edinet_code": "E02450",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QPJ4",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-10",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QWK5",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-07",
+          "parent_doc_id": "S100QPJ4"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100QPHM",
+      "filing_date": "2023-05-10",
+      "offeror_name": "佐鳥電機株式会社",
+      "target_name": "佐鳥電機株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E02793",
+      "target_edinet_code": "E02793",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QPHM",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-10",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QWFB",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-07",
+          "parent_doc_id": "S100QPHM"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100QPXB",
+      "filing_date": "2023-05-11",
+      "offeror_name": "株式会社レダグループホールディングス",
+      "target_name": "株式会社レダックス",
+      "target_sec_code": "7602",
+      "offeror_edinet_code": "E32044",
+      "target_edinet_code": "E02895",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "300": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QPXB",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-11",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QQ2F",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-11",
+          "parent_doc_id": "S100QPXB"
+        },
+        {
+          "doc_id": "S100QTHH",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2023-05-24",
+          "parent_doc_id": "S100QQ2F"
+        },
+        {
+          "doc_id": "S100QTJM",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-05-24",
+          "parent_doc_id": "S100QPXB"
+        },
+        {
+          "doc_id": "S100QWTM",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-08",
+          "parent_doc_id": "S100QPXB"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QQJ0",
+      "filing_date": "2023-05-12",
+      "offeror_name": "株式会社エーアイ",
+      "target_name": "株式会社フュートレック",
+      "target_sec_code": "",
+      "offeror_edinet_code": "E34052",
+      "target_edinet_code": "E05535",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QQJ0",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-12",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QQKN",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-12",
+          "parent_doc_id": "S100QQJ0"
+        },
+        {
+          "doc_id": "S100QX2K",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-09",
+          "parent_doc_id": "S100QQJ0"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QR74",
+      "filing_date": "2023-05-15",
+      "offeror_name": "株式会社８１２８",
+      "target_name": "株式会社丸八ホールディングス",
+      "target_sec_code": "3504",
+      "offeror_edinet_code": "E38630",
+      "target_edinet_code": "E32204",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QR74",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QR7G",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": "S100QR74"
+        },
+        {
+          "doc_id": "S100QX7Y",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-12",
+          "parent_doc_id": "S100QR74"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QR98",
+      "filing_date": "2023-05-15",
+      "offeror_name": "青木　剛志",
+      "target_name": "株式会社コンヴァノ",
+      "target_sec_code": "6574",
+      "offeror_edinet_code": "E38655",
+      "target_edinet_code": "E33864",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QR98",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QRBP",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": "S100QR98"
+        },
+        {
+          "doc_id": "S100QX8Y",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-12",
+          "parent_doc_id": "S100QR98"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QRBB",
+      "filing_date": "2023-05-15",
+      "offeror_name": "堺化学工業株式会社",
+      "target_name": "堺商事株式会社",
+      "target_sec_code": "",
+      "offeror_edinet_code": "E00780",
+      "target_edinet_code": "E02772",
+      "doc_count": 6,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 3,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QRBB",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QRDT",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": "S100QRBB"
+        },
+        {
+          "doc_id": "S100QT86",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-05-23",
+          "parent_doc_id": "S100QRBB"
+        },
+        {
+          "doc_id": "S100R1U5",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-06-22",
+          "parent_doc_id": "S100QRBB"
+        },
+        {
+          "doc_id": "S100R8B6",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-06-28",
+          "parent_doc_id": "S100QRBB"
+        },
+        {
+          "doc_id": "S100REBK",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-07-13",
+          "parent_doc_id": "S100QRBB"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QRP5",
+      "filing_date": "2023-05-15",
+      "offeror_name": "ＳＢＩ地銀ホールディングス株式会社",
+      "target_name": "株式会社ＳＢＩ新生銀行",
+      "target_sec_code": "8303",
+      "offeror_edinet_code": "E35850",
+      "target_edinet_code": "E03530",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QRP5",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QRPW",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-15",
+          "parent_doc_id": "S100QRP5"
+        },
+        {
+          "doc_id": "S100QVA3",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-05-31",
+          "parent_doc_id": "S100QRP5"
+        },
+        {
+          "doc_id": "S100QVAC",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2023-05-31",
+          "parent_doc_id": "S100QRPW"
+        },
+        {
+          "doc_id": "S100R46S",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-26",
+          "parent_doc_id": "S100QRP5"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QRUS",
+      "filing_date": "2023-05-16",
+      "offeror_name": "ＴＮＩ株式会社",
+      "target_name": "株式会社ピーシーデポコーポレーション",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E38663",
+      "target_edinet_code": "E03323",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QRUS",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-16",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QRVR",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-16",
+          "parent_doc_id": "S100QRUS"
+        },
+        {
+          "doc_id": "S100R4FF",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-06-26",
+          "parent_doc_id": "S100QRUS"
+        },
+        {
+          "doc_id": "S100RDGY",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-07-11",
+          "parent_doc_id": "S100QRUS"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QRVF",
+      "filing_date": "2023-05-16",
+      "offeror_name": "サイブリッジ合同会社",
+      "target_name": "株式会社ｆｏｎｆｕｎ",
+      "target_sec_code": "2323",
+      "offeror_edinet_code": "E38659",
+      "target_edinet_code": "E05302",
+      "doc_count": 7,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "300": 2,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QRVF",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-16",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QRVK",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-16",
+          "parent_doc_id": "S100QRVF"
+        },
+        {
+          "doc_id": "S100QXIP",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-06-12",
+          "parent_doc_id": "S100QRVF"
+        },
+        {
+          "doc_id": "S100QXOY",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2023-06-13",
+          "parent_doc_id": "S100QRVK"
+        },
+        {
+          "doc_id": "S100QXRG",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-06-13",
+          "parent_doc_id": "S100QRVF"
+        },
+        {
+          "doc_id": "S100QXSA",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2023-06-13",
+          "parent_doc_id": "S100QRVK"
+        },
+        {
+          "doc_id": "S100R8DI",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-28",
+          "parent_doc_id": "S100QRVF"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100QS4X",
+      "filing_date": "2023-05-17",
+      "offeror_name": "株式会社パルグループホールディングス",
+      "target_name": "株式会社パルグループホールディングス",
+      "target_sec_code": "2726",
+      "offeror_edinet_code": "E03387",
+      "target_edinet_code": "E03387",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QS4X",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-17",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QTQG",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2023-05-25",
+          "parent_doc_id": "S100QS4X"
+        },
+        {
+          "doc_id": "S100QXXP",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-14",
+          "parent_doc_id": "S100QS4X"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100QSC0",
+      "filing_date": "2023-05-18",
+      "offeror_name": "株式会社リクルートホールディングス",
+      "target_name": "株式会社リクルートホールディングス",
+      "target_sec_code": "6098",
+      "offeror_edinet_code": "E07801",
+      "target_edinet_code": "E07801",
+      "doc_count": 2,
+      "type_counts": {
+        "240": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QSC0",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-18",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QYB7",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-15",
+          "parent_doc_id": "S100QSC0"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100QUT1",
+      "filing_date": "2023-05-30",
+      "offeror_name": "Ｏｔｅｍａｃｈｉ　Ｈｏｌｄｉｎｇｓ合同会社",
+      "target_name": "りらいあコミュニケーションズ株式会社",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E38676",
+      "target_edinet_code": "E05014",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100QUT1",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2023-05-30",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100QUU2",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2023-05-30",
+          "parent_doc_id": "S100QUT1"
+        },
+        {
+          "doc_id": "S100R9RJ",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2023-06-29",
+          "parent_doc_id": "S100QUT1"
+        }
+      ],
+      "issuer_tender": false
+    }
+  ]
+}

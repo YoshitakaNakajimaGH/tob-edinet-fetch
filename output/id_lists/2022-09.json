@@ -1,0 +1,673 @@
+{
+  "source": "edinet-api-v2-documents.json",
+  "read_saved_list_csv": false,
+  "month": "2022-09",
+  "within_days": 183,
+  "as_of": "2026-10-05",
+  "fetched_from": "2022-09-01",
+  "fetched_to": "2023-04-01",
+  "horizon_end": "2023-04-01",
+  "window_closed": true,
+  "failed_days": [],
+  "daily_tob_counts": {
+    "2022-09-01": 0,
+    "2022-09-02": 2,
+    "2022-09-03": 0,
+    "2022-09-04": 0,
+    "2022-09-05": 1,
+    "2022-09-06": 1,
+    "2022-09-07": 0,
+    "2022-09-08": 4,
+    "2022-09-09": 1,
+    "2022-09-10": 0,
+    "2022-09-11": 0,
+    "2022-09-12": 0,
+    "2022-09-13": 1,
+    "2022-09-14": 1,
+    "2022-09-15": 2,
+    "2022-09-16": 1,
+    "2022-09-17": 0,
+    "2022-09-18": 0,
+    "2022-09-19": 0,
+    "2022-09-20": 2,
+    "2022-09-21": 3,
+    "2022-09-22": 2,
+    "2022-09-23": 0,
+    "2022-09-24": 0,
+    "2022-09-25": 0,
+    "2022-09-26": 2,
+    "2022-09-27": 5,
+    "2022-09-28": 0,
+    "2022-09-29": 2,
+    "2022-09-30": 4,
+    "2022-10-01": 0,
+    "2022-10-02": 0,
+    "2022-10-03": 2,
+    "2022-10-04": 1,
+    "2022-10-05": 2,
+    "2022-10-06": 0,
+    "2022-10-07": 2,
+    "2022-10-08": 0,
+    "2022-10-09": 0,
+    "2022-10-10": 0,
+    "2022-10-11": 0,
+    "2022-10-12": 0,
+    "2022-10-13": 1,
+    "2022-10-14": 0,
+    "2022-10-15": 0,
+    "2022-10-16": 0,
+    "2022-10-17": 3,
+    "2022-10-18": 0,
+    "2022-10-19": 1,
+    "2022-10-20": 0,
+    "2022-10-21": 0,
+    "2022-10-22": 0,
+    "2022-10-23": 0,
+    "2022-10-24": 0,
+    "2022-10-25": 2,
+    "2022-10-26": 2,
+    "2022-10-27": 2,
+    "2022-10-28": 3,
+    "2022-10-29": 0,
+    "2022-10-30": 0,
+    "2022-10-31": 0,
+    "2022-11-01": 0,
+    "2022-11-02": 0,
+    "2022-11-03": 0,
+    "2022-11-04": 0,
+    "2022-11-05": 0,
+    "2022-11-06": 0,
+    "2022-11-07": 1,
+    "2022-11-08": 2,
+    "2022-11-09": 2,
+    "2022-11-10": 2,
+    "2022-11-11": 3,
+    "2022-11-12": 0,
+    "2022-11-13": 0,
+    "2022-11-14": 5,
+    "2022-11-15": 5,
+    "2022-11-16": 1,
+    "2022-11-17": 0,
+    "2022-11-18": 1,
+    "2022-11-19": 0,
+    "2022-11-20": 0,
+    "2022-11-21": 1,
+    "2022-11-22": 1,
+    "2022-11-23": 0,
+    "2022-11-24": 0,
+    "2022-11-25": 0,
+    "2022-11-26": 0,
+    "2022-11-27": 0,
+    "2022-11-28": 0,
+    "2022-11-29": 0,
+    "2022-11-30": 3,
+    "2022-12-01": 0,
+    "2022-12-02": 2,
+    "2022-12-03": 0,
+    "2022-12-04": 0,
+    "2022-12-05": 0,
+    "2022-12-06": 1,
+    "2022-12-07": 0,
+    "2022-12-08": 0,
+    "2022-12-09": 0,
+    "2022-12-10": 0,
+    "2022-12-11": 0,
+    "2022-12-12": 0,
+    "2022-12-13": 1,
+    "2022-12-14": 1,
+    "2022-12-15": 0,
+    "2022-12-16": 0,
+    "2022-12-17": 0,
+    "2022-12-18": 0,
+    "2022-12-19": 1,
+    "2022-12-20": 2,
+    "2022-12-21": 2,
+    "2022-12-22": 2,
+    "2022-12-23": 3,
+    "2022-12-24": 0,
+    "2022-12-25": 0,
+    "2022-12-26": 0,
+    "2022-12-27": 3,
+    "2022-12-28": 1,
+    "2022-12-29": 0,
+    "2022-12-30": 0,
+    "2022-12-31": 0,
+    "2023-01-01": 0,
+    "2023-01-02": 0,
+    "2023-01-03": 0,
+    "2023-01-04": 0,
+    "2023-01-05": 0,
+    "2023-01-06": 0,
+    "2023-01-07": 0,
+    "2023-01-08": 0,
+    "2023-01-09": 0,
+    "2023-01-10": 1,
+    "2023-01-11": 1,
+    "2023-01-12": 0,
+    "2023-01-13": 1,
+    "2023-01-14": 0,
+    "2023-01-15": 0,
+    "2023-01-16": 0,
+    "2023-01-17": 1,
+    "2023-01-18": 0,
+    "2023-01-19": 0,
+    "2023-01-20": 0,
+    "2023-01-21": 0,
+    "2023-01-22": 0,
+    "2023-01-23": 0,
+    "2023-01-24": 1,
+    "2023-01-25": 0,
+    "2023-01-26": 1,
+    "2023-01-27": 2,
+    "2023-01-28": 0,
+    "2023-01-29": 0,
+    "2023-01-30": 6,
+    "2023-01-31": 0,
+    "2023-02-01": 2,
+    "2023-02-02": 0,
+    "2023-02-03": 5,
+    "2023-02-04": 0,
+    "2023-02-05": 0,
+    "2023-02-06": 3,
+    "2023-02-07": 2,
+    "2023-02-08": 2,
+    "2023-02-09": 2,
+    "2023-02-10": 4,
+    "2023-02-11": 0,
+    "2023-02-12": 0,
+    "2023-02-13": 4,
+    "2023-02-14": 4,
+    "2023-02-15": 0,
+    "2023-02-16": 0,
+    "2023-02-17": 3,
+    "2023-02-18": 0,
+    "2023-02-19": 0,
+    "2023-02-20": 0,
+    "2023-02-21": 1,
+    "2023-02-22": 1,
+    "2023-02-23": 0,
+    "2023-02-24": 3,
+    "2023-02-25": 0,
+    "2023-02-26": 0,
+    "2023-02-27": 2,
+    "2023-02-28": 0,
+    "2023-03-01": 2,
+    "2023-03-02": 3,
+    "2023-03-03": 0,
+    "2023-03-04": 0,
+    "2023-03-05": 0,
+    "2023-03-06": 2,
+    "2023-03-07": 0,
+    "2023-03-08": 0,
+    "2023-03-09": 0,
+    "2023-03-10": 1,
+    "2023-03-11": 0,
+    "2023-03-12": 0,
+    "2023-03-13": 4,
+    "2023-03-14": 3,
+    "2023-03-15": 0,
+    "2023-03-16": 1,
+    "2023-03-17": 2,
+    "2023-03-18": 0,
+    "2023-03-19": 0,
+    "2023-03-20": 1,
+    "2023-03-21": 0,
+    "2023-03-22": 0,
+    "2023-03-23": 3,
+    "2023-03-24": 2,
+    "2023-03-25": 0,
+    "2023-03-26": 0,
+    "2023-03-27": 1,
+    "2023-03-28": 1,
+    "2023-03-29": 2,
+    "2023-03-30": 1,
+    "2023-03-31": 0,
+    "2023-04-01": 0
+  },
+  "tob_document_count": 182,
+  "filing_count": 9,
+  "issuer_filing_count": 1,
+  "other_filing_count": 8,
+  "filings_with_outcome": 9,
+  "issuer_filings_with_outcome": 1,
+  "other_filings_with_outcome": 8,
+  "cases": [
+    {
+      "case_id": "S100P4KQ",
+      "filing_date": "2022-09-02",
+      "offeror_name": "株式会社ボイジャー",
+      "target_name": "株式会社ダイオーズ",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E37982",
+      "target_edinet_code": "E04967",
+      "doc_count": 5,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P4KQ",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-02",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P4LG",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-02",
+          "parent_doc_id": "S100P4KQ"
+        },
+        {
+          "doc_id": "S100P5UL",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-09-09",
+          "parent_doc_id": "S100P4KQ"
+        },
+        {
+          "doc_id": "S100P6RY",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-09-14",
+          "parent_doc_id": "S100P4KQ"
+        },
+        {
+          "doc_id": "S100PDMO",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-10-19",
+          "parent_doc_id": "S100P4KQ"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100P5G6",
+      "filing_date": "2022-09-08",
+      "offeror_name": "株式会社ＯＥホールディングス",
+      "target_name": "株式会社アイ・テック",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E32182",
+      "target_edinet_code": "E01297",
+      "doc_count": 6,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "300": 2,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P5G6",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-08",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P5GK",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-08",
+          "parent_doc_id": "S100P5G6"
+        },
+        {
+          "doc_id": "S100P6HR",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2022-09-16",
+          "parent_doc_id": "S100P5GK"
+        },
+        {
+          "doc_id": "S100P9UA",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-09-30",
+          "parent_doc_id": "S100P5G6"
+        },
+        {
+          "doc_id": "S100P9WV",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2022-09-30",
+          "parent_doc_id": "S100P5GK"
+        },
+        {
+          "doc_id": "S100PEGS",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-10-25",
+          "parent_doc_id": "S100P5G6"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100P706",
+      "filing_date": "2022-09-15",
+      "offeror_name": "ＳＢＩノンバンクホールディングス株式会社",
+      "target_name": "ＳＢＩアルヒ株式会社",
+      "target_sec_code": "7198",
+      "offeror_edinet_code": "E38010",
+      "target_edinet_code": "E33625",
+      "doc_count": 6,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 2,
+        "300": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P706",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-15",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P716",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-15",
+          "parent_doc_id": "S100P706"
+        },
+        {
+          "doc_id": "S100P82X",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-09-22",
+          "parent_doc_id": "S100P706"
+        },
+        {
+          "doc_id": "S100PF2O",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-10-27",
+          "parent_doc_id": "S100P706"
+        },
+        {
+          "doc_id": "S100PF2Z",
+          "doc_type_code": "300",
+          "doc_type_name": "訂正意見表明報告書",
+          "submit_date": "2022-10-27",
+          "parent_doc_id": "S100P716"
+        },
+        {
+          "doc_id": "S100PMTW",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-11-14",
+          "parent_doc_id": "S100P706"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100P7U5",
+      "filing_date": "2022-09-21",
+      "offeror_name": "Ｒａｙｓ　Ｃｏｍｐａｎｙ（Ｈｏｎｇ　Ｋｏｎｇ）Ｌｉｍｉｔｅｄ",
+      "target_name": "株式会社レーサム",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E38025",
+      "target_edinet_code": "E05179",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P7U5",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-21",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P7VY",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-21",
+          "parent_doc_id": "S100P7U5"
+        },
+        {
+          "doc_id": "S100PD4E",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-10-17",
+          "parent_doc_id": "S100P7U5"
+        },
+        {
+          "doc_id": "S100PH46",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-11-07",
+          "parent_doc_id": "S100P7U5"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100P7WQ",
+      "filing_date": "2022-09-21",
+      "offeror_name": "セントラル硝子株式会社",
+      "target_name": "セントラル硝子株式会社",
+      "target_sec_code": "4044",
+      "offeror_edinet_code": "E00769",
+      "target_edinet_code": "E00769",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P7WQ",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-21",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100PCJ3",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-10-13",
+          "parent_doc_id": "S100P7WQ"
+        },
+        {
+          "doc_id": "S100PFEW",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-10-28",
+          "parent_doc_id": "S100P7WQ"
+        }
+      ],
+      "issuer_tender": true
+    },
+    {
+      "case_id": "S100P8H3",
+      "filing_date": "2022-09-26",
+      "offeror_name": "Ｌｉｆｔｉｎｇ　Ｈｏｌｄｉｎｇｓ　ＢｉｄＣｏ株式会社",
+      "target_name": "株式会社キトー",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E37947",
+      "target_edinet_code": "E01634",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P8H3",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-26",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P8HP",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-26",
+          "parent_doc_id": "S100P8H3"
+        },
+        {
+          "doc_id": "S100PERO",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-10-26",
+          "parent_doc_id": "S100P8H3"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100P8MM",
+      "filing_date": "2022-09-27",
+      "offeror_name": "株式会社ＢＣＪ－５２",
+      "target_name": "株式会社プロテリアル",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E37208",
+      "target_edinet_code": "E01244",
+      "doc_count": 4,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "250": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P8MM",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-27",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P8PP",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-27",
+          "parent_doc_id": "S100P8MM"
+        },
+        {
+          "doc_id": "S100PAOF",
+          "doc_type_code": "250",
+          "doc_type_name": "訂正公開買付届出書",
+          "submit_date": "2022-10-04",
+          "parent_doc_id": "S100P8MM"
+        },
+        {
+          "doc_id": "S100PES8",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-10-26",
+          "parent_doc_id": "S100P8MM"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100P9IU",
+      "filing_date": "2022-09-29",
+      "offeror_name": "合同会社グリーンエネルギー",
+      "target_name": "タカラレーベン・インフラ投資法人",
+      "target_sec_code": "",
+      "offeror_edinet_code": "E38038",
+      "target_edinet_code": "E32280",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P9IU",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-29",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P9LX",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-29",
+          "parent_doc_id": "S100P9IU"
+        },
+        {
+          "doc_id": "S100PMOA",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-11-14",
+          "parent_doc_id": "S100P9IU"
+        }
+      ],
+      "issuer_tender": false
+    },
+    {
+      "case_id": "S100P9U1",
+      "filing_date": "2022-09-30",
+      "offeror_name": "アクセンチュア株式会社",
+      "target_name": "株式会社ＡＬＢＥＲＴ",
+      "target_sec_code": "非上場",
+      "offeror_edinet_code": "E38042",
+      "target_edinet_code": "E31276",
+      "doc_count": 3,
+      "type_counts": {
+        "240": 1,
+        "290": 1,
+        "270": 1
+      },
+      "has_outcome": true,
+      "documents": [
+        {
+          "doc_id": "S100P9U1",
+          "doc_type_code": "240",
+          "doc_type_name": "公開買付届出書",
+          "submit_date": "2022-09-30",
+          "parent_doc_id": ""
+        },
+        {
+          "doc_id": "S100P9UR",
+          "doc_type_code": "290",
+          "doc_type_name": "意見表明報告書",
+          "submit_date": "2022-09-30",
+          "parent_doc_id": "S100P9U1"
+        },
+        {
+          "doc_id": "S100PN7R",
+          "doc_type_code": "270",
+          "doc_type_name": "公開買付報告書",
+          "submit_date": "2022-11-15",
+          "parent_doc_id": "S100P9U1"
+        }
+      ],
+      "issuer_tender": false
+    }
+  ]
+}
