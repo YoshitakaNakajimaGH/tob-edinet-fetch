@@ -50,6 +50,20 @@ class TargetMetadataTests(unittest.TestCase):
             LISTING_MAINTAINED,
         )
         self.assertEqual(judge_target_delisting("不成立", "上場", [planned_text]), "")
+        already_unlisted = (
+            "対象者は非上場会社のため、該当事項はありません。"
+            "対象者を公開買付者の完全子会社とすることを目的としております。"
+        )
+        self.assertEqual(judge_target_delisting("成立", "非上場", [already_unlisted]), "")
+        self.assertEqual(judge_target_delisting("成立", "上場", [already_unlisted]), "")
+        cost_of_listing = (
+            "対象者株式の上場を維持するために必要な費用が負担となっている。"
+            "対象者を公開買付者の完全子会社とすることを目的としている。"
+        )
+        self.assertEqual(
+            judge_target_delisting("成立", "上場", [cost_of_listing]),
+            DELISTING_PLANNED,
+        )
 
     def test_case_includes_target_sec_and_delisting(self) -> None:
         rows = [

@@ -25,12 +25,16 @@ from tob.extract_fields import (
     extract_pe_sponsor_name,
     extract_special_committee_valuation,
     extract_sponsor_from_purposes,
+    detect_mbo,
+    detect_target_listing_status,
     extract_tender_offer_agent,
     extract_valuation_basis_section,
     extract_valuation_from_purposes,
     has_delisting_planned_signal,
     has_listing_maintain_signal,
     hostile_from_opinion,
+    parse_agreed_tender,
+    parse_fairness_measures,
     parse_board_opinion,
     parse_number,
     parse_offer_report_counts,
@@ -217,11 +221,9 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
     premiums = _premiums(offer_price, references)
     valuations = _valuations(docs_by_date)
     changes = _changes(docs_by_date)
-    purposes = "\n".join(
-        item["texts"].get("purposes", "")
-        for item in filings
-        if item["texts"].get("purposes")
-    )
+    narrative = _narrative(filings, opinions)
+    delisting_narrative = _delisting_narrative(filings, opinions)
+    listing_status = detect_target_listing_status(narrative) or None
 
     return {
         "schema": CASE_SCHEMA,
@@ -252,12 +254,15 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
             "FinalResultNote": result_note or None,
             "ApplicationCount": _count_or_none(counts.get("ApplicationCount", "")),
             "PurchaseCount": _count_or_none(counts.get("PurchaseCount", "")),
-            "TargetDelistingNote": _delisting_note(result_note, purposes, result_text),
+            "TargetDelistingNote": _delisting_note(result_note, delisting_narrative, result_text),
+            "TargetListingStatus": listing_status,
             "DocIDList": [item["docId"] for item in docs_by_date if item["docId"]],
         },
         "pdfLinks": _pdf_links(docs_by_date),
         "referencePrices": references,
         "premiums": premiums,
+        "agreedTender": parse_agreed_tender(narrative),
+        "fairnessMeasures": parse_fairness_measures(narrative),
         "valuations": valuations,
         "changes": changes,
         "timeline": _timeline(docs_by_date),
@@ -468,10 +473,24 @@ def _sponsor_hint(filings: list[dict]) -> str:
     return ""
 
 
-_MBO_STRICT = re.compile(
-    r"ＭＢＯ|MBO|マネジメント[・･]?バイアウト|経営陣による買収|"
-    r"経営者が公開買付者|経営陣が公開買付者"
-)
+def _section_text(docs: list[dict], keys: tuple[str, ...]) -> str:
+    parts = []
+    for item in docs:
+        for key in keys:
+            text = item["texts"].get(key, "")
+            if text:
+                parts.append(text)
+    return "\n".join(parts)
+
+
+def _narrative(filings: list[dict], opinions: list[dict]) -> str:
+    """Purpose, price and opinion text. Price repeats the fairness measures."""
+    return _section_text(filings + opinions, ("purposes", "overview", "offerPrice", "opinion"))
+
+
+def _delisting_narrative(filings: list[dict], opinions: list[dict]) -> str:
+    """Purpose and opinion only. The price block also discusses other deals."""
+    return _section_text(filings + opinions, ("purposes", "overview", "opinion"))
 
 
 def _is_mbo(filings: list[dict], opinions: list[dict]) -> str | None:
@@ -480,11 +499,9 @@ def _is_mbo(filings: list[dict], opinions: list[dict]) -> str | None:
         chunks.append(item["texts"].get("purposes", ""))
         chunks.append(item["texts"].get("overview", ""))
         chunks.append(item["texts"].get("opinion", ""))
-    combined = re.sub(r"\s+", "", "\n".join(part for part in chunks if part))
-    if not combined:
+    if not any(part.strip() for part in chunks if part):
         return None
-    combined = combined.replace("マネジメントプレゼンテーション", "")
-    return "Yes" if _MBO_STRICT.search(combined) else "No"
+    return "Yes" if detect_mbo(chunks) == "Yes" else "No"
 
 
 def _reference_prices(filings: list[dict]) -> dict[str, int | None]:
@@ -866,11 +883,13 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def _delisting_note(result_note: str, purposes: str, result_text: str) -> str | None:
+def _delisting_note(result_note: str, narrative: str, result_text: str) -> str | None:
     if result_note in {"不成立", "撤回"}:
         return None
-    combined = "\n".join(part for part in (purposes, result_text) if part)
+    combined = "\n".join(part for part in (narrative, result_text) if part)
     if not combined:
+        return None
+    if detect_target_listing_status(combined) in {"株主コミュニティ", "非上場"}:
         return None
     if has_listing_maintain_signal(combined):
         return LISTING_MAINTAINED

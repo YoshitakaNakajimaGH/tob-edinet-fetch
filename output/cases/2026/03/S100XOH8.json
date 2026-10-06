@@ -28,6 +28,7 @@
     "ApplicationCount": null,
     "PurchaseCount": null,
     "TargetDelistingNote": null,
+    "TargetListingStatus": null,
     "DocIDList": [
       "S100XOH8",
       "S100XW9D"
@@ -69,6 +70,18 @@
     "vs3m": null,
     "vs6m": null,
     "computed": false
+  },
+  "agreedTender": {
+    "shares": null,
+    "ratio": null,
+    "parties": []
+  },
+  "fairnessMeasures": {
+    "specialCommittee": true,
+    "thirdPartyValuation": true,
+    "legalAdvisor": true,
+    "marketCheck": null,
+    "majorityOfMinority": null
   },
   "valuations": [],
   "changes": [],

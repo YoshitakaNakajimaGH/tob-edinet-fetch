@@ -16,7 +16,7 @@
     "ExistingHoldingRatio": null,
     "SpecialRelatedHoldingRatio": null,
     "AfterPurchaseRatio": 0.8672,
-    "IsMBO": "Yes",
+    "IsMBO": "No",
     "IsHostileInitial": "No",
     "PlannedSharesMin": 3980000,
     "PlannedSharesMax": null,
@@ -27,7 +27,8 @@
     "FinalResultNote": "成立",
     "ApplicationCount": 5177193,
     "PurchaseCount": 5177193,
-    "TargetDelistingNote": "上場廃止予定",
+    "TargetDelistingNote": null,
+    "TargetListingStatus": "株主コミュニティ",
     "DocIDList": [
       "S100XNYP",
       "S100XO6Q",
@@ -77,6 +78,39 @@
     "vs3m": null,
     "vs6m": null,
     "computed": false
+  },
+  "agreedTender": {
+    "shares": 1852166,
+    "ratio": 0.3102,
+    "parties": [
+      {
+        "name": "レゾナック",
+        "shares": 792500,
+        "ratio": 0.1327
+      },
+      {
+        "name": "プロテリアル",
+        "shares": 755666,
+        "ratio": 0.1266
+      },
+      {
+        "name": "伊藤忠丸紅鉄鋼",
+        "shares": 254000,
+        "ratio": 0.0425
+      },
+      {
+        "name": "三菱ＵＦＪ銀行",
+        "shares": 50000,
+        "ratio": 0.0084
+      }
+    ]
+  },
+  "fairnessMeasures": {
+    "specialCommittee": true,
+    "thirdPartyValuation": true,
+    "legalAdvisor": true,
+    "marketCheck": true,
+    "majorityOfMinority": false
   },
   "valuations": [
     {

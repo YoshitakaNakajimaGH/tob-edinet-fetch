@@ -393,9 +393,12 @@ def has_listing_maintain_signal(text: str) -> bool:
     if not text:
         return False
     compact = re.sub(r"\s+", "", strip_html(text))
+    # 「上場を維持するために必要なコスト」は、上場をやめる理由であり、維持決定ではない。
     return bool(
         re.search(
-            r"上場廃止を企図しておらず|上場廃止を企図していない|上場が維持される予定|上場を維持|上場が維持される",
+            r"上場廃止を企図しておらず|上場廃止を企図していない|"
+            r"上場が維持される予定|上場が維持される|"
+            r"上場を維持する予定|上場を維持します|上場を維持いたします",
             compact,
         )
     )
@@ -800,22 +803,254 @@ def resolve_sponsor_hint(
     return ""
 
 
-MBO_PATTERN = re.compile(
-    r"ＭＢＯ|MBO|マネジメント[・･]?バイアウト|"
-    r"経営陣(?:による|が).{0,24}(?:公開買付|ＴＯＢ|TOB)|"
-    r"本ＭＢＯ(?:公開買付|取引)"
+_MBO_DEFINITION = re.compile(
+    r"[「『]?(?:いわゆる)?マネジメント[・･]?バイアウト[（(](?:ＭＢＯ|MBO)[)）][」』]?とは[^。]{0,220}。"
+)
+_MBO_POSITIVE = re.compile(
+    r"(?:本取引|本公開買付).{0,80}(?:マネジメント[・･]?バイアウト|ＭＢＯ|MBO)"
+    r".{0,40}該当(?:します|する(?!もの)|し(?!ない|ません|ておりません))|"
+    r"(?:マネジメント[・･]?バイアウト|ＭＢＯ|MBO).{0,16}の一環|"
+    r"(?:マネジメント[・･]?バイアウト|ＭＢＯ|MBO)として(?:実施|行われ)|"
+    r"「(?:ＭＢＯ|MBO)の実施|"
+    r"本(?:ＭＢＯ|MBO)(?:公開買付|取引|を|の|に|で)|"
+    r"経営陣(?:による|が).{0,24}(?:公開買付|ＴＯＢ|TOB)"
+)
+_MBO_REJECT_AFTER = re.compile(
+    r"該当しない|該当しません|該当いたしません|該当せず|"
+    r"ではなく|ではありません|ものではない"
 )
 
 
 def detect_mbo(texts: list[str]) -> str:
-    """Return 'Yes' when the filing narrative indicates an MBO."""
+    """Return 'Yes' only when this deal is described as an MBO.
+
+    A mention that the deal is not an MBO, a definition footnote, a premium
+    precedent (事例), or the listing-rule category ＭＢＯ等 does not count.
+    """
     combined = "\n".join(text for text in texts if text)
     if not combined:
         return ""
     compact = re.sub(r"\s+", "", strip_html(combined))
-    if "マネジメントプレゼンテーション" in compact:
-        compact = compact.replace("マネジメントプレゼンテーション", "")
-    return "Yes" if MBO_PATTERN.search(compact) else ""
+    compact = compact.replace("マネジメントプレゼンテーション", "")
+    compact = _MBO_DEFINITION.sub("", compact)
+    compact = re.sub(r"(?:ＭＢＯ|MBO)等", "", compact)
+    for match in _MBO_POSITIVE.finditer(compact):
+        tail = compact[match.end() : match.end() + 24]
+        if _MBO_REJECT_AFTER.search(tail):
+            continue
+        sentence_start = compact.rfind("。", 0, match.start()) + 1
+        sentence = compact[sentence_start : match.end() + 24]
+        if "事例" in sentence:
+            continue
+        return "Yes"
+    return ""
+
+
+_CURRENT_MARKET = re.compile(
+    r"(プライム市場|スタンダード市場|グロース市場|"
+    r"札幌証券取引所本則市場|札幌証券取引所アンビシャス|"
+    r"福岡証券取引所|"
+    r"名古屋証券取引所プレミア市場|名古屋証券取引所メイン市場|名古屋証券取引所ネクスト市場)"
+)
+_MARKET_LABELS = {
+    "プライム市場": "東証プライム",
+    "スタンダード市場": "東証スタンダード",
+    "グロース市場": "東証グロース",
+    "札幌証券取引所本則市場": "札証本則",
+    "札幌証券取引所アンビシャス": "札証アンビシャス",
+    "福岡証券取引所": "福証",
+    "名古屋証券取引所プレミア市場": "名証プレミア",
+    "名古屋証券取引所メイン市場": "名証メイン",
+    "名古屋証券取引所ネクスト市場": "名証ネクスト",
+}
+_ALREADY_UNLISTED = re.compile(
+    r"(?:対象者|当社)は非上場会社(?!となる)|"
+    r"非上場会社である(?:対象者|当社)|"
+    r"非上場会社のため|"
+    r"(?:対象者|当社)株式は金融商品取引所に上場していない"
+)
+
+
+def detect_target_listing_status(text: str) -> str:
+    """Current listing venue of the target, from the filing narrative.
+
+    Shareholder-community names and 'already unlisted' beat a historical
+    listing sentence. A market counts only when the same clause says the
+    shares are listed, and a sentence about the offeror is ignored when a
+    target sentence is available.
+    """
+    compact = re.sub(r"\s+", "", strip_html(text or ""))
+    if not compact:
+        return ""
+    best: tuple[int, int, str] | None = None
+    for match in _CURRENT_MARKET.finditer(compact):
+        after = compact[match.end() : match.end() + 16]
+        if "上場" not in after:
+            continue
+        before = compact[max(0, match.start() - 90) : match.start()]
+        score = 0
+        if "本書提出日現在" in before:
+            score += 5
+        if re.search(r"対象者株式|当社株式|対象者の普通|当社の普通", before):
+            score += 3
+        if re.search(r"公開買付者(?:親会社|及び)?$", before[-20:]):
+            score -= 4
+        label = _MARKET_LABELS[match.group(1)]
+        if "名古屋" in before[-30:] and label.startswith("東証"):
+            continue
+        candidate = (score, -match.start(), label)
+        if best is None or candidate > best:
+            best = candidate
+    if best is not None and best[0] > 0:
+        return best[2]
+    if re.search(r"株主コミュニティ(?:の組成|における|銘柄)|に株主コミュニティ", compact):
+        return "株主コミュニティ"
+    if _ALREADY_UNLISTED.search(compact):
+        return "非上場"
+    if best is not None:
+        return best[2]
+    return ""
+
+
+def parse_fairness_measures(text: str) -> dict[str, bool | None]:
+    """Flags for the standard fairness measures. Unknown stays None."""
+    compact = re.sub(r"\s+", "", strip_html(text or ""))
+    empty: dict[str, bool | None] = {
+        "specialCommittee": None,
+        "thirdPartyValuation": None,
+        "legalAdvisor": None,
+        "marketCheck": None,
+        "majorityOfMinority": None,
+    }
+    if not compact:
+        return empty
+
+    special: bool | None = None
+    if re.search(r"特別委員会を設置|特別委員会の設置", compact):
+        special = True
+    elif re.search(r"特別委員会は設置して(?:おりません|いない)", compact):
+        special = False
+
+    obtained = bool(
+        re.search(
+            r"株式価値算定書を取得|算定書を取得した|算定書を取得いたし|"
+            r"第三者算定機関からの株式価値算定書の取得|算定書の取得|"
+            r"第三者算定機関として|第三者算定機関に対して",
+            compact,
+        )
+    )
+    denied = bool(
+        re.search(
+            r"算定書は取得しておりません|算定書を取得しておりません|"
+            r"第三者算定機関からの株式価値算定書は取得しておりません",
+            compact,
+        )
+    )
+    valuation: bool | None = True if obtained else False if denied else None
+
+    legal: bool | None = (
+        True
+        if re.search(r"リーガル・アドバイザー|法律事務所からの助言|独立した法律事務所", compact)
+        else None
+    )
+
+    market: bool | None = None
+    if re.search(
+        r"他の買付者からの買付機会を確保|対抗的な買付け等を行う機会を確保|"
+        r"取引保護条項を含む合意(?:等)?(?:を|は)[^。]{0,24}(?:行って|して)おりません",
+        compact,
+    ):
+        market = True
+    elif re.search(r"取引保護条項を含む合意を(?:行って|して)おります", compact):
+        market = False
+
+    minority: bool | None = None
+    if re.search(r"マジョリティ[・･]?オブ[・･]?マイノリティ|MajorityofMinority", compact, re.IGNORECASE):
+        for sentence in re.split(r"。", compact):
+            if "マジョリティ" not in sentence and "Minority" not in sentence:
+                continue
+            if re.search(r"設定して(?:おりません|いない|いません)|設定はして(?:おりません|いない)", sentence):
+                minority = False
+                break
+            if re.search(r"設定して(?:おります|いる|います)|を設定し(?:、|た|ます)", sentence):
+                minority = True
+    return {
+        "specialCommittee": special,
+        "thirdPartyValuation": valuation,
+        "legalAdvisor": legal,
+        "marketCheck": market,
+        "majorityOfMinority": minority,
+    }
+
+
+_AGREED_PARTY = re.compile(
+    r"である([^（(]{2,40})[（(]以下[「『]([^」』]{1,40})[」』]といいます[。）)]+"
+    r"[^。]{0,180}?所有株式(?:数)?[：:]([\d,，]+)株[、，]"
+    r"所有割合(?:[（(]注[^)）]{0,8}[)）])?[：:]([\d.]+)[％%]"
+)
+
+
+def parse_agreed_tender(text: str) -> dict[str, object]:
+    """Shares and ratio the offeror has already agreed will be tendered.
+
+    The aggregate is the 本応募合意 total when the filing states one, otherwise
+    the largest 合計で figure in an agreement sentence. Individual parties are
+    kept when the name and the holding sit in the same sentence.
+    """
+    empty: dict[str, object] = {"shares": None, "ratio": None, "parties": []}
+    compact = re.sub(r"\s+", "", strip_html(text or ""))
+    if not compact or "所有割合" not in compact or "応募" not in compact:
+        return empty
+
+    parties: list[dict[str, object]] = []
+    seen: set[tuple[str, int]] = set()
+    for match in _AGREED_PARTY.finditer(compact):
+        name = match.group(2) or match.group(1)
+        shares = _parse_int(match.group(3))
+        ratio = _percent_ratio(match.group(4))
+        if shares is None or ratio is None:
+            continue
+        key = (name, shares)
+        if key in seen:
+            continue
+        seen.add(key)
+        parties.append({"name": name, "shares": shares, "ratio": ratio})
+
+    shares, ratio = _agreed_aggregate(compact)
+    if shares is None and parties:
+        shares = sum(int(item["shares"]) for item in parties)
+        ratio = round(sum(float(item["ratio"]) for item in parties), 6)
+    return {"shares": shares, "ratio": ratio, "parties": parties}
+
+
+def _percent_ratio(raw: str) -> float | None:
+    try:
+        return round(float(raw) / 100, 6)
+    except ValueError:
+        return None
+
+
+def _agreed_aggregate(compact: str) -> tuple[int | None, float | None]:
+    labeled = re.search(
+        r"本応募合意株主[^。]{0,220}?所有株式[：:]([\d,，]+)株[、，]所有割合[：:]([\d.]+)[％%]",
+        compact,
+    )
+    if labeled:
+        return _parse_int(labeled.group(1)), _percent_ratio(labeled.group(2))
+    best: tuple[int, float] | None = None
+    for match in re.finditer(r"合計で([\d,，]+)株[、，]所有割合[：:]([\d.]+)[％%]", compact):
+        before = compact[max(0, match.start() - 90) : match.start()]
+        if "応募" not in before and "合意" not in before:
+            continue
+        shares = _parse_int(match.group(1))
+        ratio = _percent_ratio(match.group(2))
+        if shares is None or ratio is None:
+            continue
+        if best is None or shares > best[0]:
+            best = (shares, ratio)
+    if best:
+        return best
+    return None, None
 
 
 def extract_valuation_basis_section(text: str, *, limit: int = 2500) -> str:
@@ -1609,6 +1844,8 @@ def judge_target_delisting(
         return ""
 
     combined = "\n".join(text for text in texts if text)
+    if detect_target_listing_status(combined) in {"株主コミュニティ", "非上場"}:
+        return ""
     maintain = has_listing_maintain_signal(combined)
     planned = has_delisting_planned_signal(combined)
     listing = (listing_category or "").strip()
