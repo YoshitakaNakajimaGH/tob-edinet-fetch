@@ -170,6 +170,10 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(case["agreedTender"]["parties"], [])
         self.assertIsNone(case["fairnessMeasures"]["specialCommittee"])
         self.assertIsNone(case["fairnessMeasures"]["majorityOfMinority"])
+        self.assertEqual(case["buyerStructure"]["offeror"], "買付者株式会社")
+        self.assertIsNone(case["buyerStructure"]["directParent"])
+        self.assertIsNone(case["financing"]["equity"])
+        self.assertIsNone(case["financing"]["debt"])
         self.assertEqual(
             core["DocIDList"],
             ["S100AAAA", "S100CCCC", "S100BBBB", "S100DDDD", "S100EEEE"],
@@ -296,6 +300,48 @@ class CaseJsonTests(unittest.TestCase):
             "本応募合意株式（合計で527,400株、所有割合：53.11％）について応募する旨の契約を締結した。"
         )["shares"], 527400)
         self.assertIsNone(parse_fairness_measures("")["legalAdvisor"])
+
+    def test_stated_zero_holding_fund_parent_and_financing(self) -> None:
+        purposes = (
+            "公開買付者は、対象者株式を取得することを主たる目的として、2025年11月5日に設立された株式会社です。"
+            "本書提出日現在、アイ・シグマ・キャピタル株式会社(以下「アイ・シグマ・キャピタル」といいます。)"
+            "によって管理・運営されるアイ・シグマ事業支援ファンド４号投資事業有限責任組合"
+            "(以下「アイ・シグマ事業支援ファンド４号」といいます。)が公開買付者の発行済株式の全部を所有しております。"
+            "なお、公開買付者、アイ・シグマ・キャピタル及び丸紅のいずれも、本書提出日現在、対象者株式を所有しておりません。"
+            "アイ・シグマ・キャピタルの親会社である丸紅株式会社(以下「丸紅」といいます。)。"
+            "アイ・シグマ事業支援ファンド４号から1,481,000,000円を上限として出資を受けるとともに、"
+            "三菱ＵＦＪ銀行から2,629,000,000円を上限として借入れにより賄うことを予定しております。"
+            "公開買付者が本公開買付けにより取得する対象者株式が担保に供されることが予定されております。"
+        )
+        filing = _doc(
+            offerorName="ＭＫホールディングス株式会社",
+            texts={"purposes": purposes},
+        )
+        case = build_case_json("2026-03", [filing])
+        self.assertEqual(case["core"]["ExistingHoldingRatio"], 0.0)
+        self.assertEqual(case["core"]["SpecialRelatedHoldingRatio"], 0.0)
+        structure = case["buyerStructure"]
+        self.assertEqual(structure["directParent"], "アイ・シグマ事業支援ファンド４号投資事業有限責任組合")
+        self.assertEqual(structure["fundManager"], "アイ・シグマ・キャピタル株式会社")
+        self.assertEqual(structure["ultimateSponsor"], "丸紅株式会社")
+        self.assertEqual(structure["buyerType"], "PE-backed SPC")
+        financing = case["financing"]
+        self.assertEqual(financing["equity"], 1481000000)
+        self.assertEqual(financing["equitySource"], "アイ・シグマ事業支援ファンド４号")
+        self.assertEqual(financing["debt"], 2629000000)
+        self.assertEqual(financing["lenders"], [{"name": "三菱ＵＦＪ銀行", "amount": 2629000000}])
+        self.assertTrue(financing["targetSharesPledged"])
+
+    def test_vote_count_wins_over_a_zero_sentence_and_offeror_zero_does_not_clear_special(self) -> None:
+        filing = _doc(
+            texts={
+                "purposes": "本書提出日現在、公開買付者らは対象者株式を所有しておりません。",
+            },
+            numbers={"offerorVotes": "10", "specialVotes": "20", "totalVotes": "100"},
+        )
+        case = build_case_json("2026-03", [filing])
+        self.assertEqual(case["core"]["ExistingHoldingRatio"], 0.1)
+        self.assertEqual(case["core"]["SpecialRelatedHoldingRatio"], 0.2)
 
     def test_after_ratio_is_not_recomputed_from_votes(self) -> None:
         filing = _doc(

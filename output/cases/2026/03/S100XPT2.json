@@ -99,6 +99,20 @@
     "marketCheck": null,
     "majorityOfMinority": false
   },
+  "buyerStructure": {
+    "offeror": "三井住友建設株式会社",
+    "directParent": null,
+    "fundManager": null,
+    "ultimateSponsor": null,
+    "buyerType": "Strategic"
+  },
+  "financing": {
+    "equity": null,
+    "equitySource": null,
+    "debt": null,
+    "lenders": [],
+    "targetSharesPledged": null
+  },
   "valuations": [
     {
       "advisor": null,

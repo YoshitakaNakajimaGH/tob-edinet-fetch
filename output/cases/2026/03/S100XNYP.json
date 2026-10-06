@@ -13,8 +13,8 @@
     "OfferPrice": 605,
     "OfferPeriodStart": "2026-03-02",
     "OfferPeriodEnd": "2026-04-13",
-    "ExistingHoldingRatio": null,
-    "SpecialRelatedHoldingRatio": null,
+    "ExistingHoldingRatio": 0.0,
+    "SpecialRelatedHoldingRatio": 0.0,
     "AfterPurchaseRatio": 0.8672,
     "IsMBO": "No",
     "IsHostileInitial": "No",
@@ -111,6 +111,25 @@
     "legalAdvisor": true,
     "marketCheck": true,
     "majorityOfMinority": false
+  },
+  "buyerStructure": {
+    "offeror": "ＭＫホールディングス株式会社",
+    "directParent": "アイ・シグマ事業支援ファンド４号投資事業有限責任組合",
+    "fundManager": "アイ・シグマ・キャピタル株式会社",
+    "ultimateSponsor": "丸紅株式会社",
+    "buyerType": "PE-backed SPC"
+  },
+  "financing": {
+    "equity": 1481000000,
+    "equitySource": "アイ・シグマ事業支援ファンド４号",
+    "debt": 2629000000,
+    "lenders": [
+      {
+        "name": "三菱ＵＦＪ銀行",
+        "amount": 2629000000
+      }
+    ],
+    "targetSharesPledged": true
   },
   "valuations": [
     {

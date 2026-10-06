@@ -83,6 +83,20 @@
     "marketCheck": null,
     "majorityOfMinority": null
   },
+  "buyerStructure": {
+    "offeror": "株式会社フォーラムエンジニアリング",
+    "directParent": null,
+    "fundManager": null,
+    "ultimateSponsor": null,
+    "buyerType": null
+  },
+  "financing": {
+    "equity": null,
+    "equitySource": null,
+    "debt": null,
+    "lenders": [],
+    "targetSharesPledged": null
+  },
   "valuations": [],
   "changes": [],
   "timeline": [
