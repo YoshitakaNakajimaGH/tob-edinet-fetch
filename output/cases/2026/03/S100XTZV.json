@@ -132,7 +132,8 @@
         "amount": null
       }
     ],
-    "targetSharesPledged": true
+    "targetSharesPledged": true,
+    "selfFunded": null
   },
   "valuations": [],
   "changes": [

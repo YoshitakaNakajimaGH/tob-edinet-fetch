@@ -19,6 +19,7 @@ from tob.extract_fields import (
     parse_agreed_tender,
     parse_board_opinion,
     parse_fairness_measures,
+    parse_financing,
     parse_reference_market_price_details,
     parse_valuation_records,
 )
@@ -174,6 +175,8 @@ class CaseJsonTests(unittest.TestCase):
         self.assertIsNone(case["buyerStructure"]["directParent"])
         self.assertIsNone(case["financing"]["equity"])
         self.assertIsNone(case["financing"]["debt"])
+        self.assertIsNone(case["financing"]["selfFunded"])
+        self.assertEqual(case["financing"]["lenders"], [])
         self.assertEqual(
             core["DocIDList"],
             ["S100AAAA", "S100CCCC", "S100BBBB", "S100DDDD", "S100EEEE"],
@@ -331,6 +334,66 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(financing["debt"], 2629000000)
         self.assertEqual(financing["lenders"], [{"name": "三菱ＵＦＪ銀行", "amount": 2629000000}])
         self.assertTrue(financing["targetSharesPledged"])
+        self.assertIsNone(financing["selfFunded"])
+
+    def test_named_loan_without_a_cap_and_own_cash(self) -> None:
+        named = parse_financing(
+            "下記「８買付け等に要する資金」の「(2)預金又は借入金等」に記載のとおり、"
+            "本取引に要する資金を、自己資金及び株式会社三井住友銀行(以下「三井住友銀行」といいます。)"
+            "からの借入れ(以下「本銀行融資」といいます。)により充当することを予定しております。"
+        )
+        self.assertIsNone(named["debt"])
+        self.assertTrue(named["selfFunded"])
+        self.assertEqual(named["lenders"], [{"name": "三井住友銀行", "amount": None}])
+
+        parent = parse_financing(
+            "下記「８買付け等に要する資金」の「預金又は借入金等」に記載のとおり、"
+            "公開買付者の完全親会社である麻生からの借入れにより決済資金を調達する予定です。"
+        )
+        self.assertEqual(parent["lenders"], [{"name": "麻生", "amount": None}])
+        self.assertIsNone(parent["selfFunded"])
+
+        banks = parse_financing(
+            "預金又は借入金等」に記載のとおり、決済開始日までに公開買付者親会社から出資を受けるとともに、"
+            "株式会社三井住友銀行（以下「三井住友銀行」といいます。）、"
+            "株式会社みずほ銀行（以下「みずほ銀行」といいます。）から借入れを受けることを予定しております。"
+        )
+        self.assertEqual(banks["equitySource"], "公開買付者親会社")
+        self.assertIsNone(banks["equity"])
+        self.assertEqual(
+            [item["name"] for item in banks["lenders"]],
+            ["三井住友銀行", "みずほ銀行"],
+        )
+        self.assertTrue(all(item["amount"] is None for item in banks["lenders"]))
+
+        capped = parse_financing(
+            "株式会社三菱UFJ銀行(以下「三菱UFJ銀行」といいます。)から"
+            "決済の開始日の前営業日までに合計19,100,000,000円を上限として借入れを受けることを予定しております。"
+        )
+        self.assertEqual(capped["debt"], 19100000000)
+        self.assertEqual(capped["lenders"], [{"name": "三菱UFJ銀行", "amount": 19100000000}])
+
+    def test_own_cash_with_no_new_funding_is_zero_debt(self) -> None:
+        financing = parse_financing(
+            "公開買付者は、本公開買付けが成立した場合、自己資本・手元現金を"
+            "本公開買付けに係る決済に要する資金として想定しており、新たな資金調達は想定しておりません。"
+        )
+        self.assertEqual(financing["debt"], 0)
+        self.assertTrue(financing["selfFunded"])
+        self.assertEqual(financing["lenders"], [])
+
+    def test_balance_sheet_borrowing_and_mbo_definition_are_not_deal_funding(self) -> None:
+        financing = parse_financing(
+            "外部からの資金借入れ等を含む貸借対照表につき試算した。借入金の計上はなく。"
+            "マネジメント・バイアウト（ＭＢＯ）とは、買収資金の全部又は一部を出資して株式を取得する取引をいいます。"
+            "ブリッジローン（詳細は「預金又は借入金等」の「借入れを予定している資金」をご参照ください。）"
+            "を完済するため、公開買付者に再出資する予定です。"
+        )
+        self.assertIsNone(financing["equity"])
+        self.assertIsNone(financing["equitySource"])
+        self.assertIsNone(financing["debt"])
+        self.assertEqual(financing["lenders"], [])
+        self.assertIsNone(financing["selfFunded"])
 
     def test_vote_count_wins_over_a_zero_sentence_and_offeror_zero_does_not_clear_special(self) -> None:
         filing = _doc(

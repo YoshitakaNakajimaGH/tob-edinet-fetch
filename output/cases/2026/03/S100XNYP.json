@@ -129,7 +129,8 @@
         "amount": 2629000000
       }
     ],
-    "targetSharesPledged": true
+    "targetSharesPledged": true,
+    "selfFunded": null
   },
   "valuations": [
     {
