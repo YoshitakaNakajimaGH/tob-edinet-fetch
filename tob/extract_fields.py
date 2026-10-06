@@ -1053,6 +1053,163 @@ def _agreed_aggregate(compact: str) -> tuple[int | None, float | None]:
     return None, None
 
 
+def parse_explicit_zero_holdings(text: str) -> dict[str, bool]:
+    """True only when the filing states that holding is zero.
+
+    A sentence about the offeror does not zero the special-related ratio.
+    The いずれも sentence does, because it lists the offeror and the related parties together.
+    """
+    compact = re.sub(r"\s+", "", strip_html(text or ""))
+    existing = False
+    special = False
+    for match in re.finditer(
+        r"(?:対象者|当社)株式を(?:所有|保有)して(?:おりません|いない)",
+        compact,
+    ):
+        window = compact[max(0, match.start() - 160) : match.end()]
+        if "公開買付者" not in window:
+            continue
+        existing = True
+        if "いずれも" in window or "特別関係者" in window:
+            special = True
+    return {"existing": existing, "special": special}
+
+
+def _party_name(raw: str) -> str:
+    text = re.sub(r"（注\d*）|\(注\d*\)", "", raw or "")
+    text = re.split(r"[（(]以下", text)[0]
+    text = re.sub(r"^.*(?:本書提出日現在、|現在、)", "", text)
+    text = text.rsplit("）", 1)[-1].rsplit(")", 1)[-1]
+    text = text.rsplit("である", 1)[-1]
+    text = text.strip(" 、，の")
+    if not text or len(text) > 80 or "東京証券取引所" in text:
+        return ""
+    return text
+
+
+def _overview_window(text: str) -> str:
+    compact = re.sub(r"\s+", "", strip_html(text or ""))
+    stop = re.search(r"本公開買付けの実施を決定するに至った背景|対象者が本公開買付けに賛同するに至った", compact)
+    if stop:
+        compact = compact[: stop.start()]
+    return compact[:4000]
+
+
+def parse_buyer_structure(text: str, offeror_name: str = "") -> dict[str, str | None]:
+    """Offeror, the fund or parent that owns it, and the manager, from the overview.
+
+    Names that are not in that opening are left null. This does not look up EDINET.
+    """
+    opening = _overview_window(text)
+    direct = ""
+    manager = ""
+    managed = re.search(
+        r"([^（(。]{2,40})[（(]以下[^）)]{0,80}[）)]によって管理・運営される"
+        r"([^（(]{2,80})(?:[（(]以下[^）)]{0,80}[）)])?"
+        r"が公開買付者の発行済株式の(?:全部|全て|すべて)を所有",
+        opening,
+    )
+    if managed:
+        manager = _party_name(managed.group(1))
+        direct = _party_name(managed.group(2))
+    if not manager:
+        served = re.search(
+            r"([^（(。]{2,40})(?:[（(]以下「([^」]{2,40})」[^）)]{0,20}[）)])?がサービスを提供するファンド",
+            opening,
+        )
+        if served:
+            manager = _party_name(served.group(2) or served.group(1))
+    if not direct:
+        labeled = re.search(r"([^（(、。]{2,40})[（(]以下「公開買付者親会社」", opening)
+        if labeled:
+            direct = _party_name(labeled.group(1))
+    ultimate = ""
+    parent = re.search(r"の親会社である([^（(、。]{2,40})", opening[:2500])
+    if parent:
+        ultimate = _party_name(parent.group(1))
+    buyer_type = None
+    fund_owned = bool(manager) or bool(re.search(r"ファンド|投資事業有限責任組合|有限責任組合", direct))
+    formed = "設立された株式会社" in opening
+    if fund_owned and formed:
+        buyer_type = "PE-backed SPC"
+    elif not formed and re.search(r"公開買付者は、本書提出日現在、.{0,280}?所有しており", opening):
+        buyer_type = "Strategic"
+    return {
+        "offeror": (offeror_name or "").strip() or None,
+        "directParent": direct or None,
+        "fundManager": manager or None,
+        "ultimateSponsor": ultimate or None,
+        "buyerType": buyer_type,
+    }
+
+
+def _money_amount(raw: str, unit: str) -> int | None:
+    number = _parse_int(raw)
+    if number is None:
+        return None
+    if unit == "千円":
+        return number * 1000
+    if unit == "百万円":
+        return number * 1_000_000
+    return number
+
+
+def _lender_names(clause: str) -> list[str]:
+    """The party named immediately before から. Several defined banks stay as a list."""
+    fragment = clause.rsplit("。", 1)[-1]
+    tail = fragment.rsplit("、", 1)[-1]
+    tail = re.split(r"[（(]以下", tail)[0].strip("）)、，の ")
+    if 2 <= len(tail) <= 40 and not tail.endswith("までに") and "といいます" not in tail:
+        return [tail]
+    names: list[str] = []
+    for short in re.findall(r"以下「([^」]{2,30})」", clause):
+        if short.startswith("本") or "総称" in short or "併せて" in short or short in names:
+            continue
+        names.append(short)
+    return names
+
+
+def parse_financing(text: str) -> dict[str, object]:
+    """Equity and debt caps written as funding for the tender, plus a pledge flag.
+
+    Term-loan splits are included only when the filing states them. A cap is not
+    treated as a drawn amount.
+    """
+    compact = re.sub(r"\s+", "", strip_html(text or ""))
+    empty: dict[str, object] = {
+        "equity": None,
+        "equitySource": None,
+        "debt": None,
+        "lenders": [],
+        "targetSharesPledged": None,
+    }
+    if not compact:
+        return empty
+    equity = re.search(
+        r"から([^0-9０-９]{0,60})([\d,，]+)(円|千円|百万円)を(?:上限|限度)と(?:して|する)出資",
+        compact,
+    )
+    debt = re.search(
+        r"から([^0-9０-９]{0,80})([\d,，]+)(円|千円|百万円)を上限として借入",
+        compact,
+    )
+    if equity:
+        empty["equity"] = _money_amount(equity.group(2), equity.group(3))
+        source = _lender_names(compact[max(0, equity.start() - 80) : equity.start()])
+        empty["equitySource"] = source[0] if source else None
+    if debt:
+        empty["debt"] = _money_amount(debt.group(2), debt.group(3))
+        clause = compact[max(0, debt.start() - 400) : debt.start()]
+        names = _lender_names(clause)
+        amount = empty["debt"] if len(names) == 1 else None
+        empty["lenders"] = [{"name": name, "amount": amount} for name in names]
+    if re.search(r"担保に供されることは予定されておりません|担保提供は予定されておりません", compact):
+        empty["targetSharesPledged"] = False
+    elif re.search(r"取得する(?:対象者|当社)株式が担保に供される", compact):
+        empty["targetSharesPledged"] = True
+    return empty
+
+
 def extract_valuation_basis_section(text: str, *, limit: int = 2500) -> str:
     """Return the 算定の基礎 portion of the price text block."""
     if not text:

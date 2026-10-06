@@ -13,7 +13,7 @@
     "OfferPrice": 1119,
     "OfferPeriodStart": "2026-03-25",
     "OfferPeriodEnd": "2026-05-11",
-    "ExistingHoldingRatio": null,
+    "ExistingHoldingRatio": 0.0,
     "SpecialRelatedHoldingRatio": 0.373077,
     "AfterPurchaseRatio": 0.9124,
     "IsMBO": "Yes",
@@ -106,6 +106,33 @@
     "legalAdvisor": true,
     "marketCheck": null,
     "majorityOfMinority": false
+  },
+  "buyerStructure": {
+    "offeror": "MP-2605株式会社",
+    "directParent": "MP-2604株式会社",
+    "fundManager": "MBKパートナーズ",
+    "ultimateSponsor": null,
+    "buyerType": "PE-backed SPC"
+  },
+  "financing": {
+    "equity": 36860445000,
+    "equitySource": "公開買付者親会社",
+    "debt": 72401000000,
+    "lenders": [
+      {
+        "name": "みずほ銀行",
+        "amount": null
+      },
+      {
+        "name": "三菱UFJ銀行",
+        "amount": null
+      },
+      {
+        "name": "あおぞら銀行",
+        "amount": null
+      }
+    ],
+    "targetSharesPledged": true
   },
   "valuations": [],
   "changes": [

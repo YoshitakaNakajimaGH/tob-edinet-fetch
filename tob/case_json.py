@@ -27,6 +27,9 @@ from tob.extract_fields import (
     extract_sponsor_from_purposes,
     detect_mbo,
     detect_target_listing_status,
+    parse_buyer_structure,
+    parse_explicit_zero_holdings,
+    parse_financing,
     extract_tender_offer_agent,
     extract_valuation_basis_section,
     extract_valuation_from_purposes,
@@ -216,7 +219,8 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
     counts = parse_offer_report_counts(result_text, acquired) if latest_report else {}
 
     names = _names(docs_by_date)
-    holdings = _holdings(latest_filing, latest_report)
+    purpose_text = _section_text(filings, ("purposes",))
+    holdings = _apply_explicit_zero(_holdings(latest_filing, latest_report), purpose_text)
     references = _reference_prices(filings)
     premiums = _premiums(offer_price, references)
     valuations = _valuations(docs_by_date)
@@ -263,6 +267,8 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
         "premiums": premiums,
         "agreedTender": parse_agreed_tender(narrative),
         "fairnessMeasures": parse_fairness_measures(narrative),
+        "buyerStructure": parse_buyer_structure(purpose_text, names["offeror"]),
+        "financing": parse_financing(purpose_text),
         "valuations": valuations,
         "changes": changes,
         "timeline": _timeline(docs_by_date),
@@ -432,6 +438,16 @@ def _votes_ratio(part: str, total: str) -> float | None:
     if numerator is None or not denominator:
         return None
     return round(numerator / denominator, 6)
+
+
+def _apply_explicit_zero(holdings: dict[str, float | None], text: str) -> dict[str, float | None]:
+    """Use a stated zero only where the voting-rights ratio was not read."""
+    stated = parse_explicit_zero_holdings(text)
+    if holdings["existing"] is None and stated["existing"]:
+        holdings["existing"] = 0.0
+    if holdings["special"] is None and stated["special"]:
+        holdings["special"] = 0.0
+    return holdings
 
 
 def _holdings(filing: dict | None, report: dict | None) -> dict[str, float | None]:
