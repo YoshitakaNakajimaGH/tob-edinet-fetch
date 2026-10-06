@@ -28,6 +28,7 @@
     "ApplicationCount": 48373328,
     "PurchaseCount": 48373328,
     "TargetDelistingNote": "上場廃止予定",
+    "TargetListingStatus": "東証プライム",
     "DocIDList": [
       "S100XTZV",
       "S100XU3J",
@@ -93,6 +94,18 @@
     "vs3m": null,
     "vs6m": null,
     "computed": true
+  },
+  "agreedTender": {
+    "shares": null,
+    "ratio": null,
+    "parties": []
+  },
+  "fairnessMeasures": {
+    "specialCommittee": true,
+    "thirdPartyValuation": true,
+    "legalAdvisor": true,
+    "marketCheck": null,
+    "majorityOfMinority": false
   },
   "valuations": [],
   "changes": [

@@ -154,7 +154,12 @@ output/cases/YYYY/MM/{届出書DocID}.json
 | 場所 | 内容 |
 |------|------|
 | `core` | 最終の買付価格・期間・保有比率・意見・結果。不明は `null`、本当の0は `0`。比率は `0.3538` のような小数 |
-| `referencePrices` / `premiums` | 公表日前営業日の終値と1・3・6か月平均。プレミアムは `(買付価格-基準)/基準` |
+| `core.IsMBO` | この取引がMBOだと書かれているときだけ `Yes`。`該当しません`、定義の注、`ＭＢＯ等`、他案件の事例は `No` |
+| `core.TargetListingStatus` | 対象会社の今の上場区分。例: `東証プライム`、`東証スタンダード`、`札証本則`、`株主コミュニティ`、`非上場` |
+| `core.TargetDelistingNote` | 今回のTOBで上場廃止になる見込か。もともと非上場・株主コミュニティの会社は `null` |
+| `referencePrices` / `premiums` | 取引所の公表日前営業日の終値と1・3・6か月平均。プレミアムは `(買付価格-基準)/基準`。株主コミュニティの売買価格はここには入れない |
+| `agreedTender` | 応募契約で合意した株数と所有割合。`parties` は株主ごとの内訳 |
+| `fairnessMeasures` | 特別委員会、第三者算定、リーガルアドバイザー、対抗買付の機会、マジョリティ・オブ・マイノリティ。書いてない項目は `null` |
 | `valuations` | 算定機関ごとの市場株価法・類似会社比較法・DCF。買付者側と対象会社側は別レコード。レンジは足し合わせない |
 | `changes` | 価格・期間・意見などの変更。同じ訂正書類の変更は同じ `changeNo` |
 | `timeline` | 届出・意見・訂正・報告・撤回 |
@@ -223,7 +228,7 @@ output/
 | PurchaseConsideration / TenderOfferAgent | 買付代金・公開買付代理人（会社名のみ） |
 | OpinionStance | 賛同 / 反対 など |
 | **FinalResultNote** | `成立` / `成立（按分）` / `不成立` / `撤回` |
-| TargetDelistingNote | 上場廃止関連 |
+| TargetDelistingNote | 今回のTOBで上場廃止になる見込み。`上場を維持するためのコスト` は維持決定にしない。もともと非上場の会社は空欄 |
 | **LatestFilingUrl** | 届出書（240/250 の最新・訂正含む）の EDINET PDF URL |
 | **LatestOutcomeUrl** | 報告書（270/280）または撤回書（260）の最新の EDINET PDF URL |
 | FirstFilingDate / LastUpdateDate | 最初の届出日 / 最終更新日 |

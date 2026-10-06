@@ -16,7 +16,7 @@
     "ExistingHoldingRatio": 0.537448,
     "SpecialRelatedHoldingRatio": 0.0,
     "AfterPurchaseRatio": 0.9538,
-    "IsMBO": "Yes",
+    "IsMBO": "No",
     "IsHostileInitial": "No",
     "PlannedSharesMin": 1203500,
     "PlannedSharesMax": null,
@@ -27,7 +27,8 @@
     "FinalResultNote": "成立",
     "ApplicationCount": 3867498,
     "PurchaseCount": 3867498,
-    "TargetDelistingNote": "上場維持",
+    "TargetDelistingNote": "上場廃止予定",
+    "TargetListingStatus": "東証スタンダード",
     "DocIDList": [
       "S100XPT2",
       "S100XPV0",
@@ -85,6 +86,18 @@
     "vs3m": null,
     "vs6m": null,
     "computed": true
+  },
+  "agreedTender": {
+    "shares": null,
+    "ratio": null,
+    "parties": []
+  },
+  "fairnessMeasures": {
+    "specialCommittee": true,
+    "thirdPartyValuation": true,
+    "legalAdvisor": true,
+    "marketCheck": null,
+    "majorityOfMinority": false
   },
   "valuations": [
     {

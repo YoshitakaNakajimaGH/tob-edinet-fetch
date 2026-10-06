@@ -14,7 +14,14 @@ from tob.case_json import (
     write_case_json,
 )
 from tob.taxonomy import TaxonomyCatalog
-from tob.extract_fields import parse_board_opinion, parse_reference_market_price_details, parse_valuation_records
+from tob.extract_fields import (
+    detect_target_listing_status,
+    parse_agreed_tender,
+    parse_board_opinion,
+    parse_fairness_measures,
+    parse_reference_market_price_details,
+    parse_valuation_records,
+)
 
 
 PRICE = (
@@ -158,6 +165,11 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(core["Status"], "成立")
         self.assertEqual(core["TargetEdinetCode"], "E00002")
         self.assertEqual(core["TargetDelistingNote"], "上場廃止予定")
+        self.assertIsNone(core["TargetListingStatus"])
+        self.assertIsNone(case["agreedTender"]["shares"])
+        self.assertEqual(case["agreedTender"]["parties"], [])
+        self.assertIsNone(case["fairnessMeasures"]["specialCommittee"])
+        self.assertIsNone(case["fairnessMeasures"]["majorityOfMinority"])
         self.assertEqual(
             core["DocIDList"],
             ["S100AAAA", "S100CCCC", "S100BBBB", "S100DDDD", "S100EEEE"],
@@ -243,6 +255,47 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(case["referencePrices"]["avg6m"], 1400)
         self.assertIsNone(case["core"]["IsHostileInitial"])
         self.assertIsNone(case["core"]["IsMBO"])
+
+    def test_denied_mbo_and_unlisted_target_are_not_relabeled(self) -> None:
+        narrative = (
+            "本公開買付けを通じて非上場会社である対象者の普通株式を取得する。"
+            "2017年10月1日に株主コミュニティの組成をするに至った。"
+            "本取引はマネジメント・バイアウト(MBO)取引にも該当しません。"
+            "対象者は非上場会社のため、該当事項はありません。"
+            "対象者を公開買付者の完全子会社とすることを目的としている。"
+            "本応募合意株主が所有する対象者株式の全て(所有株式：1,852,166株、所有割合：31.02％)"
+            "について、本公開買付けに応募する旨を合意しております。"
+            "筆頭株主である株式会社レゾナック(以下「レゾナック」といいます。)との間で、"
+            "その所有する対象者株式の全て(所有株式：792,500株、所有割合：13.27％)について応募する。"
+            "特別委員会を設置し、第三者算定機関からの株式価値算定書の取得を行い、"
+            "リーガル・アドバイザーとして法律事務所から助言を受けた。"
+            "他の買付者からの買付機会を確保するため、取引保護条項を含む合意は行っておりません。"
+            "マジョリティ・オブ・マイノリティに相当する買付予定数の下限は設定しておりません。"
+        )
+        filing = _doc(texts={"purposes": narrative, "offerPrice": "普通株式1株につき、金605円"})
+        case = build_case_json("2026-03", [filing])
+        self.assertEqual(case["core"]["IsMBO"], "No")
+        self.assertIsNone(case["core"]["TargetDelistingNote"])
+        self.assertEqual(case["core"]["TargetListingStatus"], "株主コミュニティ")
+        self.assertEqual(case["agreedTender"]["shares"], 1852166)
+        self.assertEqual(case["agreedTender"]["ratio"], 0.3102)
+        self.assertEqual(case["agreedTender"]["parties"][0]["name"], "レゾナック")
+        self.assertEqual(case["agreedTender"]["parties"][0]["shares"], 792500)
+        measures = case["fairnessMeasures"]
+        self.assertTrue(measures["specialCommittee"])
+        self.assertTrue(measures["thirdPartyValuation"])
+        self.assertTrue(measures["legalAdvisor"])
+        self.assertTrue(measures["marketCheck"])
+        self.assertFalse(measures["majorityOfMinority"])
+        self.assertEqual(detect_target_listing_status(
+            "対象者株式は、本書提出日現在、東京証券取引所スタンダード市場に上場しております。"
+            "公開買付者親会社は東京証券取引所プライム市場に上場している。"
+        ), "東証スタンダード")
+        self.assertEqual(parse_agreed_tender(
+            "その他応募合意株式（合計で140,700株、所有割合：14.17％）および"
+            "本応募合意株式（合計で527,400株、所有割合：53.11％）について応募する旨の契約を締結した。"
+        )["shares"], 527400)
+        self.assertIsNone(parse_fairness_measures("")["legalAdvisor"])
 
     def test_after_ratio_is_not_recomputed_from_votes(self) -> None:
         filing = _doc(

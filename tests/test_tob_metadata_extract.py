@@ -56,6 +56,23 @@ class MboDetectTests(unittest.TestCase):
             "",
         )
 
+    def test_negation_definition_and_listing_rule_are_not_an_mbo(self) -> None:
+        denied = (
+            "本取引はマネジメント・バイアウトや支配株主による従属会社の買収には該当しないものの、"
+            "本公開買付けの成立後にスクイーズアウトが想定されている。"
+            "本公開買付けを含む本取引はいわゆるマネジメント・バイアウト(MBO)取引にも該当しません。"
+            "(注)「マネジメント・バイアウト(MBO)」とは、公開買付者が対象者の役員との合意に基づき公開買付けを行うものをいいます。"
+        )
+        precedent = "マネジメント・バイアウト（ＭＢＯ）事例におけるプレミアムの中央値を参考にした。"
+        listing_rule = "本取引が東京証券取引所の有価証券上場規程に定めるＭＢＯ等に該当し、利益相反の問題がある。"
+        self.assertEqual(detect_mbo([denied]), "")
+        self.assertEqual(detect_mbo([precedent]), "")
+        self.assertEqual(detect_mbo([listing_rule]), "")
+
+    def test_explicit_mbo_still_matches_when_a_denial_is_absent(self) -> None:
+        text = "本取引は、いわゆるマネジメント・バイアウト（MBO）に該当します。本公開買付けはMBOの一環として行う。"
+        self.assertEqual(detect_mbo([text]), "Yes")
+
 
 class ValuationRangeTests(unittest.TestCase):
     def test_parses_three_methods(self) -> None:
