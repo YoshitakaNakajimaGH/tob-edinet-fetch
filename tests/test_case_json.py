@@ -510,9 +510,13 @@ class CaseJsonTests(unittest.TestCase):
             root = Path(tmp)
             write_case_json(case, root / "cases")
             path = write_month_summary("2026-03", root / "cases", root / "summaries")
-            self.assertEqual(path, root / "summaries" / "2026-03.csv")
+            self.assertEqual(path, root / "summaries" / "2026" / "03.csv")
+            self.assertFalse((root / "summaries" / "2026" / "2026.csv").exists())
+            self.assertTrue((root / "summaries" / "all.csv").is_file())
             with path.open(encoding="utf-8-sig", newline="") as handle:
                 rows = list(csv.DictReader(handle))
+            with (root / "summaries" / "all.csv").open(encoding="utf-8-sig", newline="") as handle:
+                all_ids = [item["caseId"] for item in csv.DictReader(handle)]
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["caseId"], "S100AAAA")
         self.assertEqual(rows[0]["OfferPrice"], "1050")
@@ -523,6 +527,25 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(rows[0]["AfterPurchaseRatio"], "0.8672")
         self.assertEqual(rows[0]["OfferorDcfMin"], "1100")
         self.assertEqual(rows[0]["OfferorDcfMax"], "1200")
+        self.assertEqual(all_ids, ["S100AAAA"])
+
+    def test_december_joins_the_year_and_refreshes_all_cases(self) -> None:
+        march = build_case_json("2026-03", [_doc(docId="S100MARCH")])
+        december = build_case_json("2026-12", [_doc(docId="S100DECEM", submitDate="2026-12-01")])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write_case_json(march, root / "cases")
+            write_case_json(december, root / "cases")
+            write_month_summary("2026-03", root / "cases", root / "summaries")
+            write_month_summary("2026-12", root / "cases", root / "summaries")
+            year_path = root / "summaries" / "2026" / "2026.csv"
+            self.assertTrue(year_path.is_file())
+            with year_path.open(encoding="utf-8-sig", newline="") as handle:
+                year_ids = [item["caseId"] for item in csv.DictReader(handle)]
+            with (root / "summaries" / "all.csv").open(encoding="utf-8-sig", newline="") as handle:
+                all_ids = [item["caseId"] for item in csv.DictReader(handle)]
+        self.assertEqual(year_ids, ["S100MARCH", "S100DECEM"])
+        self.assertEqual(all_ids, ["S100MARCH", "S100DECEM"])
 
     def test_document_from_xbrl_keeps_full_text_and_stock_price_element(self) -> None:
         long_text = "あ" * 6000

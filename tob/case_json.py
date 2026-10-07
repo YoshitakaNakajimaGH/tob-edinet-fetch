@@ -200,10 +200,22 @@ _RANGE_FIELDS = (
 
 
 def case_summary_path(filing_month: str, root: Path | None = None) -> Path:
-    """output/case_summaries/YYYY-MM.csv"""
+    """output/case_summaries/YYYY/MM.csv"""
     year, month = _split_month(filing_month)
     base = Path(root) if root is not None else DEFAULT_SUMMARY_DIR
-    return base / f"{year}-{month}.csv"
+    return base / year / f"{month}.csv"
+
+
+def case_year_summary_path(year: str, root: Path | None = None) -> Path:
+    """output/case_summaries/YYYY/YYYY.csv. Written when December is summarized."""
+    base = Path(root) if root is not None else DEFAULT_SUMMARY_DIR
+    return base / year / f"{year}.csv"
+
+
+def case_all_summary_path(root: Path | None = None) -> Path:
+    """output/case_summaries/all.csv. Every case JSON summarized so far."""
+    base = Path(root) if root is not None else DEFAULT_SUMMARY_DIR
+    return base / "all.csv"
 
 
 def _cell(value: object) -> str:
@@ -287,21 +299,44 @@ def summary_row(case: dict) -> dict[str, str]:
     return row
 
 
+def _write_summary_rows(path: Path, rows: list[dict[str, str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=SUMMARY_COLUMNS, extrasaction="ignore")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+
+
+def _read_summary_rows(path: Path) -> list[dict[str, str]]:
+    if not path.is_file():
+        return []
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
 def write_month_summary(filing_month: str, case_root: Path | None = None, summary_root: Path | None = None) -> Path:
-    """Write output/case_summaries/YYYY-MM.csv from that month's case JSON files."""
+    """Write the month CSV, refresh all.csv, and in December also the year CSV."""
     year, month = _split_month(filing_month)
-    folder = (Path(case_root) if case_root is not None else DEFAULT_CASE_DIR) / year / f"{int(month):02d}"
+    folder = (Path(case_root) if case_root is not None else DEFAULT_CASE_DIR) / year / month
     cases = []
     if folder.is_dir():
         for path in sorted(folder.glob("*.json")):
             cases.append(json.loads(path.read_text(encoding="utf-8")))
     path = case_summary_path(filing_month, summary_root)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=SUMMARY_COLUMNS, extrasaction="ignore")
-        writer.writeheader()
-        for case in cases:
-            writer.writerow(summary_row(case))
+    _write_summary_rows(path, [summary_row(case) for case in cases])
+    base = Path(summary_root) if summary_root is not None else DEFAULT_SUMMARY_DIR
+    if month == "12":
+        year_rows: list[dict[str, str]] = []
+        for index in range(1, 13):
+            year_rows.extend(_read_summary_rows(base / year / f"{index:02d}.csv"))
+        _write_summary_rows(case_year_summary_path(year, base), year_rows)
+    all_rows: list[dict[str, str]] = []
+    for month_file in sorted(base.glob("*/*.csv")):
+        if not re.fullmatch(r"\d{2}", month_file.stem):
+            continue
+        all_rows.extend(_read_summary_rows(month_file))
+    _write_summary_rows(case_all_summary_path(base), all_rows)
     return path
 
 
