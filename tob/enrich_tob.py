@@ -23,6 +23,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -72,12 +73,21 @@ def utc_now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def fetch_document_zip(doc_id: str, api_key: str, cache_dir: Path, force: bool) -> Path | None:
+def fetch_document_zip(
+    doc_id: str,
+    api_key: str,
+    cache_dir: Path,
+    force: bool,
+    *,
+    doc_type: str = "5",
+) -> Path | None:
+    """Download an EDINET document zip. type=5 is the CSV. type=1 is the XBRL instance."""
     cache_dir.mkdir(parents=True, exist_ok=True)
-    out = cache_dir / f"{doc_id}.zip"
+    name = f"{doc_id}.zip" if doc_type == "5" else f"{doc_id}.type{doc_type}.zip"
+    out = cache_dir / name
     if out.exists() and not force:
         return out
-    query = urllib.parse.urlencode({"type": "5", "Subscription-Key": api_key})
+    query = urllib.parse.urlencode({"type": doc_type, "Subscription-Key": api_key})
     url = f"{DOC_API.format(doc_id=doc_id)}?{query}"
     try:
         with urllib.request.urlopen(url, timeout=120) as resp:
@@ -91,8 +101,23 @@ def fetch_document_zip(doc_id: str, api_key: str, cache_dir: Path, force: bool) 
         return None
 
 
+_XBRLI_NS = "http://www.xbrl.org/2003/instance"
+
+
+def _allow_long_csv_fields() -> None:
+    """The default csv field limit drops text blocks longer than about 128KiB."""
+    limit = sys.maxsize
+    while limit > 0:
+        try:
+            csv.field_size_limit(limit)
+            return
+        except OverflowError:
+            limit //= 10
+
+
 def parse_xbrl_csv_from_zip(zip_path: Path) -> tuple[dict[str, list[str]], str]:
     """Return (element_id -> values, concatenated zip text for taxonomy detection)."""
+    _allow_long_csv_fields()
     facts: dict[str, list[str]] = {}
     zip_text_parts: list[str] = []
     with zipfile.ZipFile(zip_path) as zf:
@@ -123,6 +148,53 @@ def parse_xbrl_csv_from_zip(zip_path: Path) -> tuple[dict[str, list[str]], str]:
             continue
         facts.setdefault(elem, []).append(val)
     return facts, "\n".join(zip_text_parts)
+
+
+def _fact_element_id(tag: str) -> str:
+    """Map an XBRL Clark name to the CSV element id, e.g. jptoo-ton_cor:Purpose..."""
+    if not tag.startswith("{"):
+        return tag
+    namespace, local = tag[1:].split("}", 1)
+    prefix = namespace.rstrip("/").split("/")[-1]
+    return f"{prefix}:{local}"
+
+
+def parse_xbrl_instance_from_zip(zip_path: Path) -> tuple[dict[str, list[str]], str]:
+    """Read fact values from the XBRL instance. CSV export cuts long text blocks."""
+    facts: dict[str, list[str]] = {}
+    names: list[str] = []
+    with zipfile.ZipFile(zip_path) as zf:
+        names = zf.namelist()
+        xbrl_names = [name for name in names if name.lower().endswith(".xbrl")]
+        for name in xbrl_names:
+            try:
+                root = ET.fromstring(zf.read(name))
+            except ET.ParseError:
+                continue
+            for child in list(root):
+                tag = child.tag
+                if not isinstance(tag, str) or tag.startswith("{" + _XBRLI_NS + "}"):
+                    continue
+                text = "".join(child.itertext()).strip()
+                if not text or text in ("－", "-", "―"):
+                    continue
+                facts.setdefault(_fact_element_id(tag), []).append(text)
+    return facts, "\n".join(names)
+
+
+def prefer_longer_facts(
+    base: dict[str, list[str]],
+    extra: dict[str, list[str]],
+) -> dict[str, list[str]]:
+    """Keep the CSV fact unless the XBRL instance has a longer value for that element."""
+    merged = {key: list(values) for key, values in base.items()}
+    for key, values in extra.items():
+        current = merged.get(key) or []
+        extra_len = max((len(value) for value in values), default=0)
+        current_len = max((len(value) for value in current), default=0)
+        if not current or extra_len > current_len:
+            merged[key] = list(values)
+    return merged
 
 
 def first_fact(facts: dict[str, list[str]], element_ids: list[str]) -> tuple[str, str]:

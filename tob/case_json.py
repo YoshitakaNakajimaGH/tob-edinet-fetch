@@ -2,6 +2,7 @@
 
 IDリスト（output/id_lists）とは別の output/cases/YYYY/MM/{届出DocID}.json に置く。
 中身はXBRLの要素IDで場所を決め、そのブロックの中だけを読む。生成AIの要約は入れない。
+CSV出力が約3万字で切る本文は、XBRLインスタンス（書類取得 type=1）の全文を使う。
 不明は null。本当に0と読めた数だけ 0。比率は 0.3538 のような小数。
 """
 
@@ -16,7 +17,14 @@ import time
 import zipfile
 from pathlib import Path
 
-from tob.enrich_tob import AMENDMENT_TYPES, fetch_document_zip, first_fact, parse_xbrl_csv_from_zip
+from tob.enrich_tob import (
+    AMENDMENT_TYPES,
+    fetch_document_zip,
+    first_fact,
+    parse_xbrl_csv_from_zip,
+    parse_xbrl_instance_from_zip,
+    prefer_longer_facts,
+)
 from tob.extract_fields import (
     LISTING_MAINTAINED,
     DELISTING_PLANNED,
@@ -859,16 +867,29 @@ def build_cases_for_month(
             doc_id = str(raw.get("doc_id") or "")
             if not doc_id:
                 continue
-            cached = (cache_dir / f"{doc_id}.zip").exists() and not force
-            zip_path = fetch_document_zip(doc_id, api_key, cache_dir, force)
-            if not cached and sleep:
+            csv_cached = (cache_dir / f"{doc_id}.zip").exists() and not force
+            csv_path = fetch_document_zip(doc_id, api_key, cache_dir, force)
+            if not csv_cached and csv_path is not None and sleep:
                 time.sleep(sleep)
-            if zip_path is None:
+            xbrl_cached = (cache_dir / f"{doc_id}.type1.zip").exists() and not force
+            xbrl_path = fetch_document_zip(doc_id, api_key, cache_dir, force, doc_type="1")
+            if not xbrl_cached and xbrl_path is not None and sleep:
+                time.sleep(sleep)
+            if csv_path is None and xbrl_path is None:
                 bundles[doc_id] = None
                 failures.append(doc_id)
                 continue
             try:
-                bundles[doc_id] = parse_xbrl_csv_from_zip(zip_path)
+                facts: dict[str, list[str]] = {}
+                zip_text = ""
+                if csv_path is not None:
+                    facts, zip_text = parse_xbrl_csv_from_zip(csv_path)
+                if xbrl_path is not None:
+                    instance_facts, instance_names = parse_xbrl_instance_from_zip(xbrl_path)
+                    facts = prefer_longer_facts(facts, instance_facts)
+                    if instance_names:
+                        zip_text = f"{zip_text}\n{instance_names}" if zip_text else instance_names
+                bundles[doc_id] = (facts, zip_text)
             except (zipfile.BadZipFile, OSError) as exc:
                 print(f"  unreadable zip {doc_id}: {exc}", file=sys.stderr)
                 bundles[doc_id] = None
