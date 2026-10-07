@@ -36,6 +36,61 @@
       "S100Y0B5"
     ]
   },
+  "sources": {
+    "OfferPrice": {
+      "docId": "S100XQ3L",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "OfferPeriod": {
+      "docId": "S100Y0B5",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "PlannedShares": {
+      "docId": "S100XQ3L",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "PurchaseConsideration": {
+      "docId": "S100XQ3L",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "TenderOfferAgent": {
+      "docId": "S100XQ3L",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "ExistingHoldingRatio": null,
+    "SpecialRelatedHoldingRatio": null,
+    "AfterPurchaseRatio": {
+      "docId": "S100Y0B5",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "IsHostileInitial": {
+      "docId": "S100XPV0",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
+    },
+    "OpinionStance": {
+      "docId": "S100XPV0",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
+    },
+    "FinalResult": {
+      "docId": "S100Y0B5",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "SponsorHint": null,
+    "ReferencePrices": {
+      "docId": "S100XQ3L",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
+  },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XPT2.pdf",
     "latestFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XQ3L.pdf",
@@ -125,6 +180,7 @@
       "dcfMin": 1708,
       "dcfMax": 2099,
       "sourceDocId": "S100XPT2",
+      "sourceDocTypeCode": "240",
       "sourceDate": "2026-03-10",
       "orderInSource": 1,
       "current": false
@@ -139,6 +195,7 @@
       "dcfMin": 1708,
       "dcfMax": 2099,
       "sourceDocId": "S100XQ3L",
+      "sourceDocTypeCode": "250",
       "sourceDate": "2026-03-11",
       "orderInSource": 1,
       "current": true
