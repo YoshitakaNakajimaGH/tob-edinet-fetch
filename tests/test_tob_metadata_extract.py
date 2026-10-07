@@ -272,6 +272,12 @@ class PurchaseConsiderationTests(unittest.TestCase):
         text = "買付代金（円）(a)97,809,894,000金銭以外"
         self.assertEqual(parse_purchase_consideration(text), "97,809,894,000円")
 
+    def test_parses_amount_in_the_next_table_cell(self) -> None:
+        text = "買付代金（円）(a)\n1,700,595,000\n金銭以外の対価の種類\n―"
+        self.assertEqual(parse_purchase_consideration(text), "1,700,595,000円")
+        text = "買付代金(円)(a) \n 3,656,878,931,640 \n 買付手数料(b)"
+        self.assertEqual(parse_purchase_consideration(text), "3,656,878,931,640円")
+
 
 class TenderOfferAgentTests(unittest.TestCase):
     def test_prefers_cover_page_name(self) -> None:
@@ -299,6 +305,14 @@ class TenderOfferAgentTests(unittest.TestCase):
     def test_parses_application_section(self) -> None:
         text = "（１）【応募の方法】 ①公開買付代理人 名称 みずほ証券株式会社 所在地"
         self.assertEqual(extract_tender_offer_agent(text), "みずほ証券株式会社")
+
+    def test_parses_agent_name_in_the_next_table_cell(self) -> None:
+        text = "（１）【応募の方法】\n公開買付代理人\n大和証券株式会社 東京都千代田区丸の内一丁目９番１号\n② 本公開買付け"
+        self.assertEqual(extract_tender_offer_agent(text), "大和証券株式会社")
+        text = "公開買付代理人\nみずほ証券株式会社 東京都千代田区大手町一丁目５番１号\nなお、公開買付代理人は、その事務の一部を再委託"
+        self.assertEqual(extract_tender_offer_agent(text), "みずほ証券株式会社")
+        text = "① 公開買付代理人大和証券株式会社 東京都千代田区丸の内一丁目９番１号\n② 本公開買付け"
+        self.assertEqual(extract_tender_offer_agent(text), "大和証券株式会社")
 
 
 class ReferencePriceTests(unittest.TestCase):

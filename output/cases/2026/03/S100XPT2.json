@@ -21,8 +21,8 @@
     "PlannedSharesMin": 1203500,
     "PlannedSharesMax": null,
     "PlannedSharesPlanned": 4295947,
-    "PurchaseConsideration": null,
-    "TenderOfferAgent": null,
+    "PurchaseConsideration": 8591894000,
+    "TenderOfferAgent": "大和証券株式会社",
     "OpinionStance": "賛同・応募推奨",
     "FinalResultNote": "成立",
     "ApplicationCount": 3867498,
@@ -52,8 +52,16 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "PurchaseConsideration": null,
-    "TenderOfferAgent": null,
+    "PurchaseConsideration": {
+      "docId": "S100XQ3L",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "TenderOfferAgent": {
+      "docId": "S100XQ3L",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
     "ExistingHoldingRatio": {
       "docId": "S100XQ3L",
       "docTypeCode": "250",

@@ -21,8 +21,8 @@
     "PlannedSharesMin": null,
     "PlannedSharesMax": 23484273,
     "PlannedSharesPlanned": 23484273,
-    "PurchaseConsideration": null,
-    "TenderOfferAgent": null,
+    "PurchaseConsideration": 35930937690,
+    "TenderOfferAgent": "みずほ証券株式会社",
     "OpinionStance": null,
     "FinalResultNote": null,
     "ApplicationCount": null,
@@ -50,8 +50,16 @@
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
     },
-    "PurchaseConsideration": null,
-    "TenderOfferAgent": null,
+    "PurchaseConsideration": {
+      "docId": "S100XOH8",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "TenderOfferAgent": {
+      "docId": "S100XOH8",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
     "ExistingHoldingRatio": null,
     "SpecialRelatedHoldingRatio": null,
     "AfterPurchaseRatio": null,

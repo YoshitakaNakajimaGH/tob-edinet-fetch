@@ -21,8 +21,8 @@
     "PlannedSharesMin": 26115700,
     "PlannedSharesMax": null,
     "PlannedSharesPlanned": 56424284,
-    "PurchaseConsideration": null,
-    "TenderOfferAgent": null,
+    "PurchaseConsideration": 63138773796,
+    "TenderOfferAgent": "みずほ証券株式会社",
     "OpinionStance": "賛同",
     "FinalResultNote": "成立",
     "ApplicationCount": 48373328,
@@ -53,8 +53,16 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "PurchaseConsideration": null,
-    "TenderOfferAgent": null,
+    "PurchaseConsideration": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "TenderOfferAgent": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
     "ExistingHoldingRatio": {
       "docId": "S100XXVT",
       "docTypeCode": "250",
@@ -334,6 +342,17 @@
       "item": "PlannedSharesPlanned",
       "before": 58886124,
       "after": 56424284,
+      "description": null,
+      "sourceDocId": "S100XXVT",
+      "sourceDocTypeCode": "250",
+      "sourceUrl": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XXVT.pdf"
+    },
+    {
+      "changeNo": "Change-1",
+      "date": "2026-04-09",
+      "item": "PurchaseConsideration",
+      "before": 65893572756,
+      "after": 63138773796,
       "description": null,
       "sourceDocId": "S100XXVT",
       "sourceDocTypeCode": "250",
