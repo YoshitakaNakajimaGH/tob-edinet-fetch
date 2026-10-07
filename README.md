@@ -178,6 +178,8 @@ output/cases/YYYY/MM/{届出書DocID}.json
 
 各案件の `pdfLinks` に、公開買付届出書・意見表明報告書・公開買付報告書などの PDF 直リンクを入れます。XBRLが取れなくても、DocID からリンクは残します。形式は `https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/{DocID}.pdf` です。
 
+同じ実行で、検索用の月次サマリを `output/case_summaries/YYYY-MM.csv` に書きます。1行が1案件で、価格・期間・保有比率・予定株数・買付代金・代理人・結果・基準株価・プレミアム・買付者側と対象者側の算定レンジだけです。本文は入れません。比率はJSONと同じ小数です。買付前の保有比率は買付者自身だけで、特別関係者は別の列です。
+
 **Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。このフローは書類ごとにCSV（type=5）とXBRLインスタンス（type=1）を取り、本文は長い方を保存します。
 
 ```bash
@@ -198,6 +200,7 @@ output/
     fetch_meta.json
   id_lists/         … 届出月ごとの書類IDリスト（YYYY-MM.json）
   cases/YYYY/MM/    … 抽出済みの案件JSON（届出書DocID.json）
+  case_summaries/   … 月次の案件サマリ（YYYY-MM.csv。検索用。本文なし）
   snapshots/        … 履歴（tob_list_202001-202012_0001.csv 形式）
   snapshots/trash/  … 古い履歴
 ```

@@ -9,6 +9,7 @@ CSV出力が約3万字で切る本文は、XBRLインスタンス（書類取得
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import re
@@ -73,6 +74,7 @@ from tob.tob_common import (
 
 CASE_SCHEMA = "tob-case-1"
 DEFAULT_CASE_DIR = Path("output/cases")
+DEFAULT_SUMMARY_DIR = Path("output/case_summaries")
 DEFAULT_ID_LIST_DIR = Path("output/id_lists")
 
 _TEXT_FIELDS = (
@@ -126,6 +128,180 @@ def write_case_json(document: dict, root: Path | None = None) -> Path:
         json.dumps(document, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    return path
+
+
+SUMMARY_COLUMNS = (
+    "caseId",
+    "filingMonth",
+    "issuerTender",
+    "OfferorName",
+    "OfferorEdinetCode",
+    "TargetName",
+    "TargetEdinetCode",
+    "SponsorHint",
+    "Status",
+    "OfferPrice",
+    "OfferPeriodStart",
+    "OfferPeriodEnd",
+    "ExistingHoldingRatio",
+    "SpecialRelatedHoldingRatio",
+    "AfterPurchaseRatio",
+    "IsMBO",
+    "IsHostileInitial",
+    "PlannedSharesMin",
+    "PlannedSharesMax",
+    "PlannedSharesPlanned",
+    "PurchaseConsideration",
+    "TenderOfferAgent",
+    "OpinionStance",
+    "FinalResultNote",
+    "ApplicationCount",
+    "PurchaseCount",
+    "TargetListingStatus",
+    "TargetDelistingNote",
+    "PriorClose",
+    "Avg1m",
+    "Avg3m",
+    "Avg6m",
+    "PremiumVsPriorClose",
+    "PremiumVs1m",
+    "PremiumVs3m",
+    "PremiumVs6m",
+    "AgreedShares",
+    "AgreedRatio",
+    "FinancingEquity",
+    "FinancingDebt",
+    "OfferorMarketMin",
+    "OfferorMarketMax",
+    "OfferorComparableMin",
+    "OfferorComparableMax",
+    "OfferorDcfMin",
+    "OfferorDcfMax",
+    "TargetMarketMin",
+    "TargetMarketMax",
+    "TargetComparableMin",
+    "TargetComparableMax",
+    "TargetDcfMin",
+    "TargetDcfMax",
+    "FirstFilingPdf",
+    "LatestReportPdf",
+    "DocCount",
+)
+
+_RANGE_FIELDS = (
+    ("marketMin", "MarketMin"),
+    ("marketMax", "MarketMax"),
+    ("comparableMin", "ComparableMin"),
+    ("comparableMax", "ComparableMax"),
+    ("dcfMin", "DcfMin"),
+    ("dcfMax", "DcfMax"),
+)
+
+
+def case_summary_path(filing_month: str, root: Path | None = None) -> Path:
+    """output/case_summaries/YYYY-MM.csv"""
+    year, month = _split_month(filing_month)
+    base = Path(root) if root is not None else DEFAULT_SUMMARY_DIR
+    return base / f"{year}-{month}.csv"
+
+
+def _cell(value: object) -> str:
+    if value is None or value is False:
+        return "" if value is not False else "false"
+    if value is True:
+        return "true"
+    return str(value)
+
+
+def _current_ranges(case: dict, side: str) -> dict[str, object]:
+    """Fill each method from the latest records. Several advisors stay in the JSON."""
+    found: dict[str, object] = {}
+    for record in case.get("valuations") or []:
+        if not record.get("current") or record.get("side") != side:
+            continue
+        for source, _label in _RANGE_FIELDS:
+            if source not in found and record.get(source) is not None:
+                found[source] = record[source]
+    return found
+
+
+def summary_row(case: dict) -> dict[str, str]:
+    """One flat row. Numbers stay as they are in the case JSON."""
+    core = case.get("core") or {}
+    refs = case.get("referencePrices") or {}
+    premiums = case.get("premiums") or {}
+    agreed = case.get("agreedTender") or {}
+    financing = case.get("financing") or {}
+    links = case.get("pdfLinks") or {}
+    offeror = _current_ranges(case, "offeror")
+    target = _current_ranges(case, "target")
+    row = {
+        "caseId": _cell(case.get("caseId")),
+        "filingMonth": _cell(case.get("filingMonth")),
+        "issuerTender": _cell(bool(case.get("issuerTender"))),
+        "OfferorName": _cell(core.get("OfferorName")),
+        "OfferorEdinetCode": _cell(core.get("OfferorEdinetCode")),
+        "TargetName": _cell(core.get("TargetName")),
+        "TargetEdinetCode": _cell(core.get("TargetEdinetCode")),
+        "SponsorHint": _cell(core.get("SponsorHint")),
+        "Status": _cell(core.get("Status")),
+        "OfferPrice": _cell(core.get("OfferPrice")),
+        "OfferPeriodStart": _cell(core.get("OfferPeriodStart")),
+        "OfferPeriodEnd": _cell(core.get("OfferPeriodEnd")),
+        "ExistingHoldingRatio": _cell(core.get("ExistingHoldingRatio")),
+        "SpecialRelatedHoldingRatio": _cell(core.get("SpecialRelatedHoldingRatio")),
+        "AfterPurchaseRatio": _cell(core.get("AfterPurchaseRatio")),
+        "IsMBO": _cell(core.get("IsMBO")),
+        "IsHostileInitial": _cell(core.get("IsHostileInitial")),
+        "PlannedSharesMin": _cell(core.get("PlannedSharesMin")),
+        "PlannedSharesMax": _cell(core.get("PlannedSharesMax")),
+        "PlannedSharesPlanned": _cell(core.get("PlannedSharesPlanned")),
+        "PurchaseConsideration": _cell(core.get("PurchaseConsideration")),
+        "TenderOfferAgent": _cell(core.get("TenderOfferAgent")),
+        "OpinionStance": _cell(core.get("OpinionStance")),
+        "FinalResultNote": _cell(core.get("FinalResultNote")),
+        "ApplicationCount": _cell(core.get("ApplicationCount")),
+        "PurchaseCount": _cell(core.get("PurchaseCount")),
+        "TargetListingStatus": _cell(core.get("TargetListingStatus")),
+        "TargetDelistingNote": _cell(core.get("TargetDelistingNote")),
+        "PriorClose": _cell(refs.get("priorClose")),
+        "Avg1m": _cell(refs.get("avg1m")),
+        "Avg3m": _cell(refs.get("avg3m")),
+        "Avg6m": _cell(refs.get("avg6m")),
+        "PremiumVsPriorClose": _cell(premiums.get("vsPriorClose")),
+        "PremiumVs1m": _cell(premiums.get("vs1m")),
+        "PremiumVs3m": _cell(premiums.get("vs3m")),
+        "PremiumVs6m": _cell(premiums.get("vs6m")),
+        "AgreedShares": _cell(agreed.get("shares")),
+        "AgreedRatio": _cell(agreed.get("ratio")),
+        "FinancingEquity": _cell(financing.get("equity")),
+        "FinancingDebt": _cell(financing.get("debt")),
+        "FirstFilingPdf": _cell(links.get("firstFiling")),
+        "LatestReportPdf": _cell(links.get("latestReport")),
+        "DocCount": _cell(len(core.get("DocIDList") or [])),
+    }
+    for source, label in _RANGE_FIELDS:
+        row[f"Offeror{label}"] = _cell(offeror.get(source))
+        row[f"Target{label}"] = _cell(target.get(source))
+    return row
+
+
+def write_month_summary(filing_month: str, case_root: Path | None = None, summary_root: Path | None = None) -> Path:
+    """Write output/case_summaries/YYYY-MM.csv from that month's case JSON files."""
+    year, month = _split_month(filing_month)
+    folder = (Path(case_root) if case_root is not None else DEFAULT_CASE_DIR) / year / f"{int(month):02d}"
+    cases = []
+    if folder.is_dir():
+        for path in sorted(folder.glob("*.json")):
+            cases.append(json.loads(path.read_text(encoding="utf-8")))
+    path = case_summary_path(filing_month, summary_root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=SUMMARY_COLUMNS, extrasaction="ignore")
+        writer.writeheader()
+        for case in cases:
+            writer.writerow(summary_row(case))
     return path
 
 
@@ -913,6 +1089,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--to-month", default="", help="終了月 YYYY-MM。空欄なら開始月と同じ")
     parser.add_argument("--id-list-dir", default=str(DEFAULT_ID_LIST_DIR))
     parser.add_argument("--out-dir", default=str(DEFAULT_CASE_DIR))
+    parser.add_argument("--summary-dir", default=str(DEFAULT_SUMMARY_DIR))
     parser.add_argument("--cache-dir", default="cache/docs")
     parser.add_argument("--sleep", type=float, default=0.5)
     parser.add_argument("--force", action="store_true", help="キャッシュ済みXBRLも再取得する")
@@ -960,6 +1137,8 @@ def main(argv: list[str] | None = None) -> int:
             sleep=args.sleep,
         )
         failures.extend(month_failures)
+        summary = write_month_summary(month, out_dir, Path(args.summary_dir))
+        print(f"Wrote {summary}", flush=True)
     if failures:
         print(f"XBRLを取れなかった書類: {len(failures)}", file=sys.stderr)
     return 0
