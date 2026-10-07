@@ -1169,11 +1169,76 @@ def _lender_names(clause: str) -> list[str]:
     return names
 
 
-def parse_financing(text: str) -> dict[str, object]:
-    """Equity and debt caps written as funding for the tender, plus a pledge flag.
+def _funding_window(compact: str) -> str:
+    """The paragraph that says how the tender will be paid for.
 
-    Term-loan splits are included only when the filing states them. A cap is not
-    treated as a drawn amount.
+    A cross-reference to section 8 is enough of an anchor. The own-cash sentence
+    has no section number. Balance-sheet borrowings sit outside this window.
+    """
+    anchor = re.search(r"預金又は借入金等", compact)
+    if anchor:
+        chunk = compact[anchor.end() : anchor.end() + 900]
+        stop = re.search(r"なお、対象者|なお、当社", chunk)
+        if stop and stop.start() > 30:
+            chunk = chunk[: stop.start()]
+        return chunk
+    own = re.search(r".{0,160}新たな資金調達は想定しておりません。?", compact)
+    return own.group(0) if own else ""
+
+
+def _defined_names(phrase: str) -> list[str]:
+    names: list[str] = []
+    for short in re.findall(r"以下「([^」]{2,30})」", phrase):
+        if short.startswith("本") or "総称" in short or "併せて" in short or short in names:
+            continue
+        names.append(short)
+    return names
+
+
+def _party_tail(phrase: str) -> str | None:
+    tail = phrase.rsplit("。", 1)[-1].rsplit("、", 1)[-1]
+    tail = tail.rsplit("である", 1)[-1]
+    tail = re.split(r"及び|並びに", tail)[-1]
+    tail = re.split(r"までに", tail)[-1]
+    tail = re.split(r"[（(]", tail)[0].strip("、 ）)の")
+    if tail in {"金融機関", "銀行"} or not (2 <= len(tail) <= 40):
+        return None
+    if any(word in tail for word in ("資金", "予定", "記載", "一定")):
+        return None
+    return tail
+
+
+def _lenders_without_cap(window: str) -> list[str]:
+    """Banks named before 借入れ when the filing gives no cap."""
+    match = re.search(r"(.{2,500}?)からの?(?:借入れ|借入|融資)", window)
+    if not match:
+        return []
+    phrase = match.group(1)
+    names = _defined_names(phrase)
+    if names:
+        return names
+    tail = _party_tail(phrase)
+    return [tail] if tail else []
+
+
+def _equity_source_without_cap(window: str) -> str | None:
+    match = re.search(r"から(?:の)?(?:一定の)?出資", window)
+    if not match:
+        return None
+    clause = window[max(0, match.start() - 120) : match.start()]
+    names = _defined_names(clause)
+    if names:
+        return names[-1]
+    return _party_tail(clause)
+
+
+def parse_financing(text: str) -> dict[str, object]:
+    """Equity and debt for the tender, plus a pledge flag.
+
+    A stated cap is kept as a cap. A bank named without a cap is still a lender,
+    with amount null. Own cash and an explicit refusal of new funding set
+    selfFunded. That refusal, with no loan beside it, is debt 0. A missing
+    sentence stays null. Term-loan splits are included only when stated.
     """
     compact = re.sub(r"\s+", "", strip_html(text or ""))
     empty: dict[str, object] = {
@@ -1182,6 +1247,7 @@ def parse_financing(text: str) -> dict[str, object]:
         "debt": None,
         "lenders": [],
         "targetSharesPledged": None,
+        "selfFunded": None,
     }
     if not compact:
         return empty
@@ -1190,7 +1256,7 @@ def parse_financing(text: str) -> dict[str, object]:
         compact,
     )
     debt = re.search(
-        r"から([^0-9０-９]{0,80})([\d,，]+)(円|千円|百万円)を上限として借入",
+        r"から([^0-9０-９]{0,80})([\d,，]+)(円|千円|百万円)を(?:上限|限度)として借入",
         compact,
     )
     if equity:
@@ -1203,6 +1269,21 @@ def parse_financing(text: str) -> dict[str, object]:
         names = _lender_names(clause)
         amount = empty["debt"] if len(names) == 1 else None
         empty["lenders"] = [{"name": name, "amount": amount} for name in names]
+    window = _funding_window(compact)
+    if window and not empty["lenders"]:
+        empty["lenders"] = [{"name": name, "amount": None} for name in _lenders_without_cap(window)]
+    if window and empty["equitySource"] is None:
+        empty["equitySource"] = _equity_source_without_cap(window)
+    if window and re.search(r"自己資金|自己資本|手元現金|新たな資金調達は想定しておりません", window):
+        empty["selfFunded"] = True
+    if (
+        empty["debt"] is None
+        and not empty["lenders"]
+        and window
+        and "新たな資金調達は想定しておりません" in window
+        and not re.search(r"借入れ|借入|融資", window)
+    ):
+        empty["debt"] = 0
     if re.search(r"担保に供されることは予定されておりません|担保提供は予定されておりません", compact):
         empty["targetSharesPledged"] = False
     elif re.search(r"取得する(?:対象者|当社)株式が担保に供される", compact):

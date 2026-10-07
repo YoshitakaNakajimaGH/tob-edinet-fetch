@@ -111,7 +111,8 @@
     "equitySource": null,
     "debt": null,
     "lenders": [],
-    "targetSharesPledged": null
+    "targetSharesPledged": null,
+    "selfFunded": null
   },
   "valuations": [
     {
