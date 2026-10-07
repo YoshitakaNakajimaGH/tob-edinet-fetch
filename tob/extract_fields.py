@@ -2013,8 +2013,8 @@ def parse_purchase_consideration(text: str) -> str:
         return ""
     compact = re.sub(r"\s+", " ", strip_html(text))
     patterns = (
-        r"買付代金\(円\)\([ａaAＡ]\)([\d,，]+)",
-        r"買付代金（円）\([ａaAＡ]\)([\d,，]+)",
+        r"買付代金\(円\)\s*\([ａaAＡ]\)\s*([\d,，]+)",
+        r"買付代金（円）\s*\([ａaAＡ]\)\s*([\d,，]+)",
         r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(円|ウォン|ドル|USD|米ドル)",
         r"買付代金[（(]?[ａaAＡ][)）]?[：:\s]*([\d,，]+)\s*(?:円|ウォン|ドル|USD|米ドル)",
     )
@@ -2061,11 +2061,22 @@ def extract_tender_offer_agent(application_text: str, cover_agent_name: str = ""
     if match:
         return _trim_agent_name(match.group(1))
     match = re.search(
-        r"[①１]\s*公開買付代理人\s*([^。\n\r]{2,120}?)(?:所在地|最寄|電話|②|$)",
+        r"[①１]\s*公開買付代理人\s*([^\n\r。]{2,80})",
         plain,
     )
     if match:
-        candidate = _trim_agent_name(match.group(1))
+        candidate = re.sub(r"^(?:名称|氏名又は名称)\s*", "", match.group(1))
+        candidate = _trim_agent_name(candidate)
+        if candidate and not candidate.startswith("("):
+            return candidate
+    # XBRLの表は「公開買付代理人」の次のセルが社名で、①や「名称」が無い。
+    match = re.search(
+        r"公開買付代理人\s*(?!は|の|における|以外|に)([^\n。]{2,80})",
+        plain,
+    )
+    if match:
+        candidate = re.sub(r"^(?:名称|氏名又は名称)\s*", "", match.group(1))
+        candidate = _trim_agent_name(candidate)
         if candidate and not candidate.startswith("("):
             return candidate
     return ""
