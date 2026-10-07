@@ -1,4 +1,5 @@
 import os
+import csv
 import subprocess
 import sys
 import tempfile
@@ -12,6 +13,7 @@ from tob.case_json import (
     documents_from_id_case,
     main,
     write_case_json,
+    write_month_summary,
 )
 from tob.taxonomy import TaxonomyCatalog
 from tob.extract_fields import (
@@ -501,6 +503,26 @@ class CaseJsonTests(unittest.TestCase):
             self.assertEqual(path, Path(tmp) / "2026" / "03" / "S100AAAA.json")
             self.assertTrue(path.is_file())
             self.assertEqual(case_output_path("2026-03", "S100AAAA", Path(tmp)), path)
+
+    def test_month_summary_keeps_the_core_numbers(self) -> None:
+        case = self._case()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write_case_json(case, root / "cases")
+            path = write_month_summary("2026-03", root / "cases", root / "summaries")
+            self.assertEqual(path, root / "summaries" / "2026-03.csv")
+            with path.open(encoding="utf-8-sig", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["caseId"], "S100AAAA")
+        self.assertEqual(rows[0]["OfferPrice"], "1050")
+        self.assertEqual(rows[0]["PurchaseConsideration"], "1256546025")
+        self.assertEqual(rows[0]["TenderOfferAgent"], "大和証券株式会社")
+        self.assertEqual(rows[0]["ExistingHoldingRatio"], "0.0")
+        self.assertEqual(rows[0]["SpecialRelatedHoldingRatio"], "0.1")
+        self.assertEqual(rows[0]["AfterPurchaseRatio"], "0.8672")
+        self.assertEqual(rows[0]["OfferorDcfMin"], "1100")
+        self.assertEqual(rows[0]["OfferorDcfMax"], "1200")
 
     def test_document_from_xbrl_keeps_full_text_and_stock_price_element(self) -> None:
         long_text = "あ" * 6000
