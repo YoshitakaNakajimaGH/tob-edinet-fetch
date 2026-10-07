@@ -108,8 +108,8 @@ class CaseJsonTests(unittest.TestCase):
                 "period": "自2026年3月2日至2026年4月13日",
                 "intendedPurchase": PLANNED,
                 "fund": "買付代金（円）(ａ)1,256,546,025",
-                "application": "公開買付代理人 名称 大和証券株式会社 所在地 東京都",
-                "purposes": "本取引はMBOとして実施する。親会社は丸紅株式会社である。上場廃止を企図している。",
+                "application": "① 公開買付代理人 名称 大和証券株式会社 所在地 東京都",
+                "purposes": "本取引はMBOとして実施する。親会社である丸紅株式会社（以下「丸紅」という。）の上場廃止を企図している。",
             },
             numbers={"offerorVotes": "0", "specialVotes": "100", "totalVotes": "1000", "afterPurchaseRatio": ""},
         )
@@ -152,6 +152,7 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(case["caseId"], "S100AAAA")
         self.assertEqual(case["filingMonth"], "2026-03")
         self.assertEqual(core["OfferPrice"], 1050)
+        self.assertEqual(core["SponsorHint"], "丸紅株式会社")
         self.assertEqual(core["OfferPeriodEnd"], "2026-04-27")
         self.assertEqual(core["ExistingHoldingRatio"], 0.0)
         self.assertEqual(core["SpecialRelatedHoldingRatio"], 0.1)
@@ -160,6 +161,7 @@ class CaseJsonTests(unittest.TestCase):
         self.assertIsNone(core["PlannedSharesMin"])
         self.assertIsNone(core["PlannedSharesMax"])
         self.assertEqual(core["PurchaseConsideration"], 1256546025)
+        self.assertEqual(core["TenderOfferAgent"], "大和証券株式会社")
         self.assertEqual(core["IsMBO"], "Yes")
         self.assertEqual(core["IsHostileInitial"], "Yes")
         self.assertEqual(core["OpinionStance"], "賛同・応募推奨")
@@ -224,10 +226,86 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(price["before"], 955)
         self.assertEqual(price["after"], 1050)
         self.assertEqual(price["sourceDocId"], "S100BBBB")
+        self.assertEqual(price["sourceDocTypeCode"], "250")
         self.assertIsNone(price["description"])
         self.assertEqual(opinion["before"], "反対")
         self.assertEqual(opinion["after"], "賛同・応募推奨")
+        self.assertEqual(opinion["sourceDocId"], "S100DDDD")
+        self.assertEqual(opinion["sourceDocTypeCode"], "300")
         self.assertNotEqual(opinion["changeNo"], price["changeNo"])
+
+    def test_sources_tagging(self) -> None:
+        case = self._case()
+        sources = case["sources"]
+        self.assertEqual(
+            sources["OfferPrice"],
+            {"docId": "S100BBBB", "docTypeCode": "250", "docTypeName": "訂正公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["OfferPeriod"],
+            {"docId": "S100BBBB", "docTypeCode": "250", "docTypeName": "訂正公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["PlannedShares"],
+            {"docId": "S100AAAA", "docTypeCode": "240", "docTypeName": "公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["PurchaseConsideration"],
+            {"docId": "S100AAAA", "docTypeCode": "240", "docTypeName": "公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["TenderOfferAgent"],
+            {"docId": "S100AAAA", "docTypeCode": "240", "docTypeName": "公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["ExistingHoldingRatio"],
+            {"docId": "S100AAAA", "docTypeCode": "240", "docTypeName": "公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["SpecialRelatedHoldingRatio"],
+            {"docId": "S100AAAA", "docTypeCode": "240", "docTypeName": "公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["AfterPurchaseRatio"],
+            {"docId": "S100EEEE", "docTypeCode": "270", "docTypeName": "公開買付報告書"},
+        )
+        self.assertEqual(
+            sources["IsHostileInitial"],
+            {"docId": "S100CCCC", "docTypeCode": "290", "docTypeName": "意見表明報告書"},
+        )
+        self.assertEqual(
+            sources["OpinionStance"],
+            {"docId": "S100DDDD", "docTypeCode": "300", "docTypeName": "訂正意見表明報告書"},
+        )
+        self.assertEqual(
+            sources["FinalResult"],
+            {"docId": "S100EEEE", "docTypeCode": "270", "docTypeName": "公開買付報告書"},
+        )
+        self.assertEqual(
+            sources["SponsorHint"],
+            {"docId": "S100AAAA", "docTypeCode": "240", "docTypeName": "公開買付届出書"},
+        )
+        self.assertEqual(
+            sources["ReferencePrices"],
+            {"docId": "S100AAAA", "docTypeCode": "240", "docTypeName": "公開買付届出書"},
+        )
+
+    def test_sources_tagging_empty_fields(self) -> None:
+        case = build_case_json("2026-03", [_doc()])
+        sources = case["sources"]
+        self.assertIsNone(sources["OfferPrice"])
+        self.assertIsNone(sources["OfferPeriod"])
+        self.assertIsNone(sources["PlannedShares"])
+        self.assertIsNone(sources["PurchaseConsideration"])
+        self.assertIsNone(sources["TenderOfferAgent"])
+        self.assertIsNone(sources["ExistingHoldingRatio"])
+        self.assertIsNone(sources["SpecialRelatedHoldingRatio"])
+        self.assertIsNone(sources["AfterPurchaseRatio"])
+        self.assertIsNone(sources["IsHostileInitial"])
+        self.assertIsNone(sources["OpinionStance"])
+        self.assertIsNone(sources["FinalResult"])
+        self.assertIsNone(sources["SponsorHint"])
+        self.assertIsNone(sources["ReferencePrices"])
 
     def test_offeror_and_target_valuations_are_not_folded_together(self) -> None:
         filing = _doc(texts={"offerPrice": PRICE})
@@ -245,6 +323,8 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual({item["dcfMin"] for item in target}, {1224, 983})
         offeror = [item for item in case["valuations"] if item["side"] == "offeror"]
         self.assertEqual(offeror[0]["dcfMin"], 1100)
+        self.assertEqual(offeror[0]["sourceDocTypeCode"], "240")
+        self.assertEqual(target[0]["sourceDocTypeCode"], "290")
         self.assertTrue(all(item["current"] for item in target))
 
     def test_stock_price_block_is_used_when_the_price_block_has_no_close(self) -> None:

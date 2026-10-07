@@ -34,6 +34,45 @@
       "S100XW9D"
     ]
   },
+  "sources": {
+    "OfferPrice": {
+      "docId": "S100XOH8",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "OfferPeriod": {
+      "docId": "S100XW9D",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "PlannedShares": {
+      "docId": "S100XOH8",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "PurchaseConsideration": {
+      "docId": "S100XOH8",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "TenderOfferAgent": {
+      "docId": "S100XOH8",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "ExistingHoldingRatio": null,
+    "SpecialRelatedHoldingRatio": null,
+    "AfterPurchaseRatio": null,
+    "IsHostileInitial": null,
+    "OpinionStance": null,
+    "FinalResult": {
+      "docId": "S100XW9D",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "SponsorHint": null,
+    "ReferencePrices": null
+  },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XOH8.pdf",
     "latestFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XOH8.pdf",

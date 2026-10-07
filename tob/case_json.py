@@ -220,14 +220,39 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
 
     names = _names(docs_by_date)
     purpose_text = _section_text(filings, ("purposes",))
-    holdings = _apply_explicit_zero(_holdings(latest_filing, latest_report), purpose_text)
-    references = _reference_prices(filings)
+    raw_holdings, after_doc = _holdings(latest_filing, latest_report)
+    holdings = _apply_explicit_zero(raw_holdings, purpose_text)
+    references, ref_source = _reference_prices(filings)
     premiums = _premiums(offer_price, references)
+    sponsor_hint, sponsor_source = _sponsor_hint(filings)
     valuations = _valuations(docs_by_date)
     changes = _changes(docs_by_date)
     narrative = _narrative(filings, opinions)
     delisting_narrative = _delisting_narrative(filings, opinions)
     listing_status = detect_target_listing_status(narrative) or None
+
+    result_source_doc = withdrawals[-1] if withdrawals else latest_report
+    has_planned = any(_count_or_none(v) is not None for v in planned.values())
+    has_ref_prices = any(v is not None for k, v in references.items() if k != "computed")
+    sources = {
+        "OfferPrice": _source_ref(price_source) if offer_price is not None else None,
+        "OfferPeriod": _source_ref(period_source) if (start or end) else None,
+        "PlannedShares": _source_ref(planned_source) if has_planned else None,
+        "PurchaseConsideration": _source_ref(fund_source) if consideration is not None else None,
+        "TenderOfferAgent": _source_ref(agent_source) if agent else None,
+        "ExistingHoldingRatio": _source_ref(latest_filing) if holdings["existing"] is not None else None,
+        "SpecialRelatedHoldingRatio": _source_ref(latest_filing) if holdings["special"] is not None else None,
+        "AfterPurchaseRatio": _source_ref(after_doc) if holdings["after"] is not None else None,
+        "IsHostileInitial": _source_ref(first_opinion) if hostile is not None else None,
+        "OpinionStance": _source_ref(latest_opinion) if latest_stance else None,
+        "FinalResult": (
+            _source_ref(result_source_doc)
+            if result_source_doc and (result_note or counts or withdrawals or latest_report)
+            else None
+        ),
+        "SponsorHint": _source_ref(sponsor_source) if sponsor_hint else None,
+        "ReferencePrices": _source_ref(ref_source) if has_ref_prices else None,
+    }
 
     return {
         "schema": CASE_SCHEMA,
@@ -236,7 +261,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
         "issuerTender": any(item["issuerTender"] for item in docs),
         "core": {
             "OfferorName": names["offeror"] or None,
-            "SponsorHint": _sponsor_hint(filings) or None,
+            "SponsorHint": sponsor_hint or None,
             "TargetEdinetCode": names["targetCode"] or None,
             "OfferorEdinetCode": names["offerorCode"] or None,
             "TargetName": names["target"] or None,
@@ -262,6 +287,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
             "TargetListingStatus": listing_status,
             "DocIDList": [item["docId"] for item in docs_by_date if item["docId"]],
         },
+        "sources": sources,
         "pdfLinks": _pdf_links(docs_by_date),
         "referencePrices": references,
         "premiums": premiums,
@@ -450,7 +476,18 @@ def _apply_explicit_zero(holdings: dict[str, float | None], text: str) -> dict[s
     return holdings
 
 
-def _holdings(filing: dict | None, report: dict | None) -> dict[str, float | None]:
+def _source_ref(doc: dict | None) -> dict[str, str | None] | None:
+    if not doc or not doc.get("docId"):
+        return None
+    code = str(doc.get("docTypeCode") or "")
+    return {
+        "docId": doc.get("docId") or None,
+        "docTypeCode": code or None,
+        "docTypeName": DOC_TYPE_NAMES.get(code) or None,
+    }
+
+
+def _holdings(filing: dict | None, report: dict | None) -> tuple[dict[str, float | None], dict | None]:
     """Offeror ratio is D/J. Special is G/J. Do not add G into the offeror ratio.
 
     After-purchase uses the report's stated element, then the filing's stated
@@ -460,16 +497,19 @@ def _holdings(filing: dict | None, report: dict | None) -> dict[str, float | Non
     numbers = source.get("numbers") or {}
     after_source = report or filing or {}
     after_raw = (after_source.get("numbers") or {}).get("afterPurchaseRatio", "")
+    after_doc = after_source if after_raw else None
     if not after_raw and filing and report:
         after_raw = (filing.get("numbers") or {}).get("afterPurchaseRatio", "")
+        if after_raw:
+            after_doc = filing
     return {
         "existing": _votes_ratio(numbers.get("offerorVotes", ""), numbers.get("totalVotes", "")),
         "special": _votes_ratio(numbers.get("specialVotes", ""), numbers.get("totalVotes", "")),
         "after": _ratio_decimal(after_raw),
-    }
+    }, after_doc
 
 
-def _sponsor_hint(filings: list[dict]) -> str:
+def _sponsor_hint(filings: list[dict]) -> tuple[str, dict | None]:
     """Name written in the filing text. No EDINET-list lookup and no model."""
     for item in reversed(filings):
         text = "\n".join(
@@ -485,8 +525,8 @@ def _sponsor_hint(filings: list[dict]) -> str:
         for extractor in (extract_pe_sponsor_name, extract_parent_company_name, extract_sponsor_from_purposes):
             name = extractor(text)
             if name:
-                return name
-    return ""
+                return name, item
+    return "", None
 
 
 def _section_text(docs: list[dict], keys: tuple[str, ...]) -> str:
@@ -520,27 +560,30 @@ def _is_mbo(filings: list[dict], opinions: list[dict]) -> str | None:
     return "Yes" if detect_mbo(chunks) == "Yes" else "No"
 
 
-def _reference_prices(filings: list[dict]) -> dict[str, int | None]:
+def _reference_prices(filings: list[dict]) -> tuple[dict[str, int | None], dict | None]:
     """Price block first, then the stock-price taxonomy blocks. Conflicts become null."""
     keys = ("offerPrice", "recentSharePrices", "stockPrices")
     details = []
+    source_doc = None
     for item in reversed(filings):
         for key in keys:
             parsed = parse_reference_market_price_details(item["texts"].get(key, ""))
             if parsed["priorClose"]:
                 details.append(parsed)
+                source_doc = item
                 break
         if details:
             break
     if not details:
-        return {"priorClose": None, "avg1m": None, "avg3m": None, "avg6m": None}
+        return {"priorClose": None, "avg1m": None, "avg3m": None, "avg6m": None}, None
     parsed = details[0]
-    return {
+    prices = {
         "priorClose": _parse_int(parsed["priorClose"]),
         "avg1m": _parse_int(parsed["avg1m"]) if parsed["avg1m"] else None,
         "avg3m": _parse_int(parsed["avg3m"]) if parsed["avg3m"] else None,
         "avg6m": _parse_int(parsed["avg6m"]) if parsed["avg6m"] else None,
     }
+    return prices, source_doc
 
 
 def _premiums(offer: int | None, references: dict[str, int | None]) -> dict[str, float | None]:
@@ -576,6 +619,7 @@ def _tag_records(text: str, *, side: str, doc: dict) -> list[dict]:
                 "dcfMin": record["dcfMin"],
                 "dcfMax": record["dcfMax"],
                 "sourceDocId": doc["docId"],
+                "sourceDocTypeCode": doc.get("docTypeCode") or None,
                 "sourceDate": doc["submitDate"] or None,
                 "orderInSource": index,
             }
@@ -684,6 +728,7 @@ def _changes(docs: list[dict]) -> list[dict]:
                     "after": after,
                     "description": None,
                     "sourceDocId": doc["docId"],
+                    "sourceDocTypeCode": doc.get("docTypeCode") or None,
                     "sourceUrl": doc["pdfUrl"] or None,
                 }
             )

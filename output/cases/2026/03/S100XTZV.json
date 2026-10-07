@@ -37,6 +37,65 @@
       "S100Y3C1"
     ]
   },
+  "sources": {
+    "OfferPrice": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "OfferPeriod": {
+      "docId": "S100Y3C1",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "PlannedShares": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "PurchaseConsideration": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "TenderOfferAgent": null,
+    "ExistingHoldingRatio": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "SpecialRelatedHoldingRatio": null,
+    "AfterPurchaseRatio": {
+      "docId": "S100Y3C1",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "IsHostileInitial": {
+      "docId": "S100XU3J",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
+    },
+    "OpinionStance": {
+      "docId": "S100XXZB",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
+    },
+    "FinalResult": {
+      "docId": "S100Y3C1",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "SponsorHint": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "ReferencePrices": {
+      "docId": "S100XXVT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
+  },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XTZV.pdf",
     "latestFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XXVT.pdf",
@@ -145,6 +204,7 @@
       "after": 26115700,
       "description": null,
       "sourceDocId": "S100XXVT",
+      "sourceDocTypeCode": "250",
       "sourceUrl": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XXVT.pdf"
     },
     {
@@ -155,6 +215,7 @@
       "after": 56424284,
       "description": null,
       "sourceDocId": "S100XXVT",
+      "sourceDocTypeCode": "250",
       "sourceUrl": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XXVT.pdf"
     },
     {
@@ -165,6 +226,7 @@
       "after": 63138773796,
       "description": null,
       "sourceDocId": "S100XXVT",
+      "sourceDocTypeCode": "250",
       "sourceUrl": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XXVT.pdf"
     }
   ],

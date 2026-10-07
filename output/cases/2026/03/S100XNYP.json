@@ -35,6 +35,69 @@
       "S100XYRP"
     ]
   },
+  "sources": {
+    "OfferPrice": {
+      "docId": "S100XNYP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "OfferPeriod": {
+      "docId": "S100XYRP",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "PlannedShares": {
+      "docId": "S100XNYP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "PurchaseConsideration": {
+      "docId": "S100XNYP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "TenderOfferAgent": {
+      "docId": "S100XNYP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "ExistingHoldingRatio": {
+      "docId": "S100XNYP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "SpecialRelatedHoldingRatio": {
+      "docId": "S100XNYP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "AfterPurchaseRatio": {
+      "docId": "S100XYRP",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "IsHostileInitial": {
+      "docId": "S100XO6Q",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
+    },
+    "OpinionStance": {
+      "docId": "S100XO6Q",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
+    },
+    "FinalResult": {
+      "docId": "S100XYRP",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "SponsorHint": {
+      "docId": "S100XNYP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "ReferencePrices": null
+  },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XNYP.pdf",
     "latestFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XNYP.pdf",
@@ -143,6 +206,7 @@
       "dcfMin": 602,
       "dcfMax": 768,
       "sourceDocId": "S100XO6Q",
+      "sourceDocTypeCode": "290",
       "sourceDate": "2026-03-02",
       "orderInSource": 1,
       "current": true

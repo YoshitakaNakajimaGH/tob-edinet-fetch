@@ -38,6 +38,65 @@
       "S100Y0AI"
     ]
   },
+  "sources": {
+    "OfferPrice": {
+      "docId": "S100XXKY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "OfferPeriod": {
+      "docId": "S100Y0AI",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "PlannedShares": {
+      "docId": "S100XXKY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "PurchaseConsideration": {
+      "docId": "S100XXKY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "TenderOfferAgent": {
+      "docId": "S100XXKY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "ExistingHoldingRatio": null,
+    "SpecialRelatedHoldingRatio": null,
+    "AfterPurchaseRatio": {
+      "docId": "S100Y0AI",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "IsHostileInitial": {
+      "docId": "S100XOU9",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
+    },
+    "OpinionStance": {
+      "docId": "S100XQH3",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
+    },
+    "FinalResult": {
+      "docId": "S100Y0AI",
+      "docTypeCode": "270",
+      "docTypeName": "公開買付報告書"
+    },
+    "SponsorHint": {
+      "docId": "S100XXKY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "ReferencePrices": {
+      "docId": "S100XXKY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
+  },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XOPJ.pdf",
     "latestFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XXKY.pdf",
@@ -141,6 +200,7 @@
       "dcfMin": 1531,
       "dcfMax": 1845,
       "sourceDocId": "S100XOPJ",
+      "sourceDocTypeCode": "240",
       "sourceDate": "2026-03-04",
       "orderInSource": 1,
       "current": false
@@ -155,6 +215,7 @@
       "dcfMin": null,
       "dcfMax": null,
       "sourceDocId": "S100XOU9",
+      "sourceDocTypeCode": "290",
       "sourceDate": "2026-03-04",
       "orderInSource": 1,
       "current": false
@@ -169,6 +230,7 @@
       "dcfMin": 1503,
       "dcfMax": 1833,
       "sourceDocId": "S100XOU9",
+      "sourceDocTypeCode": "290",
       "sourceDate": "2026-03-04",
       "orderInSource": 2,
       "current": false
@@ -183,6 +245,7 @@
       "dcfMin": 1531,
       "dcfMax": 1845,
       "sourceDocId": "S100XQ5O",
+      "sourceDocTypeCode": "250",
       "sourceDate": "2026-03-11",
       "orderInSource": 1,
       "current": false
@@ -197,6 +260,7 @@
       "dcfMin": null,
       "dcfMax": null,
       "sourceDocId": "S100XQH3",
+      "sourceDocTypeCode": "300",
       "sourceDate": "2026-03-12",
       "orderInSource": 1,
       "current": true
@@ -211,6 +275,7 @@
       "dcfMin": 1503,
       "dcfMax": 1833,
       "sourceDocId": "S100XQH3",
+      "sourceDocTypeCode": "300",
       "sourceDate": "2026-03-12",
       "orderInSource": 2,
       "current": true
@@ -225,6 +290,7 @@
       "dcfMin": 1531,
       "dcfMax": 1845,
       "sourceDocId": "S100XXKY",
+      "sourceDocTypeCode": "250",
       "sourceDate": "2026-04-07",
       "orderInSource": 1,
       "current": true
