@@ -166,7 +166,7 @@ output/cases/YYYY/MM/{届出書DocID}.json
 | `valuations` | 算定機関ごとの市場株価法・類似会社比較法・DCF。買付者側と対象会社側は別レコード。レンジは足し合わせない。各レコードに `sourceDocId` と `sourceDocTypeCode` |
 | `changes` | 価格・期間・意見などの変更。同じ訂正書類の変更は同じ `changeNo`。各行に `sourceDocId` と `sourceDocTypeCode` |
 | `timeline` | 届出・意見・訂正・報告・撤回 |
-| `documents` | 各書類のタクソノミ本文（CSVのような文字数カットなし） |
+| `documents` | 各書類のタクソノミ本文。EDINETのCSVは長いテキストブロックを約3万字で切るので、XBRLインスタンスの全文を使う |
 
 市場株価法とDCFに専用の数値要素はありません。価格・目的・意見のテキストブロックの中のレンジを読みます。株価は `PriceOfPurchaseEtcTextBlock` に加え、`最近の株価及び株式売買高` と `株価の状況` の要素も見ます。
 
@@ -178,7 +178,7 @@ output/cases/YYYY/MM/{届出書DocID}.json
 
 各案件の `pdfLinks` に、公開買付届出書・意見表明報告書・公開買付報告書などの PDF 直リンクを入れます。XBRLが取れなくても、DocID からリンクは残します。形式は `https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/{DocID}.pdf` です。
 
-**Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。
+**Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。このフローは書類ごとにCSV（type=5）とXBRLインスタンス（type=1）を取り、本文は長い方を保存します。
 
 ```bash
 python -m tob.case_json --from-month 2026-03

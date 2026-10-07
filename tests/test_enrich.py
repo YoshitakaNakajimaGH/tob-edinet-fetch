@@ -3,13 +3,19 @@ from __future__ import annotations
 
 import sys
 import unittest
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from tob.enrich_tob import parse_opinion_stance
+from tob.enrich_tob import (
+    parse_opinion_stance,
+    parse_xbrl_csv_from_zip,
+    parse_xbrl_instance_from_zip,
+    prefer_longer_facts,
+)
 from tob.extract_fields import (
     clean_extracted_name,
     compute_holding_ratios,
@@ -137,6 +143,59 @@ class ResultJudgeTests(unittest.TestCase):
 
     def test_withdrawal_flag(self) -> None:
         self.assertEqual(judge_tob_result("", withdrawn=True), "撤回")
+
+
+class XbrlFullTextTests(unittest.TestCase):
+    def test_instance_text_replaces_the_csv_cut_at_30000(self) -> None:
+        full = "目的" + ("あ" * 35000) + "終わり"
+        cut = full[:30000]
+        csv_body = (
+            "要素ID\t項目名\tコンテキストID\t相対年度\t連結・個別\t期間・時点\tユニットID\t単位\t値\n"
+            f"jptoo-ton_cor:PurposeOfTenderOfferEtcTextBlock\t目的\tFilingDateInstant\t"
+            f"当年度\t個別\t時点\t\t\t{cut}\n"
+        )
+        instance = (
+            '<?xml version="1.0" encoding="utf-8"?>'
+            '<xbrli:xbrl xmlns:xbrli="http://www.xbrl.org/2003/instance" '
+            'xmlns:jptoo-ton_cor="http://disclosure.edinet-fsa.go.jp/taxonomy/jptoo/2024-11-01/jptoo-ton_cor">'
+            '<jptoo-ton_cor:PurposeOfTenderOfferEtcTextBlock contextRef="FilingDateInstant">'
+            f"{full}"
+            "</jptoo-ton_cor:PurposeOfTenderOfferEtcTextBlock>"
+            "</xbrli:xbrl>"
+        )
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            csv_zip = root / "csv.zip"
+            xbrl_zip = root / "xbrl.zip"
+            with zipfile.ZipFile(csv_zip, "w") as zf:
+                zf.writestr("XBRL_TO_CSV/jptoo.csv", csv_body.encode("utf-16"))
+            with zipfile.ZipFile(xbrl_zip, "w") as zf:
+                zf.writestr("PublicDoc/sample.xbrl", instance.encode("utf-8"))
+            csv_facts, _names = parse_xbrl_csv_from_zip(csv_zip)
+            instance_facts, names = parse_xbrl_instance_from_zip(xbrl_zip)
+            merged = prefer_longer_facts(csv_facts, instance_facts)
+        key = "jptoo-ton_cor:PurposeOfTenderOfferEtcTextBlock"
+        self.assertEqual(len(csv_facts[key][0]), 30000)
+        self.assertEqual(instance_facts[key][0], full)
+        self.assertEqual(merged[key][0], full)
+        self.assertIn("PublicDoc/sample.xbrl", names)
+
+    def test_csv_keeps_a_value_longer_than_the_default_field_limit(self) -> None:
+        long_value = "値" * 200_000
+        csv_body = (
+            "要素ID\t項目名\tコンテキストID\t相対年度\t連結・個別\t期間・時点\tユニットID\t単位\t値\n"
+            f"jptoo-ton_cor:OpinionTextBlock\t意見\tFilingDateInstant\t当年度\t個別\t時点\t\t\t{long_value}\n"
+        )
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "long.zip"
+            with zipfile.ZipFile(path, "w") as zf:
+                zf.writestr("XBRL_TO_CSV/jptoo.csv", csv_body.encode("utf-16"))
+            facts, _names = parse_xbrl_csv_from_zip(path)
+        self.assertEqual(len(facts["jptoo-ton_cor:OpinionTextBlock"][0]), 200_000)
 
 
 if __name__ == "__main__":
