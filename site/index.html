@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TOB Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <header class="masthead">
+      <p class="brand">TOB Archive</p>
+      <h1>公開買付の案件を、名前と時期で探す</h1>
+      <p class="lead">
+        <code>all.csv</code> のサマリから検索し、選んだ案件を一定の形で表示します。
+      </p>
+    </header>
+
+    <main>
+      <section class="search" aria-label="検索条件">
+        <label class="field grow">
+          <span>名称</span>
+          <input
+            id="query"
+            type="search"
+            placeholder="対象会社・買付者・スポンサー・代理人"
+            autocomplete="off"
+          />
+        </label>
+        <label class="field">
+          <span>開始月</span>
+          <input id="from-month" type="month" />
+        </label>
+        <label class="field">
+          <span>終了月</span>
+          <input id="to-month" type="month" />
+        </label>
+        <label class="field">
+          <span>結果</span>
+          <select id="status">
+            <option value="">すべて</option>
+          </select>
+        </label>
+      </section>
+
+      <p id="meta" class="meta" aria-live="polite"></p>
+
+      <div class="workspace">
+        <section class="results" aria-label="検索結果">
+          <ul id="result-list"></ul>
+        </section>
+        <section class="detail" aria-label="案件サマリ" id="detail">
+          <p class="empty">左の一覧から案件を選ぶと、ここにサマリが出ます。</p>
+        </section>
+      </div>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

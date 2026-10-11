@@ -75,6 +75,7 @@ from tob.tob_common import (
 CASE_SCHEMA = "tob-case-1"
 DEFAULT_CASE_DIR = Path("output/cases")
 DEFAULT_SUMMARY_DIR = Path("output/case_summaries")
+DEFAULT_SITE_DATA = Path("site/data/all.csv")
 DEFAULT_ID_LIST_DIR = Path("output/id_lists")
 
 _TEXT_FIELDS = (
@@ -336,7 +337,10 @@ def write_month_summary(filing_month: str, case_root: Path | None = None, summar
         if not re.fullmatch(r"\d{2}", month_file.stem):
             continue
         all_rows.extend(_read_summary_rows(month_file))
-    _write_summary_rows(case_all_summary_path(base), all_rows)
+    all_path = case_all_summary_path(base)
+    _write_summary_rows(all_path, all_rows)
+    if summary_root is None or Path(summary_root) == DEFAULT_SUMMARY_DIR:
+        _write_summary_rows(DEFAULT_SITE_DATA, all_rows)
     return path
 
 
