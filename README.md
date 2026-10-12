@@ -184,6 +184,14 @@ output/cases/YYYY/MM/{届出書DocID}.json
 - `output/case_summaries/YYYY/YYYY.csv` … 12月をまとめたときだけ、その年の1月〜12月をこの順で結合
 - `output/case_summaries/all.csv` … それまでに書いた月次CSVの全部
 
+検索用の静的ページは `site/` です。`all.csv` と同じ内容を `site/data/all.csv` にも書き、名称・届出月・結果で絞り込んで案件サマリを表示します。ローカルでは次で開けます。
+
+```bash
+python -m http.server 8765 --directory site
+```
+
+ブラウザで `http://localhost:8765` を開いてください。`file://` ではCSVを読めないことがあります。
+
 **Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。このフローは書類ごとにCSV（type=5）とXBRLインスタンス（type=1）を取り、本文は長い方を保存します。
 
 ```bash
@@ -207,6 +215,7 @@ output/
   case_summaries/YYYY/MM.csv … 月次サマリ
   case_summaries/YYYY/YYYY.csv … 12月処理時の年次サマリ
   case_summaries/all.csv … 取得済み全案件のサマリ
+site/               … all.csv を読む検索ページ（data/all.csv を同梱）
   snapshots/        … 履歴（tob_list_202001-202012_0001.csv 形式）
   snapshots/trash/  … 古い履歴
 ```

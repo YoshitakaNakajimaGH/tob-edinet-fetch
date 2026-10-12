@@ -547,6 +547,15 @@ class CaseJsonTests(unittest.TestCase):
         self.assertEqual(year_ids, ["S100MARCH", "S100DECEM"])
         self.assertEqual(all_ids, ["S100MARCH", "S100DECEM"])
 
+    def test_month_summary_copies_all_csv_into_the_site_folder(self) -> None:
+        path = write_month_summary("2026-03")
+        self.assertEqual(path, Path("output/case_summaries/2026/03.csv"))
+        site = Path("site/data/all.csv")
+        self.assertTrue(site.is_file())
+        with site.open(encoding="utf-8-sig", newline="") as handle:
+            ids = [item["caseId"] for item in csv.DictReader(handle)]
+        self.assertIn("S100XNYP", ids)
+
     def test_document_from_xbrl_keeps_full_text_and_stock_price_element(self) -> None:
         long_text = "あ" * 6000
         mapping = {
