@@ -523,9 +523,12 @@ main.wide {
 .price-line.prior {
   background: #5c6b76;
 }
-.price-line.prior b { top: -1rem; color: #5c6b76; }
+.price-line.prior b,
+.price-line.offer b { top: -1.05rem; }
+.price-line.prior b { color: #5c6b76; }
 .price-line.offer { background: #9a4d1c; }
-.price-line.offer b { bottom: -1rem; color: #9a4d1c; }
+.price-line.offer b { color: #9a4d1c; }
+.band-track.axis { margin-top: 1.15rem; }
 
 .capital-line { margin: 0 0 0.8rem; }
 

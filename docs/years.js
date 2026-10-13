@@ -76,6 +76,12 @@ function sharesLabel(value) {
   return `${number.toLocaleString("ja-JP")}株`;
 }
 
+function resultCell(item) {
+  const label = resultLabel(item);
+  const bad = /不成立|撤回/.test(label);
+  return `<td class="${bad ? "result-bad" : ""}">${escapeHtml(label)}</td>`;
+}
+
 function premiumCell(value) {
   const label = premiumLabel(value);
   const number = Number(value);
@@ -120,9 +126,14 @@ function renderSummary(rows) {
     return best;
   }, null);
   const premiumAvg = average(premiums);
+  const premiumMax = premiums.length ? Math.max(...premiums) : null;
+  const premiumMin = premiums.length ? Math.min(...premiums) : null;
   const dayAvg = average(days);
+  const premiumText = premiumAvg == null
+    ? "—"
+    : `平均 ${premiumLabel(premiumAvg)}　最大 ${premiumLabel(premiumMax)}　最小 ${premiumLabel(premiumMin)}`;
   const cards = [
-    ["プレミアム平均", premiumAvg == null ? "—" : premiumLabel(premiumAvg)],
+    ["プレミアム", premiumText],
     ["MBO", `${mbo}件`],
     ["敵対的", `${hostile}件`],
     ["期間日数平均", dayAvg == null ? "—" : `${dayAvg.toFixed(1)}日`],
@@ -169,7 +180,7 @@ function renderTable() {
       <td>${escapeHtml(sharesLabel(item.IssuedShares))}</td>
       <td>${escapeHtml(issuedRatio)}</td>
       <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
-      <td>${escapeHtml(resultLabel(item))}</td>
+      ${resultCell(item)}
       <td>${escapeHtml(period)}</td>
       <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
     `
@@ -182,7 +193,7 @@ function renderTable() {
       <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
       <td>${escapeHtml(yesNo(item.IsMBO))}</td>
       <td>${escapeHtml(yesNo(item.IsHostileInitial))}</td>
-      <td>${escapeHtml(resultLabel(item))}</td>
+      ${resultCell(item)}
       <td>${escapeHtml(period)}</td>
       <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
     `;
