@@ -19,10 +19,11 @@
       <nav class="site-nav" aria-label="サイト内">
         <a href="./index.html">案件検索</a>
         <a href="./years.html" aria-current="page">暦年一覧</a>
+        <a href="./self.html">自社株TOB</a>
       </nav>
       <h1>暦年ごとの案件一覧</h1>
       <p class="lead">
-        対象会社・買収者・プレミアム・MBO・敵対的か・買付期間の日数だけを並べます。行を選ぶと検索ページの詳細へ移ります。
+        他社株の公開買付です。買収者の括弧はスポンサー候補です。行を選ぶと検索ページの詳細へ移ります。
       </p>
     </header>
 
@@ -35,9 +36,13 @@
             <tr>
               <th>対象会社</th>
               <th>買収者</th>
+              <th>直前株価</th>
               <th>プレミアム</th>
+              <th>買付総額</th>
+              <th>幹事証券</th>
               <th>MBO</th>
               <th>敵対的</th>
+              <th>結果</th>
               <th>期間日数</th>
             </tr>
           </thead>
@@ -45,7 +50,7 @@
         </table>
       </div>
       <p class="footnote">
-        期間日数は買付開始日（OfferPeriodStart）から終了日（OfferPeriodEnd）までの暦日差です。プレミアムは前営業日終値比です。
+        自社株TOB（買収者と対象会社が同じ）は別ページです。期間日数は買付開始日から終了日までの暦日差、プレミアムは前営業日終値比、買付総額は買付代金を億円にしたものです。
       </p>
     </main>
 

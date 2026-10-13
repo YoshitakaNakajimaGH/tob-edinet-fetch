@@ -85,7 +85,8 @@ class SponsorHintLlmTests(unittest.TestCase):
             )
         ]
         bundle = collect_case_text_bundle(docs)
-        self.assertIn("PurposesRaw", bundle)
+        self.assertIn("本公開買付の概要", bundle)
+        self.assertNotIn("OfficerHistoryRaw", bundle)
         self.assertIn("テスト株式会社", bundle)
 
     def test_build_prompt_contains_metadata(self) -> None:

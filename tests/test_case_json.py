@@ -513,6 +513,7 @@ class CaseJsonTests(unittest.TestCase):
             self.assertEqual(path, root / "summaries" / "2026" / "03.csv")
             self.assertFalse((root / "summaries" / "2026" / "2026.csv").exists())
             self.assertTrue((root / "summaries" / "all.csv").is_file())
+            self.assertTrue((root / "summaries" / "self_tob.csv").is_file())
             with path.open(encoding="utf-8-sig", newline="") as handle:
                 rows = list(csv.DictReader(handle))
             with (root / "summaries" / "all.csv").open(encoding="utf-8-sig", newline="") as handle:

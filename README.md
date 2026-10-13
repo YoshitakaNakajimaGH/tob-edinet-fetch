@@ -187,7 +187,12 @@ output/cases/YYYY/MM/{届出書DocID}.json
 検索用の静的ページは `docs/` です。`all.csv` と同じ内容を `docs/data/all.csv` にも書き、次の画面を用意しています。GitHub Pages の branch 公開は `/` と `/docs` しか選べないので、ここに置いています。
 
 - `index.html` … 名称・届出月・結果で絞り込む案件検索
-- `years.html` … 暦年ごとの一覧（対象会社・買収者・プレミアム・MBO・敵対的・買付期間の日数）
+- `years.html` … 他社株の暦年一覧（買収者の括弧はスポンサー候補。直前株価・プレミアム・買付総額・幹事・MBO・敵対的・結果・期間日数）
+- `self.html` … 自社株TOB（買収者と対象会社が同じ。`issuerTender` が true）
+
+スポンサー候補は、届出書「（１）本公開買付の概要」の冒頭だけを見ます。案件JSON作成フローも、Enrich のルール判定も、SponsorHint LLM の入力も、この同じ範囲です。
+
+自社株の行は `all.csv` の `issuerTender` 列で区別し、同じ実行で `output/case_summaries/self_tob.csv` と `docs/data/self_tob.csv` にも分けて書きます。
 
 ローカルでは次で開けます。
 

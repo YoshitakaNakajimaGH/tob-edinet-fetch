@@ -1,4 +1,14 @@
-import { escapeHtml, loadCases, periodDays, premiumLabel } from "./csv.js";
+import {
+  considerationOku,
+  escapeHtml,
+  isSelfTender,
+  loadCases,
+  offerorLabel,
+  periodDays,
+  premiumLabel,
+  resultLabel,
+  yenLabel,
+} from "./csv.js";
 
 const els = {
   tabs: document.getElementById("year-tabs"),
@@ -6,11 +16,16 @@ const els = {
   body: document.getElementById("year-body"),
 };
 
+const selfOnly = document.body.dataset.scope === "self";
 let cases = [];
 let selectedYear = "";
 
 function filingYear(item) {
   return (item.filingMonth || "").slice(0, 4);
+}
+
+function inScope(item) {
+  return selfOnly ? isSelfTender(item) : !isSelfTender(item);
 }
 
 function years() {
@@ -72,10 +87,14 @@ function renderTable() {
     tr.dataset.caseId = item.caseId;
     tr.innerHTML = `
       <td>${escapeHtml(item.TargetName || item.caseId)}</td>
-      <td>${escapeHtml(item.OfferorName || "—")}</td>
+      <td>${escapeHtml(offerorLabel(item))}</td>
+      <td>${escapeHtml(yenLabel(item.PriorClose))}</td>
       <td>${escapeHtml(premiumLabel(item.PremiumVsPriorClose))}</td>
+      <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
+      <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
       <td>${escapeHtml(yesNo(item.IsMBO))}</td>
       <td>${escapeHtml(yesNo(item.IsHostileInitial))}</td>
+      <td>${escapeHtml(resultLabel(item))}</td>
       <td>${days == null ? "—" : `${days}日`}</td>
     `;
     const open = () => {
@@ -94,7 +113,7 @@ function renderTable() {
 
 async function boot() {
   try {
-    cases = await loadCases();
+    cases = (await loadCases()).filter(inScope);
     const wanted = new URL(window.location.href).searchParams.get("year");
     if (wanted && years().includes(wanted)) {
       selectedYear = wanted;
@@ -103,7 +122,7 @@ async function boot() {
     renderTable();
   } catch (error) {
     els.meta.textContent = "データを読めませんでした。ローカルサーバ経由で開いてください。";
-    els.body.innerHTML = `<tr><td colspan="6">${escapeHtml(String(error))}</td></tr>`;
+    els.body.innerHTML = `<tr><td colspan="10">${escapeHtml(String(error))}</td></tr>`;
   }
 }
 

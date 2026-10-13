@@ -347,7 +347,7 @@ main.wide {
 .year-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 52rem;
+  min-width: 72rem;
 }
 
 .year-table th,

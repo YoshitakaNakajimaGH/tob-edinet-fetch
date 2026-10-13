@@ -12,9 +12,9 @@ from edinet.edinet_code_list import EdinetCodeList
 from tob.extract_fields import (
     UNLISTED_LABEL,
     PE_CANONICAL_LABELS,
-    extract_overview_section,
     extract_pe_sponsor_name,
     is_acceptable_sponsor_name,
+    offer_overview_window,
     sanitize_sponsor_name,
     strip_html,
 )
@@ -23,14 +23,6 @@ FILING_SIDE = {"240", "250"}
 OFFEROR_SIDE = {"240", "250", "260", "270", "280"}
 
 DEFAULT_SIDECAR_PATH = Path("output/current/sponsor_hint_llm.json")
-
-TEXT_FIELDS = (
-    "PurposesRaw",
-    "OverviewRaw",
-    "CorporationInfoRaw",
-    "OfficerHistoryRaw",
-    "MajorShareholdersRaw",
-)
 
 FINANCING_NOISE_RE = re.compile(
     r"^(?:株式会社)?(?:みずほ|三菱UFJ|三井住友|横浜|神奈川|福井|りそな|住友|日本)?銀行$",
@@ -62,31 +54,22 @@ def _earliest_doc(docs: list[dict], type_codes: set[str]) -> dict | None:
 
 
 def collect_case_text_bundle(docs: list[dict], *, max_chars: int = 14_000) -> str:
-    """Aggregate filing-side narrative text for LLM input."""
+    """Only the opening of （１）本公開買付の概要. Same window as the rule-based hint."""
     filing = _earliest_doc(docs, FILING_SIDE) or next(
         (doc for doc in docs if (doc.get("DocTypeCode") or "") in OFFEROR_SIDE),
         docs[0] if docs else None,
     )
     if not filing:
         return ""
-
-    parts: list[str] = []
-    for field in TEXT_FIELDS:
-        value = (filing.get(field) or "").strip()
-        if value:
-            parts.append(f"## {field}\n{value}")
-
-    if not parts:
+    raw = "\n".join(
+        (filing.get(field) or "").strip()
+        for field in ("PurposesRaw", "OverviewRaw")
+        if (filing.get(field) or "").strip()
+    )
+    window = offer_overview_window(raw, limit=max_chars)
+    if not window:
         return ""
-
-    combined = "\n\n".join(parts)
-    overview = extract_overview_section(combined)
-    if overview and len(combined) > max_chars:
-        head = combined[:4000]
-        tail_budget = max_chars - len(head) - len(overview) - 32
-        if tail_budget > 0:
-            return f"{head}\n\n## 本公開買付の概要（抜粋）\n{overview[:tail_budget]}"
-    return combined[:max_chars]
+    return f"## 本公開買付の概要\n{window}"
 
 
 def build_sponsor_hint_prompt(
@@ -98,7 +81,8 @@ def build_sponsor_hint_prompt(
 ) -> str:
     return (
         "あなたは日本の公開買付（TOB）書類から、経済的スポンサー（実質的な買収者）を特定するアシスタントです。\n"
-        "公開買付者（届出上の買付者）と、実質的に資金提供・意思決定を行う主体を区別してください。\n\n"
+        "公開買付者（届出上の買付者）と、実質的に資金提供・意思決定を行う主体を区別してください。\n"
+        "入力は届出書「（１）本公開買付の概要」の冒頭だけです。この範囲に無い社名はスポンサーにしません。\n\n"
         "## 除外（スポンサーにしない）\n"
         "- 融資銀行・メザニン出資者（議決権なしの優先出資のみ）\n"
         "- 公開買付代理人、監査法人、対象会社\n"

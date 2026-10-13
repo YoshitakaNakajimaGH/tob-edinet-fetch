@@ -74,6 +74,37 @@ export function premiumLabel(value) {
   return `${signed}${(number * 100).toFixed(1)}%`;
 }
 
+export function isSelfTender(item) {
+  return String(item.issuerTender).toLowerCase() === "true";
+}
+
+export function yenLabel(value) {
+  if (value === "" || value == null) return "—";
+  const number = Number(String(value).replace(/,/g, ""));
+  if (!Number.isFinite(number)) return String(value);
+  return `${number.toLocaleString("ja-JP")}円`;
+}
+
+export function considerationOku(value) {
+  if (value === "" || value == null) return "—";
+  const number = Number(String(value).replace(/,/g, ""));
+  if (!Number.isFinite(number) || number <= 0) return "—";
+  const oku = number / 100_000_000;
+  const digits = oku >= 100 ? 0 : 1;
+  return `${oku.toLocaleString("ja-JP", { maximumFractionDigits: digits, minimumFractionDigits: digits })}億円`;
+}
+
+export function resultLabel(item) {
+  return item.FinalResultNote || item.Status || "—";
+}
+
+export function offerorLabel(item) {
+  const name = item.OfferorName || "—";
+  const sponsor = (item.SponsorHint || "").trim();
+  if (!sponsor || sponsor === name) return name;
+  return `${name}（${sponsor}）`;
+}
+
 export function periodDays(start, end) {
   if (!start || !end) return null;
   const from = Date.parse(`${start}T00:00:00Z`);
