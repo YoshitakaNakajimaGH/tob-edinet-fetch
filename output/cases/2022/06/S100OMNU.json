@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社ディー・エヌ・エー",
-    "SponsorHint": "BCAMがインベストメント・マネジャーとして運用するファンド",
+    "SponsorHint": null,
     "TargetEdinetCode": "E21553",
     "OfferorEdinetCode": "E05460",
     "TargetName": "株式会社データホライゾン",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100OMNU",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100OMNU",
       "docTypeCode": "240",

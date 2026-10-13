@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ＦＨＬホールディングス株式会社",
-    "SponsorHint": "16社及び関連会社２社により構成される企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00857",
     "OfferorEdinetCode": "E36534",
     "TargetName": "天馬株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100VET5",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100VET5",
       "docTypeCode": "240",

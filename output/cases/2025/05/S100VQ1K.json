@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "YAGEO Electronics Japan合同会社",
-    "SponsorHint": "経営理念等(ア)YAGEO及び公開買付者",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01960",
     "OfferorEdinetCode": "E40644",
     "TargetName": "株式会社芝浦電子",
@@ -115,11 +115,7 @@
       "docTypeCode": "280",
       "docTypeName": "訂正公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WTC0",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WTC0",
       "docTypeCode": "250",

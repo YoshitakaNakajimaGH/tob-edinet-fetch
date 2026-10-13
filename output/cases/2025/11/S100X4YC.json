@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社イルグルム",
-    "SponsorHint": "）から独立した第三者算定機関として株式会社クリフィックスFAS",
+    "SponsorHint": null,
     "TargetEdinetCode": "E32624",
     "OfferorEdinetCode": "E30836",
     "TargetName": "シルバーエッグ・テクノロジー株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XANS",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XANS",
       "docTypeCode": "250",

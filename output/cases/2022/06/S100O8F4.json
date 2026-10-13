@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社フェローテックホールディングス",
-    "SponsorHint": "Integral",
+    "SponsorHint": null,
     "TargetEdinetCode": "E26216",
     "OfferorEdinetCode": "E02024",
     "TargetName": "株式会社大泉製作所",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100OMWC",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100OMWC",
       "docTypeCode": "250",

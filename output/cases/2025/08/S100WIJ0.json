@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "太平洋セメント株式会社",
-    "SponsorHint": "Japan Industrial Solutions",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05687",
     "OfferorEdinetCode": "E01130",
     "TargetName": "パシフィックシステム株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WIJ0",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WIJ0",
       "docTypeCode": "240",

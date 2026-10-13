@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "麻布台１号有限責任事業組合",
-    "SponsorHint": "株式会社ＯＵＮＨ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03505",
     "OfferorEdinetCode": "E39704",
     "TargetName": "ホリイフードサービス株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100TGFP",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100TGFP",
       "docTypeCode": "240",

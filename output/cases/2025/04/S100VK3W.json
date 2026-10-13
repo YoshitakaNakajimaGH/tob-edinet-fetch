@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ASNFホールディングス合同会社",
-    "SponsorHint": "UGSアセットマネジメント及びキャピタル",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01147",
     "OfferorEdinetCode": "E40584",
     "TargetName": "株式会社ヨータイ",
@@ -83,11 +83,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100VK3W",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100VK3W",
       "docTypeCode": "240",

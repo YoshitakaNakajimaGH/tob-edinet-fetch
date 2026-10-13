@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社北洋銀行",
-    "SponsorHint": "Polaris Capital Group",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05176",
     "OfferorEdinetCode": "E03632",
     "TargetName": "キャリアバンク株式会社",
@@ -94,11 +94,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XXKY",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XXKY",
       "docTypeCode": "250",

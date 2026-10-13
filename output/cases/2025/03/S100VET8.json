@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "エーザイ株式会社",
-    "SponsorHint": "連結子会社48社及び持分法適用会社１社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E38765",
     "OfferorEdinetCode": "E00939",
     "TargetName": "エコナビスタ株式会社",
@@ -84,11 +84,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100VJNW",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100VJNW",
       "docTypeCode": "250",

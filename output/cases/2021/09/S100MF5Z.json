@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "SBI地銀ホールディングス株式会社",
-    "SponsorHint": "Goldman Sachs",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03530",
     "OfferorEdinetCode": "E35850",
     "TargetName": "株式会社ＳＢＩ新生銀行",
@@ -103,11 +103,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100MYBQ",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100MYBQ",
       "docTypeCode": "250",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社マルハン",
-    "SponsorHint": "ⅳ)土木工事等対象者は2024年に片岡工業",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00117",
     "OfferorEdinetCode": "E40688",
     "TargetName": "株式会社イチケン",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100VSAS",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100VSAS",
       "docTypeCode": "240",

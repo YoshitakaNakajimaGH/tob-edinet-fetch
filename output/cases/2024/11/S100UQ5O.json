@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社Ｔコーポレーション",
-    "SponsorHint": "ファイナンシャル・アドバイザーとしてＳＭＢＣ日興証券株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01238",
     "OfferorEdinetCode": "E40191",
     "TargetName": "大和重工株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UQ5O",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100UQ5O",
       "docTypeCode": "240",

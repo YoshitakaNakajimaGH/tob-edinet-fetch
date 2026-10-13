@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "牧 寛之",
-    "SponsorHint": "ⅳ)want.jp事業2024年８月に対象者がwant.jp株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E35163",
     "OfferorEdinetCode": "E38700",
     "TargetName": "ＢＡＳＥ株式会社",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WFPL",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

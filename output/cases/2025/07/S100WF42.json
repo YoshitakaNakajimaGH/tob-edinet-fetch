@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "有限会社ユヴェントスホールディングス投資目的会社",
-    "SponsorHint": "ACMKが業務執行社員として管理するファンド",
+    "SponsorHint": null,
     "TargetEdinetCode": "E34891",
     "OfferorEdinetCode": "E40808",
     "TargetName": "株式会社ＪＴＣ",
@@ -88,11 +88,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WGGP",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

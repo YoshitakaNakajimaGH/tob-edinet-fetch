@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "エーブイアイ・ジャパン・オポチュニティ・トラスト・ピーエルシー(AVI Japan Opportunity Trust plc)",
-    "SponsorHint": "AVIが投資一任運用サービスを提供するファンド",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05269",
     "OfferorEdinetCode": "E41248",
     "TargetName": "ブロードメディア株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XA98",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "富士通株式会社",
-    "SponsorHint": "伊藤忠商事",
+    "SponsorHint": null,
     "TargetEdinetCode": "E25817",
     "OfferorEdinetCode": "E01766",
     "TargetName": "株式会社ブレインパッド",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100X7KC",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100X7KC",
       "docTypeCode": "250",

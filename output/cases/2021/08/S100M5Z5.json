@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "山田マーケティング株式会社",
-    "SponsorHint": "Japan Industrial Solutions",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00732",
     "OfferorEdinetCode": "E36899",
     "TargetName": "カーディナル株式会社",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100MJVE",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100MJVE",
       "docTypeCode": "250",

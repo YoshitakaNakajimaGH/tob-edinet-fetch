@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "中本パックス株式会社",
-    "SponsorHint": "とすること",
+    "SponsorHint": null,
     "TargetEdinetCode": "E02430",
     "OfferorEdinetCode": "E31924",
     "TargetName": "ＭＩＣＳ化学株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100S1NI",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100S1NI",
       "docTypeCode": "240",

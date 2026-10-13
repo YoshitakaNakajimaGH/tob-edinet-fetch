@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "SCインベストメンツ・マネジメント株式会社",
-    "SponsorHint": "Goldman Sachs",
+    "SponsorHint": null,
     "TargetEdinetCode": "E04830",
     "OfferorEdinetCode": "E41116",
     "TargetName": "ＳＣＳＫ株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WXQW",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WXQW",
       "docTypeCode": "240",

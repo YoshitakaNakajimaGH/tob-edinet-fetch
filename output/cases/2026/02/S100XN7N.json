@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社レノ",
-    "SponsorHint": "KKR",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00400",
     "OfferorEdinetCode": "E24231",
     "TargetName": "養命酒製造株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XN7N",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

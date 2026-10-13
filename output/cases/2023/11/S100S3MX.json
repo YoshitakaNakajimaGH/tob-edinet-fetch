@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "大成建設株式会社",
-    "SponsorHint": "子会社63社及び関連会社47社からなる企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01161",
     "OfferorEdinetCode": "E00052",
     "TargetName": "株式会社ピーエス三菱",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100S3MX",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100S3MX",
       "docTypeCode": "240",

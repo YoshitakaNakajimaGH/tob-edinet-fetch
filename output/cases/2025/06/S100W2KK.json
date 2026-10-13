@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社ＮＦＫホールディングス",
-    "SponsorHint": "日本ファーネス株式会社（現・公開買付者の連結子会社）",
+    "SponsorHint": null,
     "TargetEdinetCode": "E33345",
     "OfferorEdinetCode": "E01648",
     "TargetName": "株式会社キャストリコ",
@@ -84,11 +84,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100W7CN",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

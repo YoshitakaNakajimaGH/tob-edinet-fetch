@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ＤＣＭホールディングス株式会社",
-    "SponsorHint": "株式会社三井住友銀行",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03096",
     "OfferorEdinetCode": "E03489",
     "TargetName": "株式会社ケーヨー",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100RYE7",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100RYE7",
       "docTypeCode": "240",

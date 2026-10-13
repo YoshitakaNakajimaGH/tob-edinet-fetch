@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "イオン株式会社",
-    "SponsorHint": null,
+    "SponsorHint": "城戸一弥氏",
     "TargetEdinetCode": "E03377",
     "OfferorEdinetCode": "E03061",
     "TargetName": "株式会社キャンドゥ",
@@ -89,7 +89,11 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": null,
+    "SponsorHint": {
+      "docId": "S100MOFL",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
     "ReferencePrices": {
       "docId": "S100MOFL",
       "docTypeCode": "250",

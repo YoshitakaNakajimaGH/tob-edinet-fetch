@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社マクニカ",
-    "SponsorHint": "マクニカホールディングス株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E02785",
     "OfferorEdinetCode": "E02906",
     "TargetName": "株式会社グローセル",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100SOZJ",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

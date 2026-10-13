@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社友",
-    "SponsorHint": "ＪＡＶＦ)の締結に係るカナメ・キャピタル",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01706",
     "OfferorEdinetCode": "E40823",
     "TargetName": "フロイント産業株式会社",
@@ -99,11 +99,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WV2H",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WV2H",
       "docTypeCode": "250",

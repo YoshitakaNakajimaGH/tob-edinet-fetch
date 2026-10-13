@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社アイキューブドシステムズ",
-    "SponsorHint": "WACC：WeightedAverageCostofCapital",
+    "SponsorHint": null,
     "TargetEdinetCode": "E39284",
     "OfferorEdinetCode": "E35578",
     "TargetName": "ワンビ株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UVPM",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

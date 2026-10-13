@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社オープンハウスグループ",
-    "SponsorHint": ")からなる企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E04047",
     "OfferorEdinetCode": "E27842",
     "TargetName": "株式会社プレサンスコーポレーション",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100V36R",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100V36R",
       "docTypeCode": "240",

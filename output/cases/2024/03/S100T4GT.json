@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "釜屋電機株式会社",
-    "SponsorHint": ")に取引条件の適否にかかわらず公開買付けへの応募を行わない方針をとるETF(上場投資信託)やその他のパッシブ・インデックス運用ファンド(注４)",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01983",
     "OfferorEdinetCode": "E01937",
     "TargetName": "双信電機株式会社",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100TH8G",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "エア・ウォーター株式会社",
-    "SponsorHint": "証券会員制法人札幌証券取引所",
+    "SponsorHint": null,
     "TargetEdinetCode": "E32453",
     "OfferorEdinetCode": "E00792",
     "TargetName": "株式会社歯愛メディカル",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WPZL",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WPZL",
       "docTypeCode": "250",

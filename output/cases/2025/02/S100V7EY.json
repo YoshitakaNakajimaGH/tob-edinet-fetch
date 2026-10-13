@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ウェルネオシュガー株式会社",
-    "SponsorHint": "丸紅",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00354",
     "OfferorEdinetCode": "E25648",
     "TargetName": "東洋精糖株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100V7EY",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100V7EY",
       "docTypeCode": "240",

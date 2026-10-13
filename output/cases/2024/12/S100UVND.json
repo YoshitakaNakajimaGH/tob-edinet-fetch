@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社三菱UFJ銀行",
-    "SponsorHint": "MUFG",
+    "SponsorHint": null,
     "TargetEdinetCode": "E36141",
     "OfferorEdinetCode": "E03533",
     "TargetName": "ウェルスナビ株式会社",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100V0MA",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100V0MA",
       "docTypeCode": "250",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "チンクエチェント株式会社",
-    "SponsorHint": "PEファンド",
+    "SponsorHint": null,
     "TargetEdinetCode": "E35535",
     "OfferorEdinetCode": "E40937",
     "TargetName": "株式会社ドラフト",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WJRB",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WJRB",
       "docTypeCode": "240",

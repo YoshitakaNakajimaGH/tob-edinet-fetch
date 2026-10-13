@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社Ｗ＆Ｄインベストメントデザイン",
-    "SponsorHint": "48社及び持分法適用関連会社５社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03240",
     "OfferorEdinetCode": "E40192",
     "TargetName": "株式会社ライトオン",
@@ -83,11 +83,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UVZ8",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100UVZ8",
       "docTypeCode": "240",

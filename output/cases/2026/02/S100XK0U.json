@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "Flowers株式会社",
-    "SponsorHint": "子会社58社及び関連会社18社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00977",
     "OfferorEdinetCode": "E41449",
     "TargetName": "株式会社カイノス",
@@ -88,11 +88,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XP3J",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XP3J",
       "docTypeCode": "250",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "SBCメディカルグループ株式会社",
-    "SponsorHint": "製造技術・ノウハウ等を保有する対象者",
+    "SponsorHint": null,
     "TargetEdinetCode": "E36697",
     "OfferorEdinetCode": "E39474",
     "TargetName": "株式会社Ｗａｑｏｏ",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100X4PG",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100X4PG",
       "docTypeCode": "240",

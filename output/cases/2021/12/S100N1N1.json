@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "穴吹興産株式会社",
-    "SponsorHint": "2004年６月に株式会社大阪証券取引所",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05256",
     "OfferorEdinetCode": "E04025",
     "TargetName": "株式会社クリエアナブキ",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100N1N1",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

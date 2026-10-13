@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社Quartz",
-    "SponsorHint": "）第180条に基づく対象者株式の併合",
+    "SponsorHint": null,
     "TargetEdinetCode": "E02874",
     "OfferorEdinetCode": "E40417",
     "TargetName": "ジーエフシー株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100V62O",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100V62O",
       "docTypeCode": "240",

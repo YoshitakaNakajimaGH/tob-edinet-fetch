@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ＳＪフューチャーホールディングス株式会社",
-    "SponsorHint": null,
+    "SponsorHint": "日本航空及び双日",
     "TargetEdinetCode": "E04761",
     "OfferorEdinetCode": "E37487",
     "TargetName": "株式会社ＪＡＬＵＸ",
@@ -92,7 +92,11 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": null,
+    "SponsorHint": {
+      "docId": "S100NGG1",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
     "ReferencePrices": {
       "docId": "S100NGG1",
       "docTypeCode": "250",

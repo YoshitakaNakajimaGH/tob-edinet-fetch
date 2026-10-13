@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社パロマ・リームホールディングス",
-    "SponsorHint": "株式会社パロマ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01775",
     "OfferorEdinetCode": "E40554",
     "TargetName": "株式会社富士通ゼネラル",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100VOGV",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100VOGV",
       "docTypeCode": "240",

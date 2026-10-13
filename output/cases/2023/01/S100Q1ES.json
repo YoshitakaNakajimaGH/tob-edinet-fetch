@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "SBIグローバルアセットマネジメント株式会社",
-    "SponsorHint": "SBIアセットマネジメント株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05097",
     "OfferorEdinetCode": "E32028",
     "TargetName": "ＳＢＩグローバルアセットマネジメント株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100Q1ES",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100Q1ES",
       "docTypeCode": "240",

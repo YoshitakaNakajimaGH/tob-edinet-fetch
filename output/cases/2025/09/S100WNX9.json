@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社博報堂ＤＹホールディングス",
-    "SponsorHint": "子会社384社及び関連会社64社(本書提出日現在)により構成される企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05374",
     "OfferorEdinetCode": "E05410",
     "TargetName": "株式会社デジタルホールディングス",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100X2AH",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100X5DI",
       "docTypeCode": "250",

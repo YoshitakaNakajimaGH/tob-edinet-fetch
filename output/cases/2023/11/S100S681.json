@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "富士ソフト株式会社",
-    "SponsorHint": "ファイナンシャル・アドバイザー及び第三者算定機関としてＳＭＢＣ日興証券株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E32168",
     "OfferorEdinetCode": "E04810",
     "TargetName": "富士ソフトサービスビューロ株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100SD85",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100SD85",
       "docTypeCode": "250",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "GMOインターネットグループ株式会社",
-    "SponsorHint": "PAG",
+    "SponsorHint": null,
     "TargetEdinetCode": "E38367",
     "OfferorEdinetCode": "E05041",
     "TargetName": "プライム・ストラテジー株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100X09O",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100X09O",
       "docTypeCode": "240",

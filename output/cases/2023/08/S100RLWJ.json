@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "辻商事株式会社",
-    "SponsorHint": "株式会社三菱ＵＦＪ銀行",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00907",
     "OfferorEdinetCode": "E38889",
     "TargetName": "ロックペイント株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100RTCN",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100RTCN",
       "docTypeCode": "250",
