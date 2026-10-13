@@ -35,7 +35,8 @@
       "S100QBL9",
       "S100QI9C"
     ],
-    "CapitalParties": "日本瓦斯株式会社"
+    "CapitalParties": "日本瓦斯株式会社",
+    "IssuedShares": 13730018
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100QBL9",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QBL9",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

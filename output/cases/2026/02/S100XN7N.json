@@ -34,7 +34,8 @@
       "S100XN88",
       "S100XXZ2"
     ],
-    "CapitalParties": "湯沢株式会社、株式会社ツムラ、日本マスタートラスト信託銀行株式会社、三菱UFJ信託銀行株式会社、株式会社八十二長野銀行、トーア再保険株式会社"
+    "CapitalParties": "湯沢株式会社、株式会社ツムラ、日本マスタートラスト信託銀行株式会社、三菱UFJ信託銀行株式会社、株式会社八十二長野銀行、トーア再保険株式会社",
+    "IssuedShares": 16500000
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100XN7N",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100XN88",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

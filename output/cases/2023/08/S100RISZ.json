@@ -35,7 +35,8 @@
       "S100RQRW",
       "S100RRWQ",
       "S100RYMJ"
-    ]
+    ],
+    "IssuedShares": 10405800
   },
   "sources": {
     "OfferPrice": {
@@ -91,6 +92,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100RRWQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100RRWQ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100WIIB",
       "S100WR9V"
     ],
-    "CapitalParties": "株式会社三桂製作所、三桂興産株式会社、富士電化工業株式会社、三桂精機株式会社"
+    "CapitalParties": "株式会社三桂製作所、三桂興産株式会社、富士電化工業株式会社、三桂精機株式会社",
+    "IssuedShares": 1552500
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100WII8",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WIIB",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

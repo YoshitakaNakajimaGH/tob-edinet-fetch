@@ -38,7 +38,8 @@
       "S100XUO7",
       "S100XY7C"
     ],
-    "CapitalParties": "合同会社FMDI、伊藤忠商事株式会社"
+    "CapitalParties": "合同会社FMDI、伊藤忠商事株式会社",
+    "IssuedShares": 12720000
   },
   "sources": {
     "OfferPrice": {
@@ -110,6 +111,11 @@
       "docId": "S100XUNE",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100XUO7",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

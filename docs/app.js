@@ -1,4 +1,4 @@
-import { escapeHtml, loadCases, premiumLabel } from "./csv.js";
+import { considerationOku, escapeHtml, isSelfTender, loadCases, premiumLabel } from "./csv.js";
 
 const els = {
   query: document.getElementById("query"),
@@ -121,6 +121,91 @@ function field(label, value, wide = false) {
   `;
 }
 
+function asNumber(value) {
+  if (value === "" || value == null) return null;
+  const number = Number(String(value).replace(/,/g, ""));
+  return Number.isFinite(number) && number > 0 ? number : null;
+}
+
+function priceChart(item) {
+  const bands = [
+    ["買付者・市場株価法", item.OfferorMarketMin, item.OfferorMarketMax],
+    ["買付者・類似会社", item.OfferorComparableMin, item.OfferorComparableMax],
+    ["買付者・DCF", item.OfferorDcfMin, item.OfferorDcfMax],
+    ["対象会社・市場株価法", item.TargetMarketMin, item.TargetMarketMax],
+    ["対象会社・類似会社", item.TargetComparableMin, item.TargetComparableMax],
+    ["対象会社・DCF", item.TargetDcfMin, item.TargetDcfMax],
+  ]
+    .map(([label, min, max]) => ({ label, min: asNumber(min), max: asNumber(max) }))
+    .filter((band) => band.min != null && band.max != null);
+  const prior = asNumber(item.PriorClose);
+  const offer = asNumber(item.OfferPrice);
+  const values = [prior, offer, ...bands.flatMap((band) => [band.min, band.max])].filter((value) => value != null);
+  if (!values.length) return "";
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  const pad = (high - low) * 0.08 || high * 0.05 || 1;
+  const start = Math.max(0, low - pad);
+  const end = high + pad;
+  const at = (value) => ((value - start) / (end - start)) * 100;
+  const line = (value, kind, label) => value == null
+    ? ""
+    : `<span class="price-line ${kind}" style="left:${at(value)}%">${label ? `<b>${escapeHtml(yen(value))}</b>` : ""}</span>`;
+  const labeled = `${line(prior, "prior", true)}${line(offer, "offer", true)}`;
+  const plain = `${line(prior, "prior", false)}${line(offer, "offer", false)}`;
+  const rows = bands.map((band) => {
+    const left = at(Math.min(band.min, band.max));
+    const width = Math.max(at(Math.max(band.min, band.max)) - left, 1.2);
+    return `
+      <div class="band-row">
+        <span class="band-label">${escapeHtml(band.label)}</span>
+        <span class="band-track">
+          ${plain}
+          <i style="left:${left}%;width:${width}%"></i>
+        </span>
+      </div>`;
+  }).join("");
+  const axis = `<div class="band-row"><span class="band-label">円/株</span><span class="band-track axis">${labeled}</span></div>`;
+  return `<div class="price-chart" aria-label="株価と算定レンジ">${axis}${rows}</div>`;
+}
+
+function dealStory(item) {
+  const self = isSelfTender(item);
+  const sponsor = (item.SponsorHint || "").trim();
+  const buyer = item.OfferorName || "—";
+  const sponsorText = sponsor || buyer;
+  const result = item.FinalResultNote || item.Status || "—";
+  const resultClass = /不成立|撤回/.test(result) ? "result-bad" : /成立/.test(result) ? "result-good" : "";
+  if (self) {
+    return `
+      <div class="deal">
+        <div class="party">
+          <span>対象会社</span>
+          <strong>${escapeHtml(item.TargetName || item.caseId)}</strong>
+          <em>自社株TOB</em>
+        </div>
+      </div>
+      <p class="deal-line"><b>${escapeHtml(considerationOku(item.PurchaseConsideration))}</b><span class="${resultClass}">${escapeHtml(result)}</span></p>
+    `;
+  }
+  return `
+    <div class="deal">
+      <div class="party">
+        <span>対象会社</span>
+        <strong>${escapeHtml(item.TargetName || item.caseId)}</strong>
+      </div>
+      <div class="deal-arrow" aria-hidden="true">→</div>
+      <div class="party party-right">
+        <span>買付者</span>
+        <strong>${escapeHtml(buyer)}</strong>
+        <span>スポンサー</span>
+        <strong>${escapeHtml(sponsorText)}</strong>
+      </div>
+    </div>
+    <p class="deal-line"><b>${escapeHtml(considerationOku(item.PurchaseConsideration))}</b><span class="${resultClass}">${escapeHtml(result)}</span></p>
+  `;
+}
+
 function renderDetail(item) {
   if (!item) {
     els.detail.innerHTML = `<p class="empty">左の一覧から案件を選ぶと、ここにサマリが出ます。</p>`;
@@ -134,34 +219,22 @@ function renderDetail(item) {
     links.push(`<a href="${escapeHtml(item.LatestReportPdf)}" target="_blank" rel="noreferrer">報告書PDF</a>`);
   }
   els.detail.innerHTML = `
-    <div class="detail-head">
-      <h2>${escapeHtml(item.TargetName || item.caseId)}</h2>
-      <span class="badge">${escapeHtml(item.Status || "—")}</span>
-    </div>
+    ${dealStory(item)}
+    ${priceChart(item)}
+    <p class="capital-line">資本関係者候補 ${escapeHtml(text(item.CapitalParties))}</p>
     <div class="grid">
       ${field("届出月", text(item.filingMonth))}
-      ${field("案件ID", text(item.caseId))}
-      ${field("買付者", text(item.OfferorName))}
-      ${field("スポンサー候補", text(item.SponsorHint))}
-      ${field("資本関係者候補", text(item.CapitalParties), true)}
-      ${field("買付価格", yen(item.OfferPrice))}
+      ${field("上場区分", text(item.TargetListingStatus))}
       ${field("公開買付代理人", text(item.TenderOfferAgent))}
+      ${field("プレミアム", premiumLabel(item.PremiumVsPriorClose))}
       ${field("買付期間", `${text(item.OfferPeriodStart)} 〜 ${text(item.OfferPeriodEnd)}`, true)}
+      ${field("発行済株式数", shares(item.IssuedShares))}
       ${field("買付予定株数", shares(item.PlannedSharesPlanned))}
-      ${field("下限 / 上限", `${shares(item.PlannedSharesMin)} / ${shares(item.PlannedSharesMax)}`)}
-      ${field("買付代金", yen(item.PurchaseConsideration))}
-      ${field("意見", text(item.OpinionStance))}
       ${field("買付前保有（買付者）", ratio(item.ExistingHoldingRatio))}
-      ${field("特別関係者", ratio(item.SpecialRelatedHoldingRatio))}
       ${field("買付後保有", ratio(item.AfterPurchaseRatio))}
+      ${field("意見", text(item.OpinionStance))}
       ${field("応募 / 買付", `${shares(item.ApplicationCount)} / ${shares(item.PurchaseCount)}`)}
-      ${field("前営業日終値", yen(item.PriorClose))}
-      ${field("プレミアム（終値）", premiumLabel(item.PremiumVsPriorClose))}
-      ${field("買付者側 DCF", range(item.OfferorDcfMin, item.OfferorDcfMax))}
-      ${field("対象会社側 DCF", range(item.TargetDcfMin, item.TargetDcfMax))}
-      ${field("買付者側 市場株価法", range(item.OfferorMarketMin, item.OfferorMarketMax))}
-      ${field("対象会社側 市場株価法", range(item.TargetMarketMin, item.TargetMarketMax))}
-      ${field("上場区分 / 廃止注記", `${text(item.TargetListingStatus)} / ${text(item.TargetDelistingNote)}`, true)}
+      ${field("廃止注記", text(item.TargetDelistingNote), true)}
     </div>
     <div class="links">${links.join("") || "<span class='value'>—</span>"}</div>
   `;

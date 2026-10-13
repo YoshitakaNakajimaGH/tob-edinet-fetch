@@ -38,7 +38,8 @@
       "S100QXSA",
       "S100R8DI"
     ],
-    "CapitalParties": "サイブリッジホールディングス株式会社、サイブリッジコーポレーション株式会社、株式会社武蔵野、株式会社EGIJ及"
+    "CapitalParties": "サイブリッジホールディングス株式会社、サイブリッジコーポレーション株式会社、株式会社武蔵野、株式会社EGIJ及",
+    "IssuedShares": 3380920
   },
   "sources": {
     "OfferPrice": {
@@ -103,6 +104,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100QXRG",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QXRG",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -35,7 +35,8 @@
       "S100QA23",
       "S100QFLV"
     ],
-    "CapitalParties": "The Carlyle Group、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、センクシア株式会社、ウイングアーク１st株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社、株式会社日本カストディ銀行"
+    "CapitalParties": "The Carlyle Group、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、センクシア株式会社、ウイングアーク１st株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社、株式会社日本カストディ銀行",
+    "IssuedShares": 7821950
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100QA23",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QA23",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -37,7 +37,8 @@
       "S100XXKY",
       "S100Y0AI"
     ],
-    "CapitalParties": "株式会社エス・ジー・シー、株式会社ＳＡＴＯ"
+    "CapitalParties": "株式会社エス・ジー・シー、株式会社ＳＡＴＯ",
+    "IssuedShares": 993000
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100XXKY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100XXKY",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

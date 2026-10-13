@@ -35,7 +35,8 @@
       "S100RTKA",
       "S100RY1C"
     ],
-    "CapitalParties": "株式会社レイチェル、三井住友信託銀行株式会社"
+    "CapitalParties": "株式会社レイチェル、三井住友信託銀行株式会社",
+    "IssuedShares": 21217600
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100RTKA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100RTKA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

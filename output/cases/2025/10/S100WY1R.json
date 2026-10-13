@@ -34,7 +34,8 @@
       "S100WY30",
       "S100XAPW"
     ],
-    "CapitalParties": "住友電気工業株式会社"
+    "CapitalParties": "住友電気工業株式会社",
+    "IssuedShares": 35635879
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docId": "S100WY1R",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WY30",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

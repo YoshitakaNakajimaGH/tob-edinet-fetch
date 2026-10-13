@@ -34,7 +34,8 @@
       "S100N5HO",
       "S100NITX"
     ],
-    "CapitalParties": "株式会社エルエヌ"
+    "CapitalParties": "株式会社エルエヌ",
+    "IssuedShares": 774645947
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100N5H5",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100N5HO",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

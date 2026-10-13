@@ -34,7 +34,8 @@
       "S100VM5Y",
       "S100VPGE"
     ],
-    "CapitalParties": "株式会社麻生、UGSアセットマネジメント株式会社、株式会社キャピタルギャラリー、有限会社キャピタル・マネジメント、住友大阪セメント株式会社"
+    "CapitalParties": "株式会社麻生、UGSアセットマネジメント株式会社、株式会社キャピタルギャラリー、有限会社キャピタル・マネジメント、住友大阪セメント株式会社",
+    "IssuedShares": 19594000
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docId": "S100VK3W",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100VM5Y",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

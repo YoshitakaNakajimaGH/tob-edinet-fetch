@@ -37,7 +37,8 @@
       "S100VMZI",
       "S100VPYE"
     ],
-    "CapitalParties": "株式会社牧野フライス製作所"
+    "CapitalParties": "株式会社牧野フライス製作所",
+    "IssuedShares": 24893841
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100VLWA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100VLWA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

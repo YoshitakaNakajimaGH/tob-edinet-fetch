@@ -39,7 +39,8 @@
       "S100N3R2",
       "S100N4PO",
       "S100N7IL"
-    ]
+    ],
+    "IssuedShares": 35215000
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100N4PO",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100N4PO",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

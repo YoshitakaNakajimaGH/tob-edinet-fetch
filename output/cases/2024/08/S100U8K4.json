@@ -37,7 +37,8 @@
       "S100UFO3",
       "S100UJ24"
     ],
-    "CapitalParties": "DigitalBridge"
+    "CapitalParties": "DigitalBridge",
+    "IssuedShares": 25702018
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100UFO3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100UFO3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100UQ7D",
       "S100V09U"
     ],
-    "CapitalParties": "有限会社ティーワン、広島運輸株式会社"
+    "CapitalParties": "有限会社ティーワン、広島運輸株式会社",
+    "IssuedShares": 1358000
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100UQ5O",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100UQ7D",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

@@ -34,7 +34,8 @@
       "S100P2GA",
       "S100P7KL"
     ],
-    "CapitalParties": "Evolution Capital、JAPANアセットマネジメント株式会社、EVOLUTION総研株式会社、JAPAN証券株式会社"
+    "CapitalParties": "Evolution Capital、JAPANアセットマネジメント株式会社、EVOLUTION総研株式会社、JAPAN証券株式会社",
+    "IssuedShares": 57192187
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100P2FT",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100P2GA",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

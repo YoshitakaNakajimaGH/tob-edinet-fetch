@@ -35,7 +35,8 @@
       "S100SD85",
       "S100SITL"
     ],
-    "CapitalParties": "株式会社三菱ＵＦＪ銀行、株式会社三井住友銀行"
+    "CapitalParties": "株式会社三菱ＵＦＪ銀行、株式会社三井住友銀行",
+    "IssuedShares": 13500000
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100SD85",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100SD85",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

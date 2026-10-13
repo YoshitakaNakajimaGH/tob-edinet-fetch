@@ -33,7 +33,8 @@
       "S100WTL6",
       "S100X3V2",
       "S100XA00"
-    ]
+    ],
+    "IssuedShares": 5670000
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docId": "S100WTL6",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100X3V2",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

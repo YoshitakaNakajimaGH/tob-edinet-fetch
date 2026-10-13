@@ -34,7 +34,8 @@
       "S100V63J",
       "S100VF5F"
     ],
-    "CapitalParties": "有限会社ニシムラ、株式会社十六銀行、株式会社大垣共立銀行"
+    "CapitalParties": "有限会社ニシムラ、株式会社十六銀行、株式会社大垣共立銀行",
+    "IssuedShares": 5769040
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100V62O",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100V63J",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

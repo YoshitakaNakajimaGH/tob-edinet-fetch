@@ -383,6 +383,152 @@ main.wide {
   outline: none;
 }
 
+.year-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 0 0 0.8rem;
+}
+
+.summary-card {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 252, 246, 0.72);
+}
+
+.summary-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.summary-card strong {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.deal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+
+.party {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.party span,
+.capital-line {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.party strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.party em {
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.party-right {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.deal-arrow {
+  font-size: 1.8rem;
+  color: var(--accent);
+}
+
+.deal-line {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin: 0 0 1rem;
+  font-weight: 700;
+}
+
+.result-good { color: #0c7a4b; }
+.result-bad { color: #b42318; }
+
+.price-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 0.9rem;
+}
+
+.band-row {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.band-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.band-track {
+  position: relative;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: rgba(18, 32, 43, 0.06);
+}
+
+.band-track i {
+  position: absolute;
+  top: 0.45rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    90deg,
+    #0f6e56 0 8px,
+    transparent 8px 12px
+  );
+}
+
+.price-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-1px);
+}
+
+.price-line b {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+
+.price-line.prior {
+  background: #5c6b76;
+}
+.price-line.prior b { top: -1rem; color: #5c6b76; }
+.price-line.offer { background: #9a4d1c; }
+.price-line.offer b { bottom: -1rem; color: #9a4d1c; }
+
+.capital-line { margin: 0 0 0.8rem; }
+
 .premium-up {
   color: #0c7a4b;
   font-weight: 700;
@@ -410,4 +556,16 @@ main.wide {
     padding-top: 2.2rem;
   }
 
+  .year-summary,
+  .deal,
+  .band-row {
+    grid-template-columns: 1fr;
+  }
+
+  .party-right,
+  .deal-line {
+    text-align: left;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
 }

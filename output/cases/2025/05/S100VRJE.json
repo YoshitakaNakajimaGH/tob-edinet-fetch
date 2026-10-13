@@ -35,7 +35,8 @@
       "S100VRK6",
       "S100W8R7",
       "S100WCVT"
-    ]
+    ],
+    "IssuedShares": 26950000
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100W8R7",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100W8R7",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

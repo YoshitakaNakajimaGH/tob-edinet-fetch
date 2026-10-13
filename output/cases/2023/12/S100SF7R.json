@@ -34,7 +34,8 @@
       "S100SFE2",
       "S100SOBE"
     ],
-    "CapitalParties": "株式会社東宝コスチューム、TOHOシネマズ株式会社、東宝東和株式会社、阪急阪神ホールディングス株式会社"
+    "CapitalParties": "株式会社東宝コスチューム、TOHOシネマズ株式会社、東宝東和株式会社、阪急阪神ホールディングス株式会社",
+    "IssuedShares": 6191218
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100SF7R",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100SFE2",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

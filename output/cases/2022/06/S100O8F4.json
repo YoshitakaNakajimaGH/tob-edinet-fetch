@@ -36,7 +36,8 @@
       "S100OMWC",
       "S100OSD3"
     ],
-    "CapitalParties": "株式会社大泉製作所株式"
+    "CapitalParties": "株式会社大泉製作所株式",
+    "IssuedShares": 9258790
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100OMWC",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100OMWC",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

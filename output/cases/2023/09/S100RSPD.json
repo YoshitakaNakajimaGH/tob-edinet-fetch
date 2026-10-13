@@ -34,7 +34,8 @@
       "S100RSPV",
       "S100S1N9"
     ],
-    "CapitalParties": "The Carlyle Group、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、センクシア株式会社、ウイングアーク１st株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社、東京特殊電線株式会社、株式会社TOTOKU、ＤＩＣ株式会社"
+    "CapitalParties": "The Carlyle Group、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、センクシア株式会社、ウイングアーク１st株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社、東京特殊電線株式会社、株式会社TOTOKU、ＤＩＣ株式会社",
+    "IssuedShares": 30321283
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docId": "S100RSPD",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100RSPV",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

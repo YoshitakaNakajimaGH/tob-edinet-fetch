@@ -34,7 +34,8 @@
       "S100UO9K",
       "S100UZFS"
     ],
-    "CapitalParties": "ＤＭＣ株式会社"
+    "CapitalParties": "ＤＭＣ株式会社",
+    "IssuedShares": 18722800
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100UO6K",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100UO9K",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

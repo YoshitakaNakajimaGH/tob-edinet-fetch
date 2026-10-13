@@ -13,6 +13,7 @@ import {
 const els = {
   tabs: document.getElementById("year-tabs"),
   meta: document.getElementById("meta"),
+  summary: document.getElementById("year-summary"),
   body: document.getElementById("year-body"),
 };
 
@@ -88,6 +89,55 @@ function premiumCell(value) {
   return `<td class="${tone}">${escapeHtml(label)}</td>`;
 }
 
+function average(values) {
+  if (!values.length) return null;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function renderSummary(rows) {
+  if (!els.summary || selfOnly) return;
+  const premiums = rows
+    .map((item) => Number(item.PremiumVsPriorClose))
+    .filter((value) => Number.isFinite(value));
+  const days = rows
+    .map((item) => periodDays(item.OfferPeriodStart, item.OfferPeriodEnd))
+    .filter((value) => value != null);
+  const mbo = rows.filter((item) => item.IsMBO === "Yes").length;
+  const hostile = rows.filter((item) => item.IsHostileInitial === "Yes").length;
+  const agents = new Map();
+  for (const item of rows) {
+    const agent = (item.TenderOfferAgent || "").trim();
+    if (!agent) continue;
+    agents.set(agent, (agents.get(agent) || 0) + 1);
+  }
+  const topAgent = [...agents.entries()].sort((a, b) => b[1] - a[1])[0];
+  const largest = rows.reduce((best, item) => {
+    const amount = Number(String(item.PurchaseConsideration || "").replace(/,/g, ""));
+    if (!Number.isFinite(amount)) return best;
+    if (!best || amount > best.amount) {
+      return { amount, name: item.TargetName || item.caseId };
+    }
+    return best;
+  }, null);
+  const premiumAvg = average(premiums);
+  const dayAvg = average(days);
+  const cards = [
+    ["プレミアム平均", premiumAvg == null ? "—" : premiumLabel(premiumAvg)],
+    ["MBO", `${mbo}件`],
+    ["敵対的", `${hostile}件`],
+    ["期間日数平均", dayAvg == null ? "—" : `${dayAvg.toFixed(1)}日`],
+    ["最多の幹事", topAgent ? `${topAgent[0]}（${topAgent[1]}件）` : "—"],
+    ["買収額最大", largest ? `${largest.name}（${considerationOku(largest.amount)}）` : "—"],
+  ];
+  els.summary.replaceChildren();
+  for (const [label, value] of cards) {
+    const card = document.createElement("div");
+    card.className = "summary-card";
+    card.innerHTML = `<span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>`;
+    els.summary.append(card);
+  }
+}
+
 function renderTable() {
   const rows = cases
     .filter((item) => filingYear(item) === selectedYear)
@@ -99,6 +149,7 @@ function renderTable() {
   els.meta.textContent = selectedYear
     ? `${selectedYear}年 ${rows.length}件 / 全${cases.length}件`
     : "データがありません";
+  renderSummary(rows);
   els.body.replaceChildren();
   for (const item of rows) {
     const days = periodDays(item.OfferPeriodStart, item.OfferPeriodEnd);
@@ -106,17 +157,24 @@ function renderTable() {
     tr.tabIndex = 0;
     tr.dataset.caseId = item.caseId;
     const period = days == null ? "—" : `${days}日`;
+    const planned = Number(String(item.PlannedSharesPlanned || "").replace(/,/g, ""));
+    const issued = Number(String(item.IssuedShares || "").replace(/,/g, ""));
+    const issuedRatio = Number.isFinite(planned) && Number.isFinite(issued) && issued > 0
+      ? `${((planned / issued) * 100).toFixed(1)}%`
+      : "—";
     tr.innerHTML = selfOnly
       ? `
       <td>${escapeHtml(item.TargetName || item.caseId)}</td>
-      <td>${escapeHtml(item.OfferorName || "—")}</td>
       <td>${escapeHtml(sharesLabel(item.PlannedSharesPlanned))}</td>
+      <td>${escapeHtml(sharesLabel(item.IssuedShares))}</td>
+      <td>${escapeHtml(issuedRatio)}</td>
       <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
       <td>${escapeHtml(resultLabel(item))}</td>
       <td>${escapeHtml(period)}</td>
       <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
     `
       : `
+      <td>${escapeHtml(item.TargetListingStatus || "—")}</td>
       <td>${escapeHtml(item.TargetName || item.caseId)}</td>
       <td>${escapeHtml(offerorLabel(item))}</td>
       <td>${escapeHtml(yenLabel(item.PriorClose))}</td>
@@ -153,7 +211,7 @@ async function boot() {
     renderTable();
   } catch (error) {
     els.meta.textContent = "データを読めませんでした。ローカルサーバ経由で開いてください。";
-    const span = selfOnly ? 7 : 10;
+    const span = selfOnly ? 8 : 11;
     els.body.innerHTML = `<tr><td colspan="${span}">${escapeHtml(String(error))}</td></tr>`;
   }
 }

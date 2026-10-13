@@ -35,7 +35,8 @@
       "S100XH4D",
       "S100XMG1"
     ],
-    "CapitalParties": "Japan Industrial Partners、日本産業パートナーズ株式会社、日本産業第6号GP株式会社、LVJホールディングス合同会社、日本電気株式会社、ビッグローブ株式会社、ソニー株式会社、株式会社日立製作所、株式会社日立国際電気、株式会社東芝"
+    "CapitalParties": "Japan Industrial Partners、日本産業パートナーズ株式会社、日本産業第6号GP株式会社、LVJホールディングス合同会社、日本電気株式会社、ビッグローブ株式会社、ソニー株式会社、株式会社日立製作所、株式会社日立国際電気、株式会社東芝",
+    "IssuedShares": 106810013
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docId": "S100XGVL",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100XH4D",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

@@ -35,7 +35,8 @@
       "S100RTCN",
       "S100RW4Q"
     ],
-    "CapitalParties": "辻不動産株式会社、ケミコ株式会社、ロック商事株式会社、ピーアイエー株式会社"
+    "CapitalParties": "辻不動産株式会社、ケミコ株式会社、ロック商事株式会社、ピーアイエー株式会社",
+    "IssuedShares": 22000000
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100RTCN",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100RTCN",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -35,7 +35,8 @@
       "S100TYE9",
       "S100U2MG"
     ],
-    "CapitalParties": "ネイビー２株式会社、株式会社三菱UFJ銀行、株式会社東"
+    "CapitalParties": "ネイビー２株式会社、株式会社三菱UFJ銀行、株式会社東",
+    "IssuedShares": 4685745
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
     },
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100TYE9",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100TYE9",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

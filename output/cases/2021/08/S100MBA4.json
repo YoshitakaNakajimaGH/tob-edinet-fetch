@@ -37,7 +37,8 @@
       "S100MJ61",
       "S100MJ6G",
       "S100MMCU"
-    ]
+    ],
+    "IssuedShares": 5972000
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docId": "S100MJ61",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100MJ6G",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

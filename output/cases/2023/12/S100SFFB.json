@@ -34,7 +34,8 @@
       "S100SFI5",
       "S100SO8W"
     ],
-    "CapitalParties": "阪急阪神不動産株式会社、東宝株式会社"
+    "CapitalParties": "阪急阪神不動産株式会社、東宝株式会社",
+    "IssuedShares": 3200000
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100SFFB",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100SFI5",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

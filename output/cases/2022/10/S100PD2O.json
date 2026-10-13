@@ -36,7 +36,8 @@
       "S100PN4Q",
       "S100PQ0J"
     ],
-    "CapitalParties": "合同会社リフレーミング"
+    "CapitalParties": "合同会社リフレーミング",
+    "IssuedShares": 44392680
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docId": "S100PN1V",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100PN4Q",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

@@ -42,7 +42,8 @@
       "S100UKKC",
       "S100UN5T"
     ],
-    "CapitalParties": "KKR、FKホールディングス株式会社、株式会社日立物流、現ロジスティード株式会社、カルソニックカンセイ株式会社、現マレリ株式会社、日立工機株式会社、現工機ホールディングス株式会社、株式会社日立国際電気、株式会社KOKUSAI"
+    "CapitalParties": "KKR、FKホールディングス株式会社、株式会社日立物流、現ロジスティード株式会社、カルソニックカンセイ株式会社、現マレリ株式会社、日立工機株式会社、現工機ホールディングス株式会社、株式会社日立国際電気、株式会社KOKUSAI",
+    "IssuedShares": 67400000
   },
   "sources": {
     "OfferPrice": {
@@ -110,6 +111,11 @@
       "docId": "S100UK9B",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100UKKC",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

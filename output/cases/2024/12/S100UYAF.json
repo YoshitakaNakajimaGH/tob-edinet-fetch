@@ -33,7 +33,8 @@
       "S100UYAF",
       "S100UYBT",
       "S100V49Q"
-    ]
+    ],
+    "IssuedShares": 3180700
   },
   "sources": {
     "OfferPrice": {
@@ -92,6 +93,11 @@
       "docId": "S100UYAF",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100UYBT",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

@@ -35,7 +35,8 @@
       "S100OLPG",
       "S100OY4T"
     ],
-    "CapitalParties": "Cornwall Capital、株式会社ヴァレックス・パートナーズ、ユナイテッド・マネージャーズ・ジャパン株式会社"
+    "CapitalParties": "Cornwall Capital、株式会社ヴァレックス・パートナーズ、ユナイテッド・マネージャーズ・ジャパン株式会社",
+    "IssuedShares": 5879501
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100OLPG",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100OLPG",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

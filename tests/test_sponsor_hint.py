@@ -88,6 +88,15 @@ class SponsorHintInferenceTests(unittest.TestCase):
             "",
         )
 
+    def test_issued_shares_prefers_the_target_total(self) -> None:
+        from tob.extract_fields import parse_issued_shares
+
+        text = (
+            "MBKファンドが発行済株式総数（50,000株）のうち49,999株を所有する。"
+            "対象者の発行済株式総数（9,277,500株）から自己株式を控除する。"
+        )
+        self.assertEqual(parse_issued_shares(text), 9277500)
+
     def test_capital_parties_lists_companies_in_the_opening(self) -> None:
         from tob.extract_fields import extract_capital_parties
 

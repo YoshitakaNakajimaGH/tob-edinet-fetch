@@ -34,7 +34,8 @@
       "S100P0O1",
       "S100P8S3"
     ],
-    "CapitalParties": "Integral、インテグラル株式会社、キュービーネットホールディングス株式会社、スカイマーク株式会社、東洋エンジニアリング株式会社、株式会社オリバー等"
+    "CapitalParties": "Integral、インテグラル株式会社、キュービーネットホールディングス株式会社、スカイマーク株式会社、東洋エンジニアリング株式会社、株式会社オリバー等",
+    "IssuedShares": 36380400
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100P0MY",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100P0O1",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

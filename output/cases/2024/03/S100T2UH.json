@@ -35,7 +35,8 @@
       "S100T5BS",
       "S100TAH8"
     ],
-    "CapitalParties": "株式会社産業革新投資機構、JICキャピタル株式会社、株式会社日本政策投資銀行、東洋アルミニウム株式会社、株式会社ＵＡＣＪ製箔"
+    "CapitalParties": "株式会社産業革新投資機構、JICキャピタル株式会社、株式会社日本政策投資銀行、東洋アルミニウム株式会社、株式会社ＵＡＣＪ製箔",
+    "IssuedShares": 208400000
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docId": "S100T2UH",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100T5BS",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

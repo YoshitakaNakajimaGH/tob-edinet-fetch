@@ -38,7 +38,8 @@
       "S100T0W8",
       "S100T5FL"
     ],
-    "CapitalParties": "食品株式会社、INBホールディングス株式会社、ペットフード株式会社、エスエスケイフーズ株式会社、静岡塩業株式会社、株式会社ベルキャリエール"
+    "CapitalParties": "食品株式会社、INBホールディングス株式会社、ペットフード株式会社、エスエスケイフーズ株式会社、静岡塩業株式会社、株式会社ベルキャリエール",
+    "IssuedShares": 11450398
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100T177",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100T0W8",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

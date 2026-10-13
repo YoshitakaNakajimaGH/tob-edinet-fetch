@@ -36,7 +36,8 @@
       "S100QTJM",
       "S100QWTM"
     ],
-    "CapitalParties": "合同会社TCTS09"
+    "CapitalParties": "合同会社TCTS09",
+    "IssuedShares": 235987091
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100QTJM",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QTJM",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

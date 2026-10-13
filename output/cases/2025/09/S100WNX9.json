@@ -40,7 +40,8 @@
       "S100X5LQ",
       "S100X8K3"
     ],
-    "CapitalParties": "HIBC株式会社、株式会社タイム・アンド・スペース"
+    "CapitalParties": "HIBC株式会社、株式会社タイム・アンド・スペース",
+    "IssuedShares": 17459907
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docId": "S100X5DI",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100X5LQ",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

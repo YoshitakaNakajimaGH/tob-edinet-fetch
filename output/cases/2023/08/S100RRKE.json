@@ -35,7 +35,8 @@
       "S100RSU2",
       "S100RWQN"
     ],
-    "CapitalParties": "エース交易株式会社、JAPAN株式会社、株式会社マックスマネー・インベストメント、EVOLUTION総研株式会社、ビバーチェ・キャピタル・マネジメント株式会社、JAPANアセットマネジメント株式会社、アルバース証券株式会社、JAPAN証券株式会社、キャピタルリアリティー株式会社、LandBank株式会社、JAPAN管財株式会社"
+    "CapitalParties": "エース交易株式会社、JAPAN株式会社、株式会社マックスマネー・インベストメント、EVOLUTION総研株式会社、ビバーチェ・キャピタル・マネジメント株式会社、JAPANアセットマネジメント株式会社、アルバース証券株式会社、JAPAN証券株式会社、キャピタルリアリティー株式会社、LandBank株式会社、JAPAN管財株式会社",
+    "IssuedShares": 400000510
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100RSU2",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100RSU2",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

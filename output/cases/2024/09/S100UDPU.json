@@ -34,7 +34,8 @@
       "S100UDQK",
       "S100UHDT",
       "S100UM14"
-    ]
+    ],
+    "IssuedShares": 29081400
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100UHDT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100UHDT",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -35,7 +35,8 @@
       "S100OHLH",
       "S100OKHZ",
       "S100OQ87"
-    ]
+    ],
+    "IssuedShares": 2998800
   },
   "sources": {
     "OfferPrice": {
@@ -87,6 +88,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100OKHZ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100OKHZ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

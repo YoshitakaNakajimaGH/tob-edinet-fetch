@@ -36,7 +36,8 @@
       "S100TI3P",
       "S100TLPJ"
     ],
-    "CapitalParties": "ソフトバンクグループ株式会社、ソフトバンクグループジャパン株式会社"
+    "CapitalParties": "ソフトバンクグループ株式会社、ソフトバンクグループジャパン株式会社",
+    "IssuedShares": 22757800
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docId": "S100TI21",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100TI3P",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

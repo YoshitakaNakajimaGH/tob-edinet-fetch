@@ -36,7 +36,8 @@
       "S100QARO",
       "S100QDX0"
     ],
-    "CapitalParties": "兼松株式会社"
+    "CapitalParties": "兼松株式会社",
+    "IssuedShares": 4149200
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docId": "S100QAPU",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100QARO",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

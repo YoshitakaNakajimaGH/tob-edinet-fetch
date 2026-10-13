@@ -35,7 +35,8 @@
       "S100POJ5",
       "S100PV5Y"
     ],
-    "CapitalParties": "The Carlyle Group、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、現センクシア株式会社、ウイングアーク１ｓｔ株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社"
+    "CapitalParties": "The Carlyle Group、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、現センクシア株式会社、ウイングアーク１ｓｔ株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社",
+    "IssuedShares": 37067757
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100POJ5",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100POJ5",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

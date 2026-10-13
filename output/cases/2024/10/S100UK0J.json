@@ -38,7 +38,8 @@
       "S100UTSQ",
       "S100UWR3"
     ],
-    "CapitalParties": "株式会社富洋海運"
+    "CapitalParties": "株式会社富洋海運",
+    "IssuedShares": 1224000
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100UTSQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100UTSQ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

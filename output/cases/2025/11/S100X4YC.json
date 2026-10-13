@@ -35,7 +35,8 @@
       "S100XANS",
       "S100XEJO"
     ],
-    "CapitalParties": "株式会社キョウサン"
+    "CapitalParties": "株式会社キョウサン",
+    "IssuedShares": 2976942
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100XANS",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100XANS",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -36,7 +36,8 @@
       "S100X6TJ",
       "S100XAT3"
     ],
-    "CapitalParties": "株式会社アライドマテリアル、住友電工焼結合金株式会社、九州住電精密株式会社、住電商事株式会社、日新電機株式会社、株式会社テクノアソシエ、住電機器システム株式会社、住友電工ツールネット株式会社"
+    "CapitalParties": "株式会社アライドマテリアル、住友電工焼結合金株式会社、九州住電精密株式会社、住電商事株式会社、日新電機株式会社、株式会社テクノアソシエ、住電機器システム株式会社、住友電工ツールネット株式会社",
+    "IssuedShares": 104042806
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100X6TJ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100X6TJ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

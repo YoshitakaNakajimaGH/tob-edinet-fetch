@@ -35,7 +35,8 @@
       "S100VBPH",
       "S100VMQ9"
     ],
-    "CapitalParties": "立花証券株式会社"
+    "CapitalParties": "立花証券株式会社",
+    "IssuedShares": 54320100
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
     "SponsorHint": null,
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100VBPH",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100VBPH",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

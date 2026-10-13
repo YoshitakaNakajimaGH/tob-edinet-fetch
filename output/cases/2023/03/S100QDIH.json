@@ -36,7 +36,8 @@
       "S100QG2X",
       "S100QKTQ"
     ],
-    "CapitalParties": "日鉄建材株式会社、日鉄物流株式会社、日鉄ＳＧワイヤ株式会社、王子製鉄株式会社、山陽特殊製鋼株式会社、日鉄セメント株式会社、日鉄物産株式会社、三井物産株式会社"
+    "CapitalParties": "日鉄建材株式会社、日鉄物流株式会社、日鉄ＳＧワイヤ株式会社、王子製鉄株式会社、山陽特殊製鋼株式会社、日鉄セメント株式会社、日鉄物産株式会社、三井物産株式会社",
+    "IssuedShares": 32307800
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100QG2X",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QG2X",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

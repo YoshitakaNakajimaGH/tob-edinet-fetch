@@ -34,7 +34,8 @@
       "S100Q7RV",
       "S100QHN5"
     ],
-    "CapitalParties": "株式会社大阪ソーダ、株式会社エンビプロ・ホールディングス"
+    "CapitalParties": "株式会社大阪ソーダ、株式会社エンビプロ・ホールディングス",
+    "IssuedShares": 3840000
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docId": "S100Q7HS",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100Q7RV",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

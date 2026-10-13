@@ -34,7 +34,8 @@
       "S100USQD",
       "S100UY4B"
     ],
-    "CapitalParties": "Polaris Capital Group"
+    "CapitalParties": "Polaris Capital Group",
+    "IssuedShares": 25000000
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docId": "S100USO6",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100USQD",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

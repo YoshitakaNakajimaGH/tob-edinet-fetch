@@ -35,7 +35,8 @@
       "S100W7CN",
       "S100WGPE"
     ],
-    "CapitalParties": "株式会社キャストリコ、有限会社清水エイジェンシー、モダンパス合同会社"
+    "CapitalParties": "株式会社キャストリコ、有限会社清水エイジェンシー、モダンパス合同会社",
+    "IssuedShares": 2264000
   },
   "sources": {
     "OfferPrice": null,
@@ -88,6 +89,11 @@
     "SponsorHint": null,
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100W7CN",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100W7CN",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100USQ7",
       "S100V190"
     ],
-    "CapitalParties": "三井住友信託銀行株式会社、株式会社日本カストディ銀行、株式会社八創"
+    "CapitalParties": "三井住友信託銀行株式会社、株式会社日本カストディ銀行、株式会社八創",
+    "IssuedShares": 13831091
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100USPR",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100USQ7",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

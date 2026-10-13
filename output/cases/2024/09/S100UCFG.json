@@ -33,7 +33,8 @@
       "S100UCFG",
       "S100UCG5",
       "S100UKT0"
-    ]
+    ],
+    "IssuedShares": 10744660
   },
   "sources": {
     "OfferPrice": {
@@ -88,6 +89,11 @@
       "docId": "S100UCFG",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100UCG5",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

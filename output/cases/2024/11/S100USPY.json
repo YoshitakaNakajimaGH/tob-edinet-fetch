@@ -44,7 +44,8 @@
       "S100VCEP",
       "S100VFHF"
     ],
-    "CapitalParties": "CVC、株式会社テクノプロ、アルテリア・ネットワークス株式会社、HITOWAホールディングス株式会社、株式会社ファイントゥデイ、株式会社トライグループ、総合メディカルグループ株式会社"
+    "CapitalParties": "CVC、株式会社テクノプロ、アルテリア・ネットワークス株式会社、HITOWAホールディングス株式会社、株式会社ファイントゥデイ、株式会社トライグループ、総合メディカルグループ株式会社",
+    "IssuedShares": 40480500
   },
   "sources": {
     "OfferPrice": {
@@ -112,6 +113,11 @@
       "docId": "S100VCD4",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100VCEP",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

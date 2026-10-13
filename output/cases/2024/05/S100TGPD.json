@@ -34,7 +34,8 @@
       "S100TGPG",
       "S100TJKA",
       "S100TMSK"
-    ]
+    ],
+    "IssuedShares": 12662100
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100TJKA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100TJKA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
