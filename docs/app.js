@@ -198,7 +198,7 @@ function dealStory(item) {
         <span>対象会社</span>
         <strong>${escapeHtml(item.TargetName || item.caseId)}</strong>
       </div>
-      <div class="deal-arrow" aria-hidden="true">→</div>
+      <div class="deal-arrow" aria-hidden="true">←</div>
       <div class="party party-right">
         <span>買付者</span>
         <strong>${escapeHtml(buyer)}</strong>
@@ -208,6 +208,66 @@ function dealStory(item) {
     </div>
     <p class="deal-line"><b>${escapeHtml(considerationOku(item.PurchaseConsideration))}</b><span class="${resultClass}">${escapeHtml(result)}</span></p>
   `;
+}
+
+function ratioNumber(value) {
+  if (value === "" || value == null) return null;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
+function pieStyle(parts) {
+  let cursor = 0;
+  const stops = [];
+  for (const part of parts) {
+    const next = Math.min(100, cursor + part.share * 100);
+    stops.push(`${part.color} ${cursor}% ${next}%`);
+    cursor = next;
+  }
+  if (cursor < 100) stops.push(`#d7e0dc ${cursor}% 100%`);
+  return `conic-gradient(${stops.join(",")})`;
+}
+
+function holdingPies(item) {
+  let offeror = ratioNumber(item.ExistingHoldingRatio);
+  let special = ratioNumber(item.SpecialRelatedHoldingRatio);
+  const after = ratioNumber(item.AfterPurchaseRatio);
+  if (offeror != null && special != null && offeror + special > 1) {
+    special = Math.max(0, special - offeror);
+  }
+  const beforeParts = [
+    offeror ? { label: "買付者", share: offeror, color: "#9a4d1c" } : null,
+    special ? { label: "特別関係者", share: special, color: "#1f6f8b" } : null,
+  ].filter(Boolean);
+  const afterParts = after ? [{ label: "買付後", share: Math.min(after, 1), color: "#0f6e56" }] : [];
+  if (!beforeParts.length && !afterParts.length) return "";
+  const legend = (parts) => parts.map((part) => (
+    `<li><i style="background:${part.color}"></i>${escapeHtml(part.label)} ${escapeHtml((part.share * 100).toFixed(1))}%</li>`
+  )).join("");
+  const pie = (title, parts) => `
+    <figure class="pie">
+      <figcaption>${escapeHtml(title)}</figcaption>
+      <span class="pie-disc" style="background:${pieStyle(parts)}"></span>
+      <ul>${legend(parts) || "<li>その他 100%</li>"}</ul>
+    </figure>`;
+  return `<div class="pies">${beforeParts.length ? pie("買付前", beforeParts) : ""}${afterParts.length ? pie("買付後", afterParts) : ""}</div>`;
+}
+
+function premiumField(item) {
+  const label = premiumLabel(item.PremiumVsPriorClose, item.PremiumDerived);
+  const number = Number(item.PremiumVsPriorClose);
+  const tone = item.PremiumVsPriorClose === "" || item.PremiumVsPriorClose == null || !Number.isFinite(number)
+    ? ""
+    : number > 0
+      ? "premium-up"
+      : number < 0
+        ? "premium-down"
+        : "";
+  return `
+    <div class="item">
+      <span class="label">プレミアム</span>
+      <span class="value ${tone}">${escapeHtml(label)}</span>
+    </div>`;
 }
 
 function renderDetail(item) {
@@ -229,12 +289,13 @@ function renderDetail(item) {
   els.detail.innerHTML = `
     ${dealStory(item)}
     ${priceChart(item)}
+    ${holdingPies(item)}
     <p class="capital-line">資本関係者候補 ${escapeHtml(text(item.CapitalParties))}</p>
     <div class="grid">
       ${field("届出月", text(item.filingMonth))}
       ${field("上場区分", text(item.TargetListingStatus))}
       ${field("公開買付代理人", text(item.TenderOfferAgent))}
-      ${field("プレミアム", premiumLabel(item.PremiumVsPriorClose))}
+      ${premiumField(item)}
       ${field("買付期間", `${text(item.OfferPeriodStart)} 〜 ${text(item.OfferPeriodEnd)}`, true)}
       ${field("発行済株式数", shares(item.IssuedShares))}
       ${field("買付予定株数", shares(item.PlannedSharesPlanned))}

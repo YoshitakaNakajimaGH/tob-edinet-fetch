@@ -1794,20 +1794,11 @@ def _yen_amount(raw: str) -> str:
     return _comma_number(raw)
 
 
-def parse_reference_market_price_details(text: str) -> dict[str, str]:
-    """Announcement prior-close and 1/3/6-month averages, without a 円 suffix.
-
-    Only the clause that states 公表日の前営業日 and then 終値 is accepted.
-    Precedent-premium sentences and 本書提出日の前営業日 are ignored.
-    Conflicting closes, or conflicting averages, stay blank.
-    """
-    empty = {"priorClose": "", "avg1m": "", "avg3m": "", "avg6m": ""}
+def _reference_price_windows(text: str) -> list[dict[str, str]]:
+    """Each 公表日の前営業日 clause that states one closing price."""
     plain = re.sub(r"\s+", "", strip_html(text or ""))
     if "公表日" not in plain or "前営業日" not in plain:
-        return empty
-    closes: set[str] = set()
-    triples: set[tuple[str, str, str]] = set()
-    singles: set[str] = set()
+        return []
     month_re = re.compile(
         r"(?:直近|過去)?[1１][ヶかカ]月間、(?:直近|過去)?[3３][ヶかカ]月間及び"
         r"(?:直近|過去)?[6６][ヶかカ]月間の終値単純平均値[（(]"
@@ -1816,6 +1807,7 @@ def parse_reference_market_price_details(text: str) -> dict[str, str]:
     single_month_re = re.compile(
         r"(?:直近|過去)[1１][ヶかカ]月間の終値単純平均値[（(]?([\d,，]+)円"
     )
+    windows: list[dict[str, str]] = []
     for match in re.finditer(r"公表日の前営業日|公表日前営業日", plain):
         window = plain[match.end() : match.end() + 420]
         stop = re.search(r"。|公表日の前営業日|公表日前営業日", window)
@@ -1831,32 +1823,57 @@ def parse_reference_market_price_details(text: str) -> dict[str, str]:
             found = re.findall(r"(?<!平均)終値([\d,，]+)円", before_average)
         if len(set(found)) != 1:
             continue
-        closes.add(_yen_amount(found[0]))
+        avg1m = avg3m = avg6m = ""
         triple = month_re.search(window)
+        single = single_month_re.search(window) if not triple else None
         if triple:
-            triples.add(
-                (
-                    _yen_amount(triple.group(1)),
-                    _yen_amount(triple.group(2)),
-                    _yen_amount(triple.group(3)),
-                )
+            avg1m, avg3m, avg6m = (
+                _yen_amount(triple.group(1)),
+                _yen_amount(triple.group(2)),
+                _yen_amount(triple.group(3)),
             )
-            continue
-        single = single_month_re.search(window)
-        if not single:
-            continue
-        preceding = window[max(0, single.start() - 24) : single.start()]
-        if re.search(r"[3３6６][ヶかカ]月", preceding):
-            continue
-        if "％" in window[single.end() : single.end() + 6]:
-            continue
-        singles.add(_yen_amount(single.group(1)))
+        elif single:
+            preceding = window[max(0, single.start() - 24) : single.start()]
+            if not re.search(r"[3３6６][ヶかカ]月", preceding) and "％" not in window[single.end() : single.end() + 6]:
+                avg1m = _yen_amount(single.group(1))
+        windows.append(
+            {
+                "priorClose": _yen_amount(found[0]),
+                "avg1m": avg1m,
+                "avg3m": avg3m,
+                "avg6m": avg6m,
+            }
+        )
+    return windows
+
+
+def parse_reference_market_price_details(text: str, *, first_only: bool = False) -> dict[str, str]:
+    """Announcement prior-close and 1/3/6-month averages, without a 円 suffix.
+
+    Only the clause that states 公表日の前営業日 and then 終値 is accepted.
+    Precedent-premium sentences and 本書提出日の前営業日 are ignored.
+    Conflicting closes, or conflicting averages, stay blank.
+    first_only keeps the earliest clause when a later amendment states another close.
+    """
+    empty = {"priorClose": "", "avg1m": "", "avg3m": "", "avg6m": ""}
+    windows = _reference_price_windows(text)
+    if not windows:
+        return empty
+    if first_only:
+        return windows[0]
+    closes = {item["priorClose"] for item in windows}
     if len(closes) != 1:
         return empty
+    triples = {
+        (item["avg1m"], item["avg3m"], item["avg6m"])
+        for item in windows
+        if item["avg1m"] and item["avg3m"] and item["avg6m"]
+    }
+    singles = {item["avg1m"] for item in windows if item["avg1m"] and not item["avg3m"]}
     avg1m = avg3m = avg6m = ""
     if len(triples) == 1 and not singles:
         avg1m, avg3m, avg6m = next(iter(triples))
-    elif len(triples) == 0 and len(singles) == 1:
+    elif not triples and len(singles) == 1:
         avg1m = next(iter(singles))
     return {
         "priorClose": next(iter(closes)),

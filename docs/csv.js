@@ -66,12 +66,13 @@ export function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
-export function premiumLabel(value) {
+export function premiumLabel(value, derived = "") {
   if (value === "" || value == null) return "—";
   const number = Number(value);
   if (!Number.isFinite(number)) return String(value);
   const signed = number >= 0 ? "+" : "";
-  return `${signed}${(number * 100).toFixed(1)}%`;
+  const label = `${signed}${(number * 100).toFixed(1)}%`;
+  return derived === "Yes" ? `（${label}）` : label;
 }
 
 export function isSelfTender(item) {

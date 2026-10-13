@@ -172,6 +172,7 @@ SUMMARY_COLUMNS = (
     "Avg3m",
     "Avg6m",
     "PremiumVsPriorClose",
+    "PremiumDerived",
     "PremiumVs1m",
     "PremiumVs3m",
     "PremiumVs6m",
@@ -294,6 +295,7 @@ def summary_row(case: dict) -> dict[str, str]:
         "Avg3m": _cell(refs.get("avg3m")),
         "Avg6m": _cell(refs.get("avg6m")),
         "PremiumVsPriorClose": _cell(premiums.get("vsPriorClose")),
+        "PremiumDerived": "Yes" if premiums.get("vsPriorCloseDerived") else "",
         "PremiumVs1m": _cell(premiums.get("vs1m")),
         "PremiumVs3m": _cell(premiums.get("vs3m")),
         "PremiumVs6m": _cell(premiums.get("vs6m")),
@@ -430,7 +432,11 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
     latest_opinion = opinions[-1] if opinions else None
     latest_report = reports[-1] if reports else None
 
-    price_source = _latest_with_text(filings, "offerPrice") or latest_filing
+    price_source = (
+        _latest_with_text(filings, "offerPrice")
+        or _latest_with_text(reports, "offerPrice")
+        or latest_filing
+    )
     period_source = _latest_with_text(reports, "period") or _latest_with_text(filings, "period")
     planned_source = _latest_with_text(filings, "intendedPurchase")
     fund_source = _latest_with_text(filings, "fund")
@@ -463,8 +469,9 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
     purpose_text = _section_text(filings, ("purposes",))
     raw_holdings, after_doc = _holdings(latest_filing, latest_report)
     holdings = _apply_explicit_zero(raw_holdings, purpose_text)
-    references, ref_source = _reference_prices(filings)
+    references, ref_source, prior_derived = _reference_prices(filings)
     premiums = _premiums(offer_price, references)
+    premiums["vsPriorCloseDerived"] = bool(prior_derived and premiums.get("vsPriorClose") is not None)
     sponsor_hint, sponsor_source = _sponsor_hint(filings)
     issued_shares, issued_source = _issued_shares(filings + opinions)
     capital_parties, capital_source = _capital_parties(filings)
@@ -848,30 +855,37 @@ def _is_mbo(filings: list[dict], opinions: list[dict]) -> str | None:
     return "Yes" if detect_mbo(chunks) == "Yes" else "No"
 
 
-def _reference_prices(filings: list[dict]) -> tuple[dict[str, int | None], dict | None]:
-    """Price block first, then the stock-price taxonomy blocks. Conflicts become null."""
+def _prices_from_parsed(parsed: dict[str, str], *, close_only: bool) -> dict[str, int | None]:
+    return {
+        "priorClose": _parse_int(parsed["priorClose"]),
+        "avg1m": None if close_only or not parsed["avg1m"] else _parse_int(parsed["avg1m"]),
+        "avg3m": None if close_only or not parsed["avg3m"] else _parse_int(parsed["avg3m"]),
+        "avg6m": None if close_only or not parsed["avg6m"] else _parse_int(parsed["avg6m"]),
+    }
+
+
+def _reference_prices(filings: list[dict]) -> tuple[dict[str, int | None], dict | None, bool]:
+    """Price block first, then the stock-price taxonomy blocks. Conflicts become null.
+
+    When every filing states more than one announcement close, keep the earliest
+    close in the original filing and mark the premium as derived.
+    """
+    empty = {"priorClose": None, "avg1m": None, "avg3m": None, "avg6m": None}
     keys = ("offerPrice", "recentSharePrices", "stockPrices")
-    details = []
-    source_doc = None
     for item in reversed(filings):
         for key in keys:
             parsed = parse_reference_market_price_details(item["texts"].get(key, ""))
             if parsed["priorClose"]:
-                details.append(parsed)
-                source_doc = item
-                break
-        if details:
-            break
-    if not details:
-        return {"priorClose": None, "avg1m": None, "avg3m": None, "avg6m": None}, None
-    parsed = details[0]
-    prices = {
-        "priorClose": _parse_int(parsed["priorClose"]),
-        "avg1m": _parse_int(parsed["avg1m"]) if parsed["avg1m"] else None,
-        "avg3m": _parse_int(parsed["avg3m"]) if parsed["avg3m"] else None,
-        "avg6m": _parse_int(parsed["avg6m"]) if parsed["avg6m"] else None,
-    }
-    return prices, source_doc
+                return _prices_from_parsed(parsed, close_only=False), item, False
+    first = next((item for item in filings if item["docTypeCode"] == "240"), None)
+    if first is None and filings:
+        first = filings[0]
+    if first is not None:
+        for key in keys:
+            parsed = parse_reference_market_price_details(first["texts"].get(key, ""), first_only=True)
+            if parsed["priorClose"]:
+                return _prices_from_parsed(parsed, close_only=True), first, True
+    return empty, None, False
 
 
 def _premiums(offer: int | None, references: dict[str, int | None]) -> dict[str, float | None]:
