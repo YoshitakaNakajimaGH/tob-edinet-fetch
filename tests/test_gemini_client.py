@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-GPT_SCRIPTS = ROOT / "experiments" / "gpt-extract" / "scripts"
+GPT_SCRIPTS = ROOT / "old" / "experiments" / "gpt-extract" / "scripts"
 if str(GPT_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(GPT_SCRIPTS))
 

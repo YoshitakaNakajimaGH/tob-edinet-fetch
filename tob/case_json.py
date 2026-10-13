@@ -80,6 +80,7 @@ DEFAULT_CASE_DIR = Path("output/cases")
 DEFAULT_SUMMARY_DIR = Path("output/case_summaries")
 DEFAULT_SITE_DATA = Path("docs/data/all.csv")
 DEFAULT_SELF_SITE_DATA = Path("docs/data/self_tob.csv")
+DEFAULT_CORRECTIONS = Path("corrections/overrides.csv")
 DEFAULT_ID_LIST_DIR = Path("output/id_lists")
 
 _TEXT_FIELDS = (
@@ -332,6 +333,58 @@ def _read_summary_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def load_summary_corrections(path: Path | None = None) -> dict[str, dict[str, str]]:
+    """Cells to keep after the summary CSV is regenerated.
+
+    Empty cells mean leave the generated value. caseId is required.
+    Duplicate case ids and unknown column names are errors.
+    """
+    source = Path(path) if path is not None else DEFAULT_CORRECTIONS
+    if not source.is_file():
+        return {}
+    with source.open(encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = [name.lstrip("\ufeff") for name in (reader.fieldnames or []) if name]
+        if "caseId" not in fieldnames:
+            raise ValueError(f"{source}: caseId 列が必要です")
+        unknown = [name for name in fieldnames if name not in SUMMARY_COLUMNS]
+        if unknown:
+            raise ValueError(f"{source}: 未知の列です: {', '.join(unknown)}")
+        found: dict[str, dict[str, str]] = {}
+        for line_no, raw in enumerate(reader, start=2):
+            row = {str(key).lstrip("\ufeff"): value for key, value in raw.items() if key}
+            case_id = (row.get("caseId") or "").strip()
+            if not case_id:
+                continue
+            if case_id in found:
+                raise ValueError(f"{source}: caseId が重複しています: {case_id} ({line_no}行目)")
+            changes = {
+                key: value
+                for key, value in row.items()
+                if key in SUMMARY_COLUMNS and key != "caseId" and str(value).strip() != ""
+            }
+            if changes:
+                found[case_id] = changes
+    return found
+
+
+def apply_summary_corrections(
+    rows: list[dict[str, str]],
+    corrections: dict[str, dict[str, str]],
+) -> list[dict[str, str]]:
+    """Overlay correction cells. Unknown case ids are left unused and reported."""
+    by_id = {row.get("caseId"): row for row in rows}
+    missing = [case_id for case_id in corrections if case_id not in by_id]
+    if missing:
+        print(f"corrections: 該当案件がありません: {', '.join(missing)}", file=sys.stderr)
+    for case_id, changes in corrections.items():
+        row = by_id.get(case_id)
+        if row is None:
+            continue
+        row.update(changes)
+    return rows
+
+
 def write_month_summary(filing_month: str, case_root: Path | None = None, summary_root: Path | None = None) -> Path:
     """Write the month CSV, refresh all.csv, and in December also the year CSV."""
     year, month = _split_month(filing_month)
@@ -359,8 +412,10 @@ def write_month_summary(filing_month: str, case_root: Path | None = None, summar
     self_path = base / "self_tob.csv"
     _write_summary_rows(self_path, self_rows)
     if summary_root is None or Path(summary_root) == DEFAULT_SUMMARY_DIR:
-        _write_summary_rows(DEFAULT_SITE_DATA, all_rows)
-        _write_summary_rows(DEFAULT_SELF_SITE_DATA, self_rows)
+        corrected = apply_summary_corrections(all_rows, load_summary_corrections())
+        corrected_self = [row for row in corrected if str(row.get("issuerTender")).lower() == "true"]
+        _write_summary_rows(DEFAULT_SITE_DATA, corrected)
+        _write_summary_rows(DEFAULT_SELF_SITE_DATA, corrected_self)
     return path
 
 

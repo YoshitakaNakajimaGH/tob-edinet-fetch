@@ -13,6 +13,8 @@ from tob.case_json import (
     documents_from_id_case,
     main,
     write_case_json,
+    apply_summary_corrections,
+    load_summary_corrections,
     write_month_summary,
 )
 from tob.taxonomy import TaxonomyCatalog
@@ -511,6 +513,26 @@ class CaseJsonTests(unittest.TestCase):
             self.assertEqual(path, Path(tmp) / "2026" / "03" / "S100AAAA.json")
             self.assertTrue(path.is_file())
             self.assertEqual(case_output_path("2026-03", "S100AAAA", Path(tmp)), path)
+
+    def test_corrections_overlay_only_filled_cells(self) -> None:
+        rows = [{"caseId": "S100AAAA", "OfferPrice": "100", "TargetName": "元の名前"}]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "overrides.csv"
+            path.write_text("caseId,OfferPrice,TargetName\nS100AAAA,20600,\n", encoding="utf-8")
+            corrections = load_summary_corrections(path)
+        updated = apply_summary_corrections(rows, corrections)
+        self.assertEqual(updated[0]["OfferPrice"], "20600")
+        self.assertEqual(updated[0]["TargetName"], "元の名前")
+
+    def test_corrections_reject_unknown_columns_and_duplicates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "overrides.csv"
+            path.write_text("caseId,NotAColumn\nS100AAAA,1\n", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                load_summary_corrections(path)
+            path.write_text("caseId,OfferPrice\nS100AAAA,1\nS100AAAA,2\n", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                load_summary_corrections(path)
 
     def test_month_summary_keeps_the_core_numbers(self) -> None:
         case = self._case()
