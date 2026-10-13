@@ -173,7 +173,7 @@ function dealStory(item) {
   const self = isSelfTender(item);
   const sponsor = (item.SponsorHint || "").trim();
   const buyer = item.OfferorName || "—";
-  const sponsorText = sponsor || buyer;
+  const sponsorSlot = sponsor && sponsor !== buyer ? sponsor : sponsor ? "" : buyer;
   const result = item.FinalResultNote || item.Status || "—";
   const resultClass = /不成立|撤回/.test(result) ? "result-bad" : /成立/.test(result) ? "result-good" : "";
   if (self) {
@@ -198,8 +198,7 @@ function dealStory(item) {
       <div class="party party-right">
         <span>買付者</span>
         <strong>${escapeHtml(buyer)}</strong>
-        <span>スポンサー</span>
-        <strong>${escapeHtml(sponsorText)}</strong>
+        ${sponsorSlot ? `<span>スポンサー</span><strong>${escapeHtml(sponsorSlot)}</strong>` : ""}
       </div>
     </div>
     <p class="deal-line"><b>${escapeHtml(considerationOku(item.PurchaseConsideration))}</b><span class="${resultClass}">${escapeHtml(result)}</span></p>
@@ -212,11 +211,15 @@ function renderDetail(item) {
     return;
   }
   const links = [];
-  if (item.FirstFilingPdf) {
-    links.push(`<a href="${escapeHtml(item.FirstFilingPdf)}" target="_blank" rel="noreferrer">届出書PDF</a>`);
-  }
-  if (item.LatestReportPdf) {
-    links.push(`<a href="${escapeHtml(item.LatestReportPdf)}" target="_blank" rel="noreferrer">報告書PDF</a>`);
+  const pdfs = [
+    ["届出書", item.FirstFilingPdf],
+    ["意見表明書", item.FirstOpinionPdf],
+    ["撤回届出書", item.FirstWithdrawalPdf],
+    ["対質問回答", item.FirstAnswerPdf],
+    ["報告書", item.LatestReportPdf],
+  ];
+  for (const [label, href] of pdfs) {
+    if (href) links.push(`<a href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${label}</a>`);
   }
   els.detail.innerHTML = `
     ${dealStory(item)}
@@ -234,6 +237,7 @@ function renderDetail(item) {
       ${field("買付後保有", ratio(item.AfterPurchaseRatio))}
       ${field("意見", text(item.OpinionStance))}
       ${field("応募 / 買付", `${shares(item.ApplicationCount)} / ${shares(item.PurchaseCount)}`)}
+      ${field("書類総数", text(item.DocCount))}
       ${field("廃止注記", text(item.TargetDelistingNote), true)}
     </div>
     <div class="links">${links.join("") || "<span class='value'>—</span>"}</div>
