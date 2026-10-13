@@ -36,7 +36,8 @@
       "S100UOG0",
       "S100UOM4",
       "S100UUTI"
-    ]
+    ],
+    "CapitalParties": "Holdings合同会社"
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100UOM4",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100UOM4",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

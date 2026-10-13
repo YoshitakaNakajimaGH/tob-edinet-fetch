@@ -35,7 +35,8 @@
       "S100XDW4",
       "S100XE05",
       "S100XGX1"
-    ]
+    ],
+    "CapitalParties": "Japan Growth Investments Alliance、日本成長投資アライアンス株式会社、株式会社JG28、産業株式会社、株式会社博報堂"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XE05",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XE05",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

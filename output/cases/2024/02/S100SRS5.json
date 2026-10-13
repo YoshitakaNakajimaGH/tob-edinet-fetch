@@ -34,7 +34,8 @@
       "S100STWW",
       "S100SWPQ",
       "S100T192"
-    ]
+    ],
+    "CapitalParties": "株式会社ベネフィット・ワン株式、株式会社パソナグループ、エムスリー株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,7 +98,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100SWPQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100SRS5.pdf",

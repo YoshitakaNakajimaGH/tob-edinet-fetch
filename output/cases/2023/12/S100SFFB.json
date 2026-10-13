@@ -33,7 +33,8 @@
       "S100SFFB",
       "S100SFI5",
       "S100SO8W"
-    ]
+    ],
+    "CapitalParties": "阪急阪神不動産株式会社、東宝株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100SFFB",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100SFFB",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

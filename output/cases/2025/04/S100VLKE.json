@@ -35,7 +35,8 @@
       "S100VNV6",
       "S100VQHI",
       "S100VTW0"
-    ]
+    ],
+    "CapitalParties": "New Horizon Capital、ニューホライズンキャピタル株式会社、フェニックス・キャピタル株式会社、東急建設株式会社、ティアック株式会社、三菱自動車工業株式会社、株式会社日立ハウステック等、Investments株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,7 +95,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100VQHI",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100VLKE.pdf",

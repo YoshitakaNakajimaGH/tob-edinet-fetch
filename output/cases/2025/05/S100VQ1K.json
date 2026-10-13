@@ -61,7 +61,8 @@
       "S100WTKY",
       "S100WW6I",
       "S100WWG6"
-    ]
+    ],
+    "CapitalParties": "株式会社芝浦電子、ミネベアミツミ株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -117,6 +118,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100WTC0",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WTC0",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

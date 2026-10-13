@@ -39,7 +39,8 @@
       "S100XHSA",
       "S100XHZY",
       "S100XLQP"
-    ]
+    ],
+    "CapitalParties": "株式会社企業支援総合研究所、ＣＳＲＩ４号株式会社、株式会社エース、株式会社アイセイ、株式会社マテリサグループ、株式会社紅久、artience株式会社、株式会社バンダイナムコホールディングス、三井住友信託銀行株式会社、株式会社トッキョ、株式会社小森コーポレーション、ツジカワ株式会社、株式会社日金、株式会社文昌堂、株式会社村田金箔"
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XHSA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XHSA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

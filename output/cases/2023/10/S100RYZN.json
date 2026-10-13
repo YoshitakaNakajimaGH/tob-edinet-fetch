@@ -37,7 +37,8 @@
       "S100S18J",
       "S100S18K",
       "S100SC54"
-    ]
+    ],
+    "CapitalParties": "株式会社ホンダロジスティクス、八千代工業株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -100,7 +101,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100S18K",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100RYZN.pdf",

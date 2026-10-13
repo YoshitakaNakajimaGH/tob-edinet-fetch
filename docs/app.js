@@ -143,6 +143,7 @@ function renderDetail(item) {
       ${field("案件ID", text(item.caseId))}
       ${field("買付者", text(item.OfferorName))}
       ${field("スポンサー候補", text(item.SponsorHint))}
+      ${field("資本関係者候補", text(item.CapitalParties), true)}
       ${field("買付価格", yen(item.OfferPrice))}
       ${field("公開買付代理人", text(item.TenderOfferAgent))}
       ${field("買付期間", `${text(item.OfferPeriodStart)} 〜 ${text(item.OfferPeriodEnd)}`, true)}

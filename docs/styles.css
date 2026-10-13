@@ -300,7 +300,7 @@ main {
 }
 
 main.wide {
-  width: min(1200px, calc(100% - 2rem));
+  width: min(1600px, calc(100% - 1.5rem));
   padding-bottom: 3rem;
 }
 
@@ -336,7 +336,7 @@ main.wide {
 }
 
 .table-wrap {
-  overflow: auto;
+  overflow: visible;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
@@ -347,15 +347,18 @@ main.wide {
 .year-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 72rem;
+  table-layout: fixed;
+  font-size: 0.82rem;
 }
 
 .year-table th,
 .year-table td {
-  padding: 0.7rem 0.85rem;
+  padding: 0.4rem 0.3rem;
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--line);
+  white-space: normal;
+  word-break: break-word;
 }
 
 .year-table th {
@@ -366,9 +369,7 @@ main.wide {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
+  letter-spacing: 0.02em;
 }
 
 .year-table tbody tr {
@@ -382,11 +383,14 @@ main.wide {
   outline: none;
 }
 
-.year-table td:nth-child(3),
-.year-table td:nth-child(4),
-.year-table td:nth-child(5),
-.year-table td:nth-child(6) {
-  white-space: nowrap;
+.premium-up {
+  color: #0c7a4b;
+  font-weight: 700;
+}
+
+.premium-down {
+  color: #b42318;
+  font-weight: 700;
 }
 
 .footnote {
@@ -406,7 +410,4 @@ main.wide {
     padding-top: 2.2rem;
   }
 
-  .year-table {
-    min-width: 40rem;
-  }
 }

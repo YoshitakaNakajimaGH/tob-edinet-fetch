@@ -56,7 +56,8 @@
       "S100WM0S",
       "S100WM85",
       "S100WOLX"
-    ]
+    ],
+    "CapitalParties": "Advantage Partners、株式会社芝浦電子、株式会社アドバンテッジパートナーズ"
   },
   "sources": {
     "OfferPrice": {
@@ -111,7 +112,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100WM0S",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100VP8N.pdf",

@@ -33,7 +33,8 @@
       "S100N5XH",
       "S100N5XZ",
       "S100NJAV"
-    ]
+    ],
+    "CapitalParties": "株式会社ゼットン株式"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100N5XH",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100N5XH",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

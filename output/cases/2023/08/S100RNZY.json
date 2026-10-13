@@ -34,7 +34,8 @@
       "S100RO74",
       "S100RRVA",
       "S100RWT3"
-    ]
+    ],
+    "CapitalParties": "日産東京販売ホールディングス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100RRVA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100RRVA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

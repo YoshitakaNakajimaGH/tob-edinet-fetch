@@ -35,7 +35,8 @@
       "S100N2NQ",
       "S100N31C",
       "S100N9UA"
-    ]
+    ],
+    "CapitalParties": "株式会社内田洋行ＩＴソリューションズ、株式会社マービー、株式会社ウチダテクノ、株式会社内田洋行ビジネスエキスパート、株式会社ウチダシステムズ、株式会社ウチダビジネスソリューションズ、株式会社サンテック及"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100N2NQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100N2NQ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100MVJP",
       "S100N51U",
       "S100N6AE"
-    ]
+    ],
+    "CapitalParties": "Goldman Sachs、合同会社乃木坂ホールディングス、エーテルホールディングス合同会社、株式会社ＮＩＰＰＯ"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100MUP4",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100MUP4",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

@@ -34,7 +34,8 @@
       "S100V6BA",
       "S100VAOK",
       "S100VFGH"
-    ]
+    ],
+    "CapitalParties": "SBIホールディングス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -86,6 +87,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100VAOK",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VAOK",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

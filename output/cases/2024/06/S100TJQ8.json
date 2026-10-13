@@ -35,7 +35,8 @@
       "S100TWO1",
       "S100TYC2",
       "S100U2A0"
-    ]
+    ],
+    "CapitalParties": "ＳＧホールディングス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -87,6 +88,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100TYC2",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TYC2",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

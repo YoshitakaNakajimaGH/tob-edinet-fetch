@@ -68,6 +68,26 @@ function renderTabs() {
   }
 }
 
+function sharesLabel(value) {
+  if (value === "" || value == null) return "—";
+  const number = Number(String(value).replace(/,/g, ""));
+  if (!Number.isFinite(number)) return String(value);
+  return `${number.toLocaleString("ja-JP")}株`;
+}
+
+function premiumCell(value) {
+  const label = premiumLabel(value);
+  const number = Number(value);
+  const tone = value === "" || value == null || !Number.isFinite(number)
+    ? ""
+    : number > 0
+      ? "premium-up"
+      : number < 0
+        ? "premium-down"
+        : "";
+  return `<td class="${tone}">${escapeHtml(label)}</td>`;
+}
+
 function renderTable() {
   const rows = cases
     .filter((item) => filingYear(item) === selectedYear)
@@ -85,17 +105,28 @@ function renderTable() {
     const tr = document.createElement("tr");
     tr.tabIndex = 0;
     tr.dataset.caseId = item.caseId;
-    tr.innerHTML = `
+    const period = days == null ? "—" : `${days}日`;
+    tr.innerHTML = selfOnly
+      ? `
+      <td>${escapeHtml(item.TargetName || item.caseId)}</td>
+      <td>${escapeHtml(item.OfferorName || "—")}</td>
+      <td>${escapeHtml(sharesLabel(item.PlannedSharesPlanned))}</td>
+      <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
+      <td>${escapeHtml(resultLabel(item))}</td>
+      <td>${escapeHtml(period)}</td>
+      <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
+    `
+      : `
       <td>${escapeHtml(item.TargetName || item.caseId)}</td>
       <td>${escapeHtml(offerorLabel(item))}</td>
       <td>${escapeHtml(yenLabel(item.PriorClose))}</td>
-      <td>${escapeHtml(premiumLabel(item.PremiumVsPriorClose))}</td>
+      ${premiumCell(item.PremiumVsPriorClose)}
       <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
-      <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
       <td>${escapeHtml(yesNo(item.IsMBO))}</td>
       <td>${escapeHtml(yesNo(item.IsHostileInitial))}</td>
       <td>${escapeHtml(resultLabel(item))}</td>
-      <td>${days == null ? "—" : `${days}日`}</td>
+      <td>${escapeHtml(period)}</td>
+      <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
     `;
     const open = () => {
       window.location.href = `./index.html?case=${encodeURIComponent(item.caseId)}`;
@@ -122,7 +153,8 @@ async function boot() {
     renderTable();
   } catch (error) {
     els.meta.textContent = "データを読めませんでした。ローカルサーバ経由で開いてください。";
-    els.body.innerHTML = `<tr><td colspan="10">${escapeHtml(String(error))}</td></tr>`;
+    const span = selfOnly ? 7 : 10;
+    els.body.innerHTML = `<tr><td colspan="${span}">${escapeHtml(String(error))}</td></tr>`;
   }
 }
 

@@ -33,7 +33,8 @@
       "S100Q7HS",
       "S100Q7RV",
       "S100QHN5"
-    ]
+    ],
+    "CapitalParties": "株式会社大阪ソーダ、株式会社エンビプロ・ホールディングス"
   },
   "sources": {
     "OfferPrice": {
@@ -88,7 +89,12 @@
       "docTypeName": "公開買付報告書"
     },
     "SponsorHint": null,
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100Q7HS",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100Q7HS.pdf",

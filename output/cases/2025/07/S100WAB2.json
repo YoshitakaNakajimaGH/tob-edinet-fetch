@@ -33,7 +33,8 @@
       "S100WAB2",
       "S100WAEG",
       "S100WJ9J"
-    ]
+    ],
+    "CapitalParties": "J-STAR、STAR株式会社、JSHD合同会社、株式会社ハルメク、太平洋精機株式会社、日本ホスピスホールディングス株式会社、株式会社アイセイ薬局、株式会社越後屋、横井製作所株式会社、株式会社ホットパレット、株式会社ダイニチ、株式会社シンシア、株式会社トイファクトリー、株式会社スコア・ジャパン、株式会社徳山商会"
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100WAB2",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WAB2",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

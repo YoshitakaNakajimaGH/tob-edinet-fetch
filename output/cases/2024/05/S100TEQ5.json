@@ -36,7 +36,8 @@
       "S100TOWJ",
       "S100TR8Z",
       "S100U0S4"
-    ]
+    ],
+    "CapitalParties": "iSigma Capital、アイ・シグマ・キャピタル株式会社、丸紅株式会社、ゴールドパック株式会社、株式会社日東コーン・アルム、株式会社ショクカイ、株式会社ミスズライフ、株式会社和コーポレーション、ミニター株式会社、昭光通商株式会社、伊藤忠商事株式会社、伊藤忠食糧株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100TR8Z",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TR8Z",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

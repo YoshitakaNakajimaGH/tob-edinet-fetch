@@ -34,7 +34,8 @@
       "S100NGYW",
       "S100NJP1",
       "S100NMGX"
-    ]
+    ],
+    "CapitalParties": "株式会社デジタルホールディングス"
   },
   "sources": {
     "OfferPrice": {
@@ -86,6 +87,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100NJP1",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100NJP1",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

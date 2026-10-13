@@ -42,7 +42,8 @@
       "S100XL70",
       "S100XL7Z",
       "S100XOJH"
-    ]
+    ],
+    "CapitalParties": "The Carlyle Group、TCG2508株式会社、TCG2507株式会社、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、センクシア株式会社、ウイングアーク１st株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社、KANAMEL株式会社、東京特殊電線株式会社、株式会社TOTOKU、株式会社ユーザベース、岩崎電気株式会社、星光PMC株式会社、CHEMIPAZ株式会社、日本KFCホールディングス株式会社、株式会社キョウデン、株式会社カオナビ及、株式会社トライト等"
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XL70",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XL70",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

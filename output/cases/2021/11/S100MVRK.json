@@ -34,7 +34,8 @@
       "S100MVRX",
       "S100N0FG",
       "S100N4OZ"
-    ]
+    ],
+    "CapitalParties": "日本テレビ分割準備株式会社、日本テレビホールディングス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100N0FG",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100N0FG",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

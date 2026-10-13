@@ -35,7 +35,8 @@
       "S100WV1P",
       "S100WVEK",
       "S100WXI0"
-    ]
+    ],
+    "CapitalParties": "有限会社カツコーポレーション"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100WV1P",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WV1P",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

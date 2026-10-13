@@ -34,7 +34,8 @@
       "S100MMOI",
       "S100MOC9",
       "S100N2NT"
-    ]
+    ],
+    "CapitalParties": "Creacion Capital、クレアシオン・キャピタル株式会社、クレアシオン・インベストメント株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -89,7 +90,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100MOC9",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100MMNT.pdf",

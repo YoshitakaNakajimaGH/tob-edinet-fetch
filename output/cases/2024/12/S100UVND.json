@@ -35,7 +35,8 @@
       "S100UXJG",
       "S100V0MA",
       "S100V493"
-    ]
+    ],
+    "CapitalParties": "株式会社三菱UFJフィナンシャル・グループ"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100V0MA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100V0MA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

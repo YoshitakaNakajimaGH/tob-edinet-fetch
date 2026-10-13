@@ -37,7 +37,8 @@
       "S100USNP",
       "S100UTSQ",
       "S100UWR3"
-    ]
+    ],
+    "CapitalParties": "株式会社富洋海運"
   },
   "sources": {
     "OfferPrice": {
@@ -92,7 +93,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100UTSQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100UK0J.pdf",

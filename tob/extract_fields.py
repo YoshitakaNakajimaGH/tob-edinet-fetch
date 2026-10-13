@@ -567,7 +567,7 @@ _OVERVIEW_HEAD = re.compile(
     r"(?:[（(]\s*[1１]\s*[)）]\s*)?"
     r"(?:本件両|本両|本件|本)?公開買付(?:け)?の概要"
 )
-_OVERVIEW_END = re.compile(r"[（(]\s*[2２]\s*[)）]|【[^】]{1,30}】")
+_OVERVIEW_END = re.compile(r"(?<![「『])[（(]\s*[2２]\s*[)）]|【[^】]{1,30}】")
 
 
 def offer_overview_window(text: str, limit: int = 1800) -> str:
@@ -587,6 +587,47 @@ def offer_overview_window(text: str, limit: int = 1800) -> str:
     end = _OVERVIEW_END.search(rest)
     chunk = rest[: end.start()] if end else rest
     return chunk.strip()[:limit]
+
+
+_COMPANY_NAME = re.compile(
+    r"(?:株式会社|有限会社|合同会社)[0-9A-Za-zＡ-Ｚａ-ｚ０-９ァ-ヴー一-龥・＆&]{1,24}"
+    r"|[0-9A-Za-zＡ-Ｚａ-ｚ０-９ァ-ヴー一-龥・＆&]{2,24}(?:株式会社|有限会社|合同会社)"
+)
+_CAPITAL_SKIP = re.compile(r"証券取引所|金融商品取引所|株式会社証券|保管振替")
+
+
+def extract_capital_parties(text: str) -> list[str]:
+    """Company and fund names in the offer-overview opening, in reading order.
+
+    Fund labels from the catalog come first when both appear, then other
+    company names. The rest of the filing is not scanned.
+    """
+    if not text:
+        return []
+    plain = strip_html(text)
+    if _OVERVIEW_HEAD.search(plain):
+        plain = offer_overview_window(plain)
+    if not plain:
+        return []
+    found: list[str] = []
+
+    def add(name: str) -> None:
+        cleaned = re.sub(r"[ \t\u3000]+", " ", strip_html(name)).strip("、。 ")
+        if len(cleaned) < 2 or _CAPITAL_SKIP.search(cleaned):
+            return
+        if cleaned not in found:
+            found.append(cleaned)
+
+    funds = []
+    for pattern, label in PE_SPONSOR_RULES:
+        if pattern.search(plain):
+            add(label)
+            funds.append(label)
+    for match in _COMPANY_NAME.finditer(plain):
+        add(match.group(0))
+    kept = [name for name in found if not any(name != other and name in other for other in found)]
+    funds_set = set(funds)
+    return [name for name in kept if name in funds_set] + [name for name in kept if name not in funds_set]
 
 
 def extract_overview_section(text: str) -> str:

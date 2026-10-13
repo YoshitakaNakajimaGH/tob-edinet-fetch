@@ -34,7 +34,8 @@
       "S100WF4M",
       "S100WGGP",
       "S100WLBV"
-    ]
+    ],
+    "CapitalParties": "株式会社KU"
   },
   "sources": {
     "OfferPrice": null,
@@ -89,7 +90,12 @@
       "docTypeName": "公開買付報告書"
     },
     "SponsorHint": null,
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100WGGP",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100WF42.pdf",

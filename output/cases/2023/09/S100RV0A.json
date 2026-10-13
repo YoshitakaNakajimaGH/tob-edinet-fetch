@@ -38,7 +38,8 @@
       "S100S33U",
       "S100S36P",
       "S100SAUD"
-    ]
+    ],
+    "CapitalParties": "株式会社TAKISAWA"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100S33U",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100S33U",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -37,7 +37,8 @@
       "S100NZ8P",
       "S100NZDN",
       "S100O3A4"
-    ]
+    ],
+    "CapitalParties": "前田建設工業株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100NZ8P",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100NZ8P",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

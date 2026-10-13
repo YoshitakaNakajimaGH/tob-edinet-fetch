@@ -36,7 +36,8 @@
       "S100Q35Z",
       "S100Q4I3",
       "S100QAM0"
-    ]
+    ],
+    "CapitalParties": "Acquisition株式会社、ダルトン・アドバイザリー株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -92,6 +93,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100Q4I3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100Q4I3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

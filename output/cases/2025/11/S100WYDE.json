@@ -33,7 +33,8 @@
       "S100WYDE",
       "S100WYFE",
       "S100XB5D"
-    ]
+    ],
+    "CapitalParties": "ワイエス興産有限会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100WYDE",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WYDE",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

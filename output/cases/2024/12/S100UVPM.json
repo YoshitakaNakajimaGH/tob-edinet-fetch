@@ -33,7 +33,8 @@
       "S100UVPM",
       "S100UVRI",
       "S100V1G3"
-    ]
+    ],
+    "CapitalParties": "チエル株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -88,7 +89,12 @@
       "docTypeName": "公開買付報告書"
     },
     "SponsorHint": null,
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100UVPM",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100UVPM.pdf",

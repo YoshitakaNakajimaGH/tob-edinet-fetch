@@ -36,7 +36,8 @@
       "S100OL0V",
       "S100OPZN",
       "S100OT50"
-    ]
+    ],
+    "CapitalParties": "日水製薬株式会社、日本水産株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100OPZN",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100OPZN",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

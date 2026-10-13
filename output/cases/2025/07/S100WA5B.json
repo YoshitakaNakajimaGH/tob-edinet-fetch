@@ -37,7 +37,8 @@
       "S100WN1W",
       "S100WN1X",
       "S100WQ3M"
-    ]
+    ],
+    "CapitalParties": "カナディアン・ソーラー・アセットマネジメント株式会社、カナディアン・ソーラー・プロジェクト株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100WN1W",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WN1W",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

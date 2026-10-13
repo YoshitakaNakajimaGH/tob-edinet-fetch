@@ -33,7 +33,8 @@
       "S100PFCL",
       "S100PFEY",
       "S100PQ4G"
-    ]
+    ],
+    "CapitalParties": "KKR、HTSKホールディングス株式会社、株式会社インテリジェンス、パナソニックヘルスケア株式会社、パナソニック株式会社、三菱ケミカルホールディングス株式会社、国内臨床検査大手・株式会社、パイオニア株式会社、DJ株式会社、日産自動車株式会社、カルソニックカンセイ株式会社、日立工機株式会社、株式会社日立国際電気、株式会社西友、楽天株式会社、楽天DXソリューション合同会社、オリックス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100PFCL",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100PFCL",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

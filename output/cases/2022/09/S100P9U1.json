@@ -33,7 +33,8 @@
       "S100P9U1",
       "S100P9UR",
       "S100PN7R"
-    ]
+    ],
+    "CapitalParties": "SBIホールディングス株式会社、株式会社マイナビ、株式会社マクニカ、東京海上日動火災保険株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -85,6 +86,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100P9U1",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100P9U1",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

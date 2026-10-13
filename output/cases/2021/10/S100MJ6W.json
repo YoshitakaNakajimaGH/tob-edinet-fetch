@@ -34,7 +34,8 @@
       "S100MJ7F",
       "S100MKWB",
       "S100MW8G"
-    ]
+    ],
+    "CapitalParties": "ヤフー株式会社、Zホールディングス株式会社、LINE株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100MKWB",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100MKWB",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100STKK",
       "S100SWRI",
       "S100T5DU"
-    ]
+    ],
+    "CapitalParties": "Polaris Capital Group、ポラリス・キャピタル・グループ株式会社、リンクステック株式会社、スペースバリューホールディングス株式会社、株式会社エクラシアＨＤ、ソーシャルインクルー株式会社、株式会社宣伝会議及、株式会社マスメディアン等"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100SWRI",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100SWRI",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

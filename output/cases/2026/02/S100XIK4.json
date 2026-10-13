@@ -35,7 +35,8 @@
       "S100XLUR",
       "S100XLWD",
       "S100XRWB"
-    ]
+    ],
+    "CapitalParties": "ＥＸＰＲＥＳＳホールディングス株式会社、日本貨物鉄道株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -91,6 +92,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100XLWD",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XLWD",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

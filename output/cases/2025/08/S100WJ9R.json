@@ -38,7 +38,8 @@
       "S100WNH6",
       "S100WNIZ",
       "S100WSGY"
-    ]
+    ],
+    "CapitalParties": "EQT、株式会社トライト、パイオニア株式会社、株式会社HR、株式会社ベネッセホールディングス"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100WNH6",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WNH6",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100VDG4",
       "S100VHAB",
       "S100VNKJ"
-    ]
+    ],
+    "CapitalParties": "IA Partners、IAPF1株式会社、IAパートナーズ株式会社、ダイヤソルト株式会社、堺化学工業株式会社、ススムホールディングス株式会社、合同会社エーエスティ"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100VHAB",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VHAB",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

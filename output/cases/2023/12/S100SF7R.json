@@ -33,7 +33,8 @@
       "S100SF7R",
       "S100SFE2",
       "S100SOBE"
-    ]
+    ],
+    "CapitalParties": "株式会社東宝コスチューム、TOHOシネマズ株式会社、東宝東和株式会社、阪急阪神ホールディングス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100SF7R",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100SF7R",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

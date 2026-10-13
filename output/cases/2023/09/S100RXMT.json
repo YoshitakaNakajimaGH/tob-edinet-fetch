@@ -34,7 +34,8 @@
       "S100RXSG",
       "S100S055",
       "S100S9SO"
-    ]
+    ],
+    "CapitalParties": "Bain Capital、合同会社BCJ、株式会社IDAJ、株式会社エビデント、インパクトホールディングス株式会社、株式会社マッシュホールディングス、日立金属株式会社、株式会社プロテリアル、株式会社ネットマーケティング、株式会社トライステージ、株式会社Linc、日本セーフティー株式会社、株式会社イグニス、株式会社キリン堂ホールディングス、ヘイ株式会社、現STORES株式会社、株式会社ニチイ学館、昭和飛行機工業株式会社、チーターデジタル株式会社、現エンバーポイント株式会社、株式会社Works、東芝メモリ株式会社、現キオクシア株式会社、株式会社エイチエムティ"
   },
   "sources": {
     "OfferPrice": {
@@ -97,7 +98,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100S055",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100RXMT.pdf",

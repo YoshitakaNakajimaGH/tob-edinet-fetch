@@ -33,7 +33,8 @@
       "S100P2FT",
       "S100P2GA",
       "S100P7KL"
-    ]
+    ],
+    "CapitalParties": "Evolution Capital、JAPANアセットマネジメント株式会社、EVOLUTION総研株式会社、JAPAN証券株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -89,6 +90,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100P2FT",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100P2FT",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

@@ -34,7 +34,8 @@
       "S100O3JG",
       "S100OMA9",
       "S100OQKR"
-    ]
+    ],
+    "CapitalParties": "Mercuria Investment、株式会社マーキュリアインベストメント、株式会社マーキュリアホールディングス、株式会社日本政策投資銀行、東京電解株式会社、株式会社ツノダ、シンクス株式会社、ライフネット生命保険株式会社、株式会社オキサイド等"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100OMA9",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100OMA9",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

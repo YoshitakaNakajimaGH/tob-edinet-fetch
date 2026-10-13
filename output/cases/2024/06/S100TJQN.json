@@ -34,7 +34,8 @@
       "S100TJRH",
       "S100TRY3",
       "S100U24I"
-    ]
+    ],
+    "CapitalParties": "株式会社三菱ＵＦＪ銀行、株式会社三井住友銀行"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100TRY3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TRY3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

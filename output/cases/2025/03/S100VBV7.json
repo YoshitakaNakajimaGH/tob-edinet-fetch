@@ -34,7 +34,8 @@
       "S100VC06",
       "S100VHXJ",
       "S100VMIZ"
-    ]
+    ],
+    "CapitalParties": "スパークス・グループ株式会社、株式会社IJTT、株式会社日本カストディ銀行、東プレ株式会社、日本製鉄株式会社、日本パーカライジング株式会社、日鉄物産株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100VHXJ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VHXJ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

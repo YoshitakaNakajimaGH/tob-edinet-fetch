@@ -37,7 +37,8 @@
       "S100VFES",
       "S100VFUW",
       "S100VKQR"
-    ]
+    ],
+    "CapitalParties": "3D Investment Partners、株式会社日経BP"
   },
   "sources": {
     "OfferPrice": {
@@ -96,7 +97,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100VFUW",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100V8FE.pdf",

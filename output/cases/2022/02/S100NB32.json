@@ -34,7 +34,8 @@
       "S100NB4J",
       "S100NGG1",
       "S100NOMD"
-    ]
+    ],
+    "CapitalParties": "日本航空株式会社、双日株式会社、ＳＪフューチャーホールディングス株式会社、株式会社ＪＡＬＵＸ株式、日本空港ビルデング株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100NGG1",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100NGG1",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

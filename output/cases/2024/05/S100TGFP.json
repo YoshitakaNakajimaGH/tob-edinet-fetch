@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "麻布台１号有限責任事業組合",
-    "SponsorHint": null,
+    "SponsorHint": "株式会社ＯＵＮＨ",
     "TargetEdinetCode": "E03505",
     "OfferorEdinetCode": "E39704",
     "TargetName": "ホリイフードサービス株式会社",
@@ -33,7 +33,8 @@
       "S100TGFP",
       "S100TGI9",
       "S100TMA2"
-    ]
+    ],
+    "CapitalParties": "株式会社玉光堂ホールディングス、株式会社鈴木商店、株式会社ネクスタ、株式会社由井工業、株式会社ＯＵＮＨ"
   },
   "sources": {
     "OfferPrice": {
@@ -87,8 +88,17 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": null,
+    "SponsorHint": {
+      "docId": "S100TGFP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
     "ReferencePrices": {
+      "docId": "S100TGFP",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TGFP",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

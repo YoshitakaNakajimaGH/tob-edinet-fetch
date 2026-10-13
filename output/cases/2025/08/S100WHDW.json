@@ -44,7 +44,8 @@
       "S100WY58",
       "S100WYP2",
       "S100X4QH"
-    ]
+    ],
+    "CapitalParties": "サントレード株式会社、株式会社エイチエーエス、株式会社日本カストディ銀行"
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100WY58",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WY58",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

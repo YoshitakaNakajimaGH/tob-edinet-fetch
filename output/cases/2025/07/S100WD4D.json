@@ -36,7 +36,8 @@
       "S100WI2K",
       "S100WI73",
       "S100WM0N"
-    ]
+    ],
+    "CapitalParties": "Polaris Capital Group、ポラリス・キャピタル・グループ株式会社、スペースバリューホールディングス株式会社、株式会社エクラシアＨＤ、ソーシャルインクルー株式会社、株式会社宣伝会議及、株式会社マスメディアン、ウェルビー株式会社、オリンパステルモバイオマテリアル株式会社、ストックマーク株式会社、物産フードサイエンス株式会社、株式会社松村屋"
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100WI73",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WI73",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

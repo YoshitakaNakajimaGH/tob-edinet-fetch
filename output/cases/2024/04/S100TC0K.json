@@ -35,7 +35,8 @@
       "S100TI21",
       "S100TI3P",
       "S100TLPJ"
-    ]
+    ],
+    "CapitalParties": "ソフトバンクグループ株式会社、ソフトバンクグループジャパン株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100TI21",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TI21",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

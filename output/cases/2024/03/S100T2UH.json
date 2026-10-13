@@ -34,7 +34,8 @@
       "S100T2VU",
       "S100T5BS",
       "S100TAH8"
-    ]
+    ],
+    "CapitalParties": "株式会社産業革新投資機構、JICキャピタル株式会社、株式会社日本政策投資銀行、東洋アルミニウム株式会社、株式会社ＵＡＣＪ製箔"
   },
   "sources": {
     "OfferPrice": {
@@ -93,7 +94,12 @@
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100T2UH",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100T2UH.pdf",

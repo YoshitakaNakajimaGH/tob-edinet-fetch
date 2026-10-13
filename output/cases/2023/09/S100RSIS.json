@@ -35,7 +35,8 @@
       "S100RWC3",
       "S100RWCF",
       "S100S1FP"
-    ]
+    ],
+    "CapitalParties": "株式会社東陽建物、ＢＩＰＲＯＧＹ株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -87,6 +88,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100RWC3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100RWC3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

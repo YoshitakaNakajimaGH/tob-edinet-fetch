@@ -35,7 +35,8 @@
       "S100P5UL",
       "S100P6RY",
       "S100PDMO"
-    ]
+    ],
+    "CapitalParties": "Integral、インテグラル株式会社、キュービーネットホールディングス株式会社、スカイマーク株式会社、東洋エンジニアリング株式会社、株式会社オリバー等、株式会社ダイオーエンタープライズ"
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100P6RY",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100P6RY",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

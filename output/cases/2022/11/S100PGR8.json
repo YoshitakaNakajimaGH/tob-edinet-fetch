@@ -35,7 +35,8 @@
       "S100PR2L",
       "S100PTE3",
       "S100PXNY"
-    ]
+    ],
+    "CapitalParties": "株式会社ドリームインキュベータ"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100PTE3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100PTE3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
