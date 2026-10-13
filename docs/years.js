@@ -126,14 +126,9 @@ function renderSummary(rows) {
     return best;
   }, null);
   const premiumAvg = average(premiums);
-  const premiumMax = premiums.length ? Math.max(...premiums) : null;
-  const premiumMin = premiums.length ? Math.min(...premiums) : null;
   const dayAvg = average(days);
-  const premiumText = premiumAvg == null
-    ? "—"
-    : `平均 ${premiumLabel(premiumAvg)}　最大 ${premiumLabel(premiumMax)}　最小 ${premiumLabel(premiumMin)}`;
   const cards = [
-    ["プレミアム", premiumText],
+    ["プレミアム平均", premiumAvg == null ? "—" : premiumLabel(premiumAvg)],
     ["MBO", `${mbo}件`],
     ["敵対的", `${hostile}件`],
     ["期間日数平均", dayAvg == null ? "—" : `${dayAvg.toFixed(1)}日`],

@@ -169,11 +169,15 @@ function priceChart(item) {
   return `<div class="price-chart" aria-label="株価と算定レンジ">${axis}${rows}</div>`;
 }
 
+function partyName(value) {
+  return String(value || "").replace(/[\s\u3000]/g, "");
+}
+
 function dealStory(item) {
   const self = isSelfTender(item);
   const sponsor = (item.SponsorHint || "").trim();
   const buyer = item.OfferorName || "—";
-  const sponsorSlot = sponsor && sponsor !== buyer ? sponsor : sponsor ? "" : buyer;
+  const sameSponsor = !sponsor || partyName(sponsor) === partyName(buyer);
   const result = item.FinalResultNote || item.Status || "—";
   const resultClass = /不成立|撤回/.test(result) ? "result-bad" : /成立/.test(result) ? "result-good" : "";
   if (self) {
@@ -198,7 +202,8 @@ function dealStory(item) {
       <div class="party party-right">
         <span>買付者</span>
         <strong>${escapeHtml(buyer)}</strong>
-        ${sponsorSlot ? `<span>スポンサー</span><strong>${escapeHtml(sponsorSlot)}</strong>` : ""}
+        <span>スポンサー</span>
+        ${sameSponsor ? `<em class="same-as">（同上）</em>` : `<strong>${escapeHtml(sponsor)}</strong>`}
       </div>
     </div>
     <p class="deal-line"><b>${escapeHtml(considerationOku(item.PurchaseConsideration))}</b><span class="${resultClass}">${escapeHtml(result)}</span></p>
