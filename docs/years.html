@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>暦年一覧 | TOB Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <header class="masthead">
+      <p class="brand">TOB Archive</p>
+      <nav class="site-nav" aria-label="サイト内">
+        <a href="./index.html">案件検索</a>
+        <a href="./years.html" aria-current="page">暦年一覧</a>
+      </nav>
+      <h1>暦年ごとの案件一覧</h1>
+      <p class="lead">
+        対象会社・買収者・プレミアム・MBO・敵対的か・買付期間の日数だけを並べます。行を選ぶと検索ページの詳細へ移ります。
+      </p>
+    </header>
+
+    <main class="wide">
+      <div class="year-bar" id="year-tabs" aria-label="暦年"></div>
+      <p id="meta" class="meta" aria-live="polite"></p>
+      <div class="table-wrap">
+        <table class="year-table">
+          <thead>
+            <tr>
+              <th>対象会社</th>
+              <th>買収者</th>
+              <th>プレミアム</th>
+              <th>MBO</th>
+              <th>敵対的</th>
+              <th>期間日数</th>
+            </tr>
+          </thead>
+          <tbody id="year-body"></tbody>
+        </table>
+      </div>
+      <p class="footnote">
+        期間日数は買付開始日（OfferPeriodStart）から終了日（OfferPeriodEnd）までの暦日差です。プレミアムは前営業日終値比です。
+      </p>
+    </main>
+
+    <script src="./years.js" type="module"></script>
+  </body>
+</html>

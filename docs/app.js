@@ -1,4 +1,4 @@
-const DATA_URL = "./data/all.csv";
+import { escapeHtml, loadCases, premiumLabel } from "./csv.js";
 
 const els = {
   query: document.getElementById("query"),
@@ -12,55 +12,6 @@ const els = {
 
 let cases = [];
 let selectedId = "";
-
-function parseCsv(text) {
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let inQuotes = false;
-  const source = text.replace(/^\uFEFF/, "");
-  for (let i = 0; i < source.length; i += 1) {
-    const ch = source[i];
-    const next = source[i + 1];
-    if (inQuotes) {
-      if (ch === '"' && next === '"') {
-        cell += '"';
-        i += 1;
-      } else if (ch === '"') {
-        inQuotes = false;
-      } else {
-        cell += ch;
-      }
-      continue;
-    }
-    if (ch === '"') {
-      inQuotes = true;
-    } else if (ch === ",") {
-      row.push(cell);
-      cell = "";
-    } else if (ch === "\n") {
-      row.push(cell);
-      rows.push(row);
-      row = [];
-      cell = "";
-    } else if (ch !== "\r") {
-      cell += ch;
-    }
-  }
-  if (cell.length || row.length) {
-    row.push(cell);
-    rows.push(row);
-  }
-  if (!rows.length) return [];
-  const headers = rows[0];
-  return rows.slice(1).filter((values) => values.some(Boolean)).map((values) => {
-    const item = {};
-    headers.forEach((header, index) => {
-      item[header] = values[index] ?? "";
-    });
-    return item;
-  });
-}
 
 function yen(value) {
   if (!value) return "—";
@@ -83,17 +34,11 @@ function ratio(value) {
   return `${(number * 100).toFixed(2)}%`;
 }
 
-function premium(value) {
-  if (value === "" || value == null) return "—";
-  const number = Number(value);
-  if (!Number.isFinite(number)) return value;
-  const signed = number >= 0 ? "+" : "";
-  return `${signed}${(number * 100).toFixed(1)}%`;
-}
-
 function range(min, max) {
   if (!min && !max) return "—";
-  if (min && max) return `${Number(min).toLocaleString("ja-JP")}〜${Number(max).toLocaleString("ja-JP")}円`;
+  if (min && max) {
+    return `${Number(min).toLocaleString("ja-JP")}〜${Number(max).toLocaleString("ja-JP")}円`;
+  }
   return yen(min || max);
 }
 
@@ -156,21 +101,15 @@ function renderList() {
     `;
     button.addEventListener("click", () => {
       selectedId = item.caseId;
+      const url = new URL(window.location.href);
+      url.searchParams.set("case", item.caseId);
+      history.replaceState(null, "", url);
       renderList();
-      renderDetail(item);
     });
     li.append(button);
     els.list.append(li);
   }
   renderDetail(rows.find((item) => item.caseId === selectedId) || null);
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
 }
 
 function field(label, value, wide = false) {
@@ -216,7 +155,7 @@ function renderDetail(item) {
       ${field("買付後保有", ratio(item.AfterPurchaseRatio))}
       ${field("応募 / 買付", `${shares(item.ApplicationCount)} / ${shares(item.PurchaseCount)}`)}
       ${field("前営業日終値", yen(item.PriorClose))}
-      ${field("プレミアム（終値）", premium(item.PremiumVsPriorClose))}
+      ${field("プレミアム（終値）", premiumLabel(item.PremiumVsPriorClose))}
       ${field("買付者側 DCF", range(item.OfferorDcfMin, item.OfferorDcfMax))}
       ${field("対象会社側 DCF", range(item.TargetDcfMin, item.TargetDcfMax))}
       ${field("買付者側 市場株価法", range(item.OfferorMarketMin, item.OfferorMarketMax))}
@@ -247,9 +186,11 @@ function bind() {
 async function boot() {
   bind();
   try {
-    const response = await fetch(DATA_URL);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    cases = parseCsv(await response.text());
+    cases = await loadCases();
+    const wanted = new URL(window.location.href).searchParams.get("case");
+    if (wanted && cases.some((item) => item.caseId === wanted)) {
+      selectedId = wanted;
+    }
     fillStatusOptions();
     renderList();
   } catch (error) {

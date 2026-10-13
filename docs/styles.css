@@ -50,6 +50,26 @@ main {
   padding: 3.5rem 0 1.5rem;
 }
 
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.9rem;
+  margin: 0 0 1.1rem;
+}
+
+.site-nav a {
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
 .brand {
   margin: 0 0 0.75rem;
   font-family: var(--font-display);
@@ -279,6 +299,102 @@ main {
   color: var(--warn);
 }
 
+main.wide {
+  width: min(1200px, calc(100% - 2rem));
+  padding-bottom: 3rem;
+}
+
+.year-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+}
+
+.year-tab {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  background: rgba(255, 252, 246, 0.72);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.year-tab:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  transform: translateY(-1px);
+}
+
+.year-tab[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #f7fffb;
+}
+
+.table-wrap {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+}
+
+.year-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 52rem;
+}
+
+.year-table th,
+.year-table td {
+  padding: 0.7rem 0.85rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.year-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: color-mix(in srgb, #fffdf8 88%, var(--accent-soft));
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.year-table tbody tr {
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.year-table tbody tr:hover,
+.year-table tbody tr:focus-visible {
+  background: rgba(15, 110, 86, 0.08);
+  outline: none;
+}
+
+.year-table td:nth-child(3),
+.year-table td:nth-child(4),
+.year-table td:nth-child(5),
+.year-table td:nth-child(6) {
+  white-space: nowrap;
+}
+
+.footnote {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
 @media (max-width: 860px) {
   .search,
   .workspace,
@@ -288,5 +404,9 @@ main {
 
   .masthead {
     padding-top: 2.2rem;
+  }
+
+  .year-table {
+    min-width: 40rem;
   }
 }
