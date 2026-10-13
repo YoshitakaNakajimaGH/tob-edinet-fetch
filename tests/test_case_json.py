@@ -83,6 +83,14 @@ class RuleParserTests(unittest.TestCase):
         self.assertEqual(parse_board_opinion("対象者は判断を留保する。"), "判断留保")
         self.assertEqual(parse_board_opinion(""), "")
 
+    def test_first_announcement_close_survives_a_later_price(self) -> None:
+        text = (
+            "公表日の前営業日である2025年６月２日の終値18,260円に対して。"
+            "開始についての公表日の前営業日である2026年１月13日の終値18,200円に対して。"
+        )
+        self.assertEqual(parse_reference_market_price_details(text)["priorClose"], "")
+        self.assertEqual(parse_reference_market_price_details(text, first_only=True)["priorClose"], "18,260")
+
     def test_reference_prices_keep_three_and_six_month_averages(self) -> None:
         parsed = parse_reference_market_price_details(PRICE)
         self.assertEqual(parsed["priorClose"], "1,000")

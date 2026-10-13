@@ -82,8 +82,9 @@ function resultCell(item) {
   return `<td class="${bad ? "result-bad" : ""}">${escapeHtml(label)}</td>`;
 }
 
-function premiumCell(value) {
-  const label = premiumLabel(value);
+function premiumCell(item) {
+  const value = item.PremiumVsPriorClose;
+  const label = premiumLabel(value, item.PremiumDerived);
   const number = Number(value);
   const tone = value === "" || value == null || !Number.isFinite(number)
     ? ""
@@ -103,6 +104,7 @@ function average(values) {
 function renderSummary(rows) {
   if (!els.summary || selfOnly) return;
   const premiums = rows
+    .filter((item) => item.PremiumDerived !== "Yes")
     .map((item) => Number(item.PremiumVsPriorClose))
     .filter((value) => Number.isFinite(value));
   const days = rows
@@ -184,7 +186,7 @@ function renderTable() {
       <td>${escapeHtml(item.TargetName || item.caseId)}</td>
       <td>${escapeHtml(offerorLabel(item))}</td>
       <td>${escapeHtml(yenLabel(item.PriorClose))}</td>
-      ${premiumCell(item.PremiumVsPriorClose)}
+      ${premiumCell(item)}
       <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
       <td>${escapeHtml(yesNo(item.IsMBO))}</td>
       <td>${escapeHtml(yesNo(item.IsHostileInitial))}</td>
