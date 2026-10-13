@@ -3,7 +3,7 @@
 金融庁 EDINET API から公開買付（TOB）関連書類（docTypeCode 240〜320）を取得し、CSV にまとめるリポジトリです。
 
 **実行場所:** あなたの PC ではなく **GitHub Actions**（GitHub のサーバ）  
-**普段見るファイル:** `output/current/tob_cases.csv`（他社株の案件一覧）
+**サイトが読むファイル:** `docs/data/all.csv`（機械が書いた原文は `output/case_summaries/all.csv`）
 
 ---
 
@@ -20,17 +20,20 @@
 Actions タブ → 左のワークフロー名 → **Run workflow** → ブランチ `master` を選んで実行します。  
 完了すると `output/` 以下が更新され、変更があれば自動 commit されます。
 
-### 実行の順番（推奨）
+サイトを更新する順番は次です。
 
 ```
-1. Fetch TOB        … 書類一覧の取得・更新（必須・最初に実行）
-2. Enrich TOB       … 他社株 TOB の XBRL 詳細抽出
-3. Enrich Self TOB  … 自社株 TOB の XBRL 詳細抽出（必要な場合のみ）
+1. IDリスト作成フロー
+2. 案件JSON作成フロー
 ```
 
-Fetch を実行しないと Enrich は `fetch_meta.json` が無くて失敗します。
+Fetch TOB、Enrich TOB、Enrich Self TOB、Sponsor Hint LLM、GPT Extract Lab、Filing descendants の試行、Pages の Actions デプロイは `old/workflows/` に移しました。`output/current` と `output/snapshots` も `old/output/` です。戻す予定がなければ 2027-10 以降に削除できます。
+
+手で直したセルは `corrections/overrides.csv` に置きます。案件JSON作成フローは、生成した `output/case_summaries/all.csv` を残し、修正を重ねた結果だけを `docs/data/` に書きます。空欄は変えません。説明は `corrections/README.md` です。
 
 ---
+
+以下の Fetch / Enrich の説明は、`old/workflows/` に移したときの動きです。今のサイト更新では使いません。
 
 ### 1. Fetch TOB — 書類一覧の取得
 
@@ -218,7 +221,7 @@ python -m http.server 8765 --directory docs
 有効化後、`master` の `docs/` が更新されるたびにサイトも更新されます。URL は  
 `https://<user>.github.io/tob-edinet-fetch/` のような形です。
 
-Source を **GitHub Actions** にする場合は `.github/workflows/pages.yml` が `docs/` をデプロイします。branch 公開と Actions 公開は同時に使わないでください。
+Pages の Actions 用ワークフローは `old/workflows/pages.yml` に移しました。今は branch 公開だけを使います。
 
 **Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。このフローは書類ごとにCSV（type=5）とXBRLインスタンス（type=1）を取り、本文は長い方を保存します。
 
@@ -232,20 +235,14 @@ python -m tob.case_json --from-month 2026-03
 
 ```
 output/
-  current/          … 常に最新（ここを見る）
-    tob_list.csv
-    tob_cases.csv
-    self_tob_list.csv
-    self_tob_cases.csv
-    fetch_meta.json
   id_lists/         … 届出月ごとの書類IDリスト（YYYY-MM.json）
   cases/YYYY/MM/    … 抽出済みの案件JSON（届出書DocID.json）
-  case_summaries/YYYY/MM.csv … 月次サマリ
+  case_summaries/YYYY/MM.csv … 月次サマリ（機械の出力）
   case_summaries/YYYY/YYYY.csv … 12月処理時の年次サマリ
-  case_summaries/all.csv … 取得済み全案件のサマリ
-docs/               … all.csv を読む検索・暦年一覧（data/all.csv を同梱。Pages の /docs）
-  snapshots/        … 履歴（tob_list_202001-202012_0001.csv 形式）
-  snapshots/trash/  … 古い履歴
+  case_summaries/all.csv … 取得済み全案件のサマリ（修正前）
+corrections/overrides.csv … 手修正。空欄は変えない
+docs/               … 修正を重ねた data/all.csv を読む検索・暦年一覧（Pages の /docs）
+old/                … 休止した Actions、実験、以前の current/ と snapshots/
 ```
 
 ---
@@ -331,13 +328,13 @@ python -m tob.enrich_self_tob --only-pending
 python -m unittest discover -s tests -v
 
 # GPT 抽出実験（要 OPENAI_API_KEY / pip install pypdf）
-python experiments/gpt-extract/scripts/run_one_case.py --case-id S100M232
-python experiments/gpt-extract/scripts/run_one_case.py --seed-queue 5
-python experiments/gpt-extract/scripts/run_one_case.py --from-queue
+python old/experiments/gpt-extract/scripts/run_one_case.py --case-id S100M232
+python old/experiments/gpt-extract/scripts/run_one_case.py --seed-queue 5
+python old/experiments/gpt-extract/scripts/run_one_case.py --from-queue
 
 # SponsorHint LLM（要 GEMINI_API_KEY、CSV テキストから推論）
-python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --dry-run --limit 5
-python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --only-blank --apply-cases
+python old/experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --dry-run --limit 5
+python old/experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --only-blank --apply-cases
 ```
 
 ---
@@ -349,9 +346,7 @@ python experiments/sponsor-hint-llm/scripts/run_sponsor_hint_llm.py --only-blank
 | [`tob/`](tob/) | TOB パイプライン（Fetch / Enrich / IDリスト / 案件JSON / タクソノミ） |
 | [`edinet/`](edinet/) | EDINET 提出者リスト等の共有ユーティリティ |
 | [`stock_swap/`](stock_swap/) | 株式交換パイプライン（将来追加予定） |
-| [`experiments/`](experiments/) | **試作・検証用**（本番 `output/` に影響しない） |
-| [`experiments/gpt-extract/`](experiments/gpt-extract/) | ChatGPT で TOB PDF → CSV 抽出する実験場 |
-| [`experiments/sponsor-hint-llm/`](experiments/sponsor-hint-llm/) | Gemini で CSV テキストから SponsorHint を推論 |
+| [`old/experiments/`](old/experiments/) | 休止した試作（GPT 抽出、SponsorHint LLM） |
 | `output/` | CSV 出力（`current/` と `snapshots/`） |
 | `cache/` | 日次 API レスポンス・XBRL ZIP のキャッシュ |
 
