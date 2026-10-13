@@ -197,6 +197,17 @@ python -m http.server 8765 --directory site
 
 ブラウザで `http://localhost:8765`（検索）または `http://localhost:8765/years.html`（暦年一覧）を開いてください。`file://` ではCSVを読めないことがあります。
 
+**月次更新との連動:** 「案件JSON作成フロー」で結果を保存すると、`site/data/all.csv` も同じコミットに入ります。ページ本体を直さなくても、次回サイトを開けば新しい案件が出ます。
+
+**GitHub Pages（任意・ネット公開）:** `site/` を公開する workflow は `.github/workflows/pages.yml` です。`master` の `site/**` が変わるとデプロイします。初回だけ自分で有効化してください。
+
+1. リポジトリ → **Settings** → **Pages**
+2. Source を **GitHub Actions** にする
+3. リポジトリが **private** のままなら、Pages は Free では使えません（public にするか、有料プラン）。公開後のサイトURLは誰でも見られます
+
+有効化後、Actions の「Deploy site to GitHub Pages」が通ると  
+`https://<user>.github.io/tob-edinet-fetch/` のような URL になります。
+
 **Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。このフローは書類ごとにCSV（type=5）とXBRLインスタンス（type=1）を取り、本文は長い方を保存します。
 
 ```bash
