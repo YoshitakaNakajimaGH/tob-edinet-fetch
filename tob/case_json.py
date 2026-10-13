@@ -75,7 +75,7 @@ from tob.tob_common import (
 CASE_SCHEMA = "tob-case-1"
 DEFAULT_CASE_DIR = Path("output/cases")
 DEFAULT_SUMMARY_DIR = Path("output/case_summaries")
-DEFAULT_SITE_DATA = Path("site/data/all.csv")
+DEFAULT_SITE_DATA = Path("docs/data/all.csv")
 DEFAULT_ID_LIST_DIR = Path("output/id_lists")
 
 _TEXT_FIELDS = (

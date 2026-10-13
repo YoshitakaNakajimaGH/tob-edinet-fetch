@@ -550,7 +550,7 @@ class CaseJsonTests(unittest.TestCase):
     def test_month_summary_copies_all_csv_into_the_site_folder(self) -> None:
         path = write_month_summary("2026-03")
         self.assertEqual(path, Path("output/case_summaries/2026/03.csv"))
-        site = Path("site/data/all.csv")
+        site = Path("docs/data/all.csv")
         self.assertTrue(site.is_file())
         with site.open(encoding="utf-8-sig", newline="") as handle:
             ids = [item["caseId"] for item in csv.DictReader(handle)]

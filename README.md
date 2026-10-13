@@ -184,7 +184,7 @@ output/cases/YYYY/MM/{届出書DocID}.json
 - `output/case_summaries/YYYY/YYYY.csv` … 12月をまとめたときだけ、その年の1月〜12月をこの順で結合
 - `output/case_summaries/all.csv` … それまでに書いた月次CSVの全部
 
-検索用の静的ページは `site/` です。`all.csv` と同じ内容を `site/data/all.csv` にも書き、次の画面を用意しています。
+検索用の静的ページは `docs/` です。`all.csv` と同じ内容を `docs/data/all.csv` にも書き、次の画面を用意しています。GitHub Pages の branch 公開は `/` と `/docs` しか選べないので、ここに置いています。
 
 - `index.html` … 名称・届出月・結果で絞り込む案件検索
 - `years.html` … 暦年ごとの一覧（対象会社・買収者・プレミアム・MBO・敵対的・買付期間の日数）
@@ -192,21 +192,24 @@ output/cases/YYYY/MM/{届出書DocID}.json
 ローカルでは次で開けます。
 
 ```bash
-python -m http.server 8765 --directory site
+python -m http.server 8765 --directory docs
 ```
 
 ブラウザで `http://localhost:8765`（検索）または `http://localhost:8765/years.html`（暦年一覧）を開いてください。`file://` ではCSVを読めないことがあります。
 
-**月次更新との連動:** 「案件JSON作成フロー」で結果を保存すると、`site/data/all.csv` も同じコミットに入ります。ページ本体を直さなくても、次回サイトを開けば新しい案件が出ます。
+**月次更新との連動:** 「案件JSON作成フロー」で結果を保存すると、`docs/data/all.csv` も同じコミットに入ります。ページ本体を直さなくても、次回サイトを開けば新しい案件が出ます。
 
-**GitHub Pages（任意・ネット公開）:** `site/` を公開する workflow は `.github/workflows/pages.yml` です。`master` の `site/**` が変わるとデプロイします。初回だけ自分で有効化してください。
+**GitHub Pages（任意・ネット公開）:** 初回だけ自分で有効化してください。
 
 1. リポジトリ → **Settings** → **Pages**
-2. Source を **GitHub Actions** にする
-3. リポジトリが **private** のままなら、Pages は Free では使えません（public にするか、有料プラン）。公開後のサイトURLは誰でも見られます
+2. Source は **Deploy from a branch**
+3. Branch は `master`、Folder は **`/docs`**
+4. リポジトリが **private** のままなら、Pages は Free では使えません（public にするか、有料プラン）。公開後のサイトURLは誰でも見られます
 
-有効化後、Actions の「Deploy site to GitHub Pages」が通ると  
-`https://<user>.github.io/tob-edinet-fetch/` のような URL になります。
+有効化後、`master` の `docs/` が更新されるたびにサイトも更新されます。URL は  
+`https://<user>.github.io/tob-edinet-fetch/` のような形です。
+
+Source を **GitHub Actions** にする場合は `.github/workflows/pages.yml` が `docs/` をデプロイします。branch 公開と Actions 公開は同時に使わないでください。
 
 **Actions:** 「案件JSON作成フロー」。開始月・終了月の入力は IDリスト作成フローと同じです。空欄の開始月は、183日の窓が閉じた直近の月です。対象月の `output/id_lists/YYYY-MM.json` が先にないと止まります。このフローは書類ごとにCSV（type=5）とXBRLインスタンス（type=1）を取り、本文は長い方を保存します。
 
@@ -231,7 +234,7 @@ output/
   case_summaries/YYYY/MM.csv … 月次サマリ
   case_summaries/YYYY/YYYY.csv … 12月処理時の年次サマリ
   case_summaries/all.csv … 取得済み全案件のサマリ
-site/               … all.csv を読む検索・暦年一覧（data/all.csv を同梱）
+docs/               … all.csv を読む検索・暦年一覧（data/all.csv を同梱。Pages の /docs）
   snapshots/        … 履歴（tob_list_202001-202012_0001.csv 形式）
   snapshots/trash/  … 古い履歴
 ```
