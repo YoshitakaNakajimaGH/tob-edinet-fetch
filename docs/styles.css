@@ -496,13 +496,20 @@ main.wide {
   position: absolute;
   top: 0.45rem;
   height: 0.7rem;
-  border-radius: 999px;
-  background: repeating-linear-gradient(
-    90deg,
-    #0f6e56 0 8px,
-    transparent 8px 12px
-  );
+  border-radius: 2px;
+  background: #0f6e56;
 }
+.band-track i::before,
+.band-track i::after {
+  content: "";
+  position: absolute;
+  top: -0.18rem;
+  bottom: -0.18rem;
+  width: 2px;
+  background: #0f6e56;
+}
+.band-track i::before { left: 0; }
+.band-track i::after { right: 0; }
 
 .price-line {
   position: absolute;
@@ -530,6 +537,13 @@ main.wide {
 .price-line.offer b { color: #9a4d1c; }
 .band-track.axis { margin-top: 1.15rem; }
 
+.same-as {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: normal;
+  font-weight: 600;
+}
 .capital-line { margin: 0 0 0.8rem; }
 
 .premium-up {
