@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>自社株TOB | TOB Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-scope="self">
+    <div class="atmosphere" aria-hidden="true"></div>
+    <header class="masthead">
+      <p class="brand">TOB Archive</p>
+      <nav class="site-nav" aria-label="サイト内">
+        <a href="./index.html">案件検索</a>
+        <a href="./years.html">暦年一覧</a>
+        <a href="./self.html" aria-current="page">自社株TOB</a>
+      </nav>
+      <h1>自社株TOBの暦年一覧</h1>
+      <p class="lead">
+        買収者と対象会社が同じ案件です。まとめCSVの <code>issuerTender</code> が true の行だけを出します。
+      </p>
+    </header>
+
+    <main class="wide">
+      <div class="year-bar" id="year-tabs" aria-label="暦年"></div>
+      <p id="meta" class="meta" aria-live="polite"></p>
+      <div class="table-wrap">
+        <table class="year-table">
+          <thead>
+            <tr>
+              <th>対象会社</th>
+              <th>買収者</th>
+              <th>直前株価</th>
+              <th>プレミアム</th>
+              <th>買付総額</th>
+              <th>幹事証券</th>
+              <th>MBO</th>
+              <th>敵対的</th>
+              <th>結果</th>
+              <th>期間日数</th>
+            </tr>
+          </thead>
+          <tbody id="year-body"></tbody>
+        </table>
+      </div>
+      <p class="footnote">
+        同じ内容は <code>self_tob.csv</code> にも分けて書いています。買付総額は買付代金を億円にしたものです。
+      </p>
+    </main>
+
+    <script src="./years.js" type="module"></script>
+  </body>
+</html>

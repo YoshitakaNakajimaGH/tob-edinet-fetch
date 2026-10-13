@@ -77,6 +77,7 @@ CASE_SCHEMA = "tob-case-1"
 DEFAULT_CASE_DIR = Path("output/cases")
 DEFAULT_SUMMARY_DIR = Path("output/case_summaries")
 DEFAULT_SITE_DATA = Path("docs/data/all.csv")
+DEFAULT_SELF_SITE_DATA = Path("docs/data/self_tob.csv")
 DEFAULT_ID_LIST_DIR = Path("output/id_lists")
 
 _TEXT_FIELDS = (
@@ -340,8 +341,12 @@ def write_month_summary(filing_month: str, case_root: Path | None = None, summar
         all_rows.extend(_read_summary_rows(month_file))
     all_path = case_all_summary_path(base)
     _write_summary_rows(all_path, all_rows)
+    self_rows = [row for row in all_rows if str(row.get("issuerTender")).lower() == "true"]
+    self_path = base / "self_tob.csv"
+    _write_summary_rows(self_path, self_rows)
     if summary_root is None or Path(summary_root) == DEFAULT_SUMMARY_DIR:
         _write_summary_rows(DEFAULT_SITE_DATA, all_rows)
+        _write_summary_rows(DEFAULT_SELF_SITE_DATA, self_rows)
     return path
 
 
