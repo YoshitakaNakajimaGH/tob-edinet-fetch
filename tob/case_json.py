@@ -192,6 +192,9 @@ SUMMARY_COLUMNS = (
     "TargetDcfMin",
     "TargetDcfMax",
     "FirstFilingPdf",
+    "FirstOpinionPdf",
+    "FirstWithdrawalPdf",
+    "FirstAnswerPdf",
     "LatestReportPdf",
     "DocCount",
 )
@@ -299,6 +302,9 @@ def summary_row(case: dict) -> dict[str, str]:
         "FinancingEquity": _cell(financing.get("equity")),
         "FinancingDebt": _cell(financing.get("debt")),
         "FirstFilingPdf": _cell(links.get("firstFiling")),
+        "FirstOpinionPdf": _cell(links.get("firstOpinion")),
+        "FirstWithdrawalPdf": _cell(links.get("firstWithdrawal") or links.get("withdrawal")),
+        "FirstAnswerPdf": _cell(links.get("firstAnswer")),
         "LatestReportPdf": _cell(links.get("latestReport")),
         "DocCount": _cell(len(core.get("DocIDList") or [])),
     }
@@ -609,7 +615,9 @@ def _pdf_links(docs: list[dict]) -> dict:
         "firstOpinion": _first_url(docs, {"290"}),
         "latestOpinion": _last_url(docs, OPINION_SIDE),
         "latestReport": _last_url(docs, REPORT_SIDE),
-        "withdrawal": _last_url(docs, WITHDRAW_SIDE),
+        "firstWithdrawal": _first_url(docs, WITHDRAW_SIDE),
+        "withdrawal": _first_url(docs, WITHDRAW_SIDE),
+        "firstAnswer": _first_url(docs, {"310"}),
         "documents": [
             {
                 "docId": item["docId"],
