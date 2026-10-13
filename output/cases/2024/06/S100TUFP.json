@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社宇佐美鉱油",
-    "SponsorHint": "(ⅰ)2023年９月期に係る有価証券報告書",
+    "SponsorHint": null,
     "TargetEdinetCode": "E34819",
     "OfferorEdinetCode": "E39618",
     "TargetName": "株式会社グッドスピード",
@@ -83,11 +83,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100TUFP",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100TUFP",
       "docTypeCode": "240",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "日特建設株式会社",
-    "SponsorHint": "親会社）",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00308",
     "OfferorEdinetCode": "E00142",
     "TargetName": "麻生フオームクリート株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UX85",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100UX85",
       "docTypeCode": "240",

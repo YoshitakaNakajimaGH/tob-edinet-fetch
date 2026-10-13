@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "丸紅株式会社",
-    "SponsorHint": "1950年７月には東京証券取引所及び旧株式会社大阪証券取引所",
+    "SponsorHint": null,
     "TargetEdinetCode": "E34545",
     "OfferorEdinetCode": "E02498",
     "TargetName": "アルテリア・ネットワークス株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100RF7Y",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100RF7Y",
       "docTypeCode": "250",

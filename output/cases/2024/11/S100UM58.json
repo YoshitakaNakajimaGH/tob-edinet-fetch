@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社外為どっとコム",
-    "SponsorHint": "伊藤忠商事",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03747",
     "OfferorEdinetCode": "E40203",
     "TargetName": "株式会社マネーパートナーズグループ",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UM58",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100UM58",
       "docTypeCode": "240",

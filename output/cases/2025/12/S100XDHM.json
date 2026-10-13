@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ＳＯＭＰＯ Ｌｉｇｈｔ Ｖｏｒｔｅｘ株式会社",
-    "SponsorHint": "非連結子会社１社及び関連会社２社で構成される対象者の企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E32351",
     "OfferorEdinetCode": "E38648",
     "TargetName": "株式会社農業総合研究所",
@@ -88,11 +88,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XHVI",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XHVI",
       "docTypeCode": "250",

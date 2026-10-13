@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "TNI株式会社",
-    "SponsorHint": "H.I.S.",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03323",
     "OfferorEdinetCode": "E38663",
     "TargetName": "株式会社ピーシーデポコーポレーション",
@@ -88,11 +88,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100R4FF",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100R4FF",
       "docTypeCode": "250",

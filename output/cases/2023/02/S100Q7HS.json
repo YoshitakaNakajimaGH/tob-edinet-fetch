@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社エンビプロ・ホールディングス",
-    "SponsorHint": "株式会社東洋ゴムチップ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01089",
     "OfferorEdinetCode": "E27868",
     "TargetName": "日東化工株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100Q7HS",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

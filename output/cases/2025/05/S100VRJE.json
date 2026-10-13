@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ＶＴホールディングス株式会社",
-    "SponsorHint": "）及び持分法適用関連会社３社からなる企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E02977",
     "OfferorEdinetCode": "E02889",
     "TargetName": "株式会社トラスト",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100W8R7",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100W8R7",
       "docTypeCode": "250",

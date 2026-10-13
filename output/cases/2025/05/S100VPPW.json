@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "塩野義製薬株式会社",
-    "SponsorHint": "1949年５月に東京証券取引所及び株式会社大阪証券取引所",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00934",
     "OfferorEdinetCode": "E00923",
     "TargetName": "鳥居薬品株式会社",
@@ -90,11 +90,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100VVSC",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100VVSC",
       "docTypeCode": "250",

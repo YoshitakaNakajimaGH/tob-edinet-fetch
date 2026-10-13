@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社クラフト",
-    "SponsorHint": "ＷＡＣＣ：WeightedAverageCostofCapital",
+    "SponsorHint": null,
     "TargetEdinetCode": "E02035",
     "OfferorEdinetCode": "E30299",
     "TargetName": "株式会社キョウデン",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100RO4C",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100RO4C",
       "docTypeCode": "240",

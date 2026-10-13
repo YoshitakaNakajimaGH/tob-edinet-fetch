@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "中央魚類株式会社",
-    "SponsorHint": "ディスカウンテッド・キャッシュ・フロー分析",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00017",
     "OfferorEdinetCode": "E02566",
     "TargetName": "株式会社ホウスイ",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100NLA3",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100NLA3",
       "docTypeCode": "240",

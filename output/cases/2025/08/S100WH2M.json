@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "インフロニア・ホールディングス株式会社",
-    "SponsorHint": "株式会社シティインデックスイレブンス",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00085",
     "OfferorEdinetCode": "E36723",
     "TargetName": "三井住友建設株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WH2M",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WH2M",
       "docTypeCode": "240",

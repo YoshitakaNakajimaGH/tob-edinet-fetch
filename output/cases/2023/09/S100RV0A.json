@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ニデック株式会社",
-    "SponsorHint": "GPIF)をパッシブ・インデックス運用ファンド",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01490",
     "OfferorEdinetCode": "E01975",
     "TargetName": "株式会社TAKISAWA",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100S33U",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100S33U",
       "docTypeCode": "250",

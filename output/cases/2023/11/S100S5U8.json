@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社北杜マネージメント",
-    "SponsorHint": "新たな法人",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05292",
     "OfferorEdinetCode": "E39146",
     "TargetName": "シミックホールディングス株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100SH9K",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100SH9K",
       "docTypeCode": "250",

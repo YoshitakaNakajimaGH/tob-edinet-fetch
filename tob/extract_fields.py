@@ -493,6 +493,13 @@ def sanitize_sponsor_name(name: str) -> str:
     split_and = re.match(r"^(?:LLC|LLP|LP|Inc|Ltd)及び(.+)$", candidate, re.I)
     if split_and:
         candidate = split_and.group(1)
+    if re.match(r"^(?:であり|一方|加え|なお|また|更に|他方|もっとも|加えて)", candidate):
+        company = re.search(
+            r"((?:株式会社|有限会社|合同会社).{1,40}|[^、。]{2,40}?(?:株式会社|ホールディングス|グループ))$",
+            candidate,
+        )
+        if company:
+            candidate = company.group(1)
     candidate = candidate.strip("、。，．及びはがをにの")
     if candidate == "SBIHD":
         candidate = "SBIホールディングス"
@@ -509,6 +516,12 @@ def is_acceptable_sponsor_name(name: str) -> bool:
     if NARRATIVE_SPONSOR_RE.search(name):
         return False
     if re.search(r"[「」]", name):
+        return False
+    if re.search(r"について|以外|（注|から\d|円", name):
+        return False
+    if re.match(r"^(?:加え|一方|なお|また|であり|又は|本件|本取引|公開買付|対象者)", name):
+        return False
+    if "、" in name:
         return False
     if name.endswith(("（", "(", "、", "及び", "である", "に", "を", "が", "は", "及")):
         return False
@@ -548,6 +561,32 @@ def _subject_before_wa(text: str) -> str:
     if len(subject) < 2:
         return ""
     return _finalize_sponsor_candidate(subject[:80])
+
+
+_OVERVIEW_HEAD = re.compile(
+    r"(?:[（(]\s*[1１]\s*[)）]\s*)?"
+    r"(?:本件両|本両|本件|本)?公開買付(?:け)?の概要"
+)
+_OVERVIEW_END = re.compile(r"[（(]\s*[2２]\s*[)）]|【[^】]{1,30}】")
+
+
+def offer_overview_window(text: str, limit: int = 1800) -> str:
+    """Plain text right after （１）本公開買付の概要, until （２） or the next 【heading】.
+
+    Sponsor names are read only from this opening. A mention later in the
+    filing (directors' former employers, product standards, corporate history)
+    is not a sponsor.
+    """
+    if not text:
+        return ""
+    plain = strip_html(text)
+    match = _OVERVIEW_HEAD.search(plain)
+    if not match:
+        return ""
+    rest = plain[match.end() :]
+    end = _OVERVIEW_END.search(rest)
+    chunk = rest[: end.start()] if end else rest
+    return chunk.strip()[:limit]
 
 
 def extract_overview_section(text: str) -> str:
@@ -607,27 +646,27 @@ def _reject_parent_candidate(name: str) -> str:
 def extract_pe_sponsor_name(text: str) -> str:
     if not text:
         return ""
-    sections = [extract_overview_section(text), text]
-    seen: set[str] = set()
-    for section in sections:
-        if not section or section in seen:
-            continue
-        seen.add(section)
-        plain = strip_html(section)
-        for pattern, label in PE_SPONSOR_RULES:
-            if pattern.search(plain):
-                return label
-        compact = re.sub(r"\s+", "", plain)
-        for pattern in (
-            r"((?:[A-ZＡ-Ｚ][A-ZＡ-Ｚ0-9・･\s]{1,40}?)(?:ファンド|Fund|キャピタル|Capital))",
-            r"((?:[A-ZＡ-Ｚ]{2,}(?:[・･\s][A-ZＡ-Ｚ]{2,}){0,4})[^。、（(]{0,24}(?:ファンド|Fund|キャピタル|Capital))",
-        ):
-            match = re.search(pattern, compact)
-            if match:
-                raw = re.split(r"[（(]以下", match.group(1))[0]
-                cleaned = _finalize_sponsor_candidate(raw)
-                if cleaned:
-                    return cleaned
+    plain = strip_html(text)
+    # A full filing is searched only in the opening of （１）本公開買付の概要.
+    # A short snippet with no heading is still scanned, so catalog tests stay local.
+    if _OVERVIEW_HEAD.search(plain):
+        plain = offer_overview_window(plain)
+        if not plain:
+            return ""
+    for pattern, label in PE_SPONSOR_RULES:
+        if pattern.search(plain):
+            return label
+    compact = re.sub(r"\s+", "", plain)
+    for pattern in (
+        r"((?:[A-ZＡ-Ｚ][A-ZＡ-Ｚ0-9・･\s]{1,40}?)(?:ファンド|Fund|キャピタル|Capital))",
+        r"((?:[A-ZＡ-Ｚ]{2,}(?:[・･\s][A-ZＡ-Ｚ]{2,}){0,4})[^。、（(]{0,24}(?:ファンド|Fund|キャピタル|Capital))",
+    ):
+        match = re.search(pattern, compact)
+        if match:
+            raw = re.split(r"[（(]以下", match.group(1))[0]
+            cleaned = _finalize_sponsor_candidate(raw)
+            if cleaned:
+                return cleaned
     return ""
 
 
@@ -663,6 +702,7 @@ def extract_parent_company_name(text: str) -> str:
             return cleaned
 
     for pattern in (
+        r"([^（(、。\n]{2,40})（以下[^）]{0,80}）が(?:その|公開買付者の)?発行済(?:株式|持分)の(?:全て|全部)を(?:所有|保有)",
         r"公開買付者親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
         r"親会社(?:である|は|として)?([^。、\n（(]{2,80}?)[（(]以下",
         r"公開買付者の完全親会社(?:である|は|として)?([^。、\n（(]{2,80}?)(?:は|が|を|の|に)",
@@ -753,6 +793,7 @@ def resolve_sponsor_hint(
         if listed_offeror and listed_offeror.isdigit():
             return listed_offeror
 
+    window = offer_overview_window("\n".join(part for part in (purposes, overview) if part))
     if is_fund_offeror(
         offeror_name,
         purposes_raw=purposes,
@@ -761,7 +802,7 @@ def resolve_sponsor_hint(
         edinet_list=edinet_list,
     ):
         for extractor in (extract_pe_sponsor_name, extract_parent_company_name, extract_sponsor_from_purposes):
-            value = extractor(combined)
+            value = extractor(window)
             if not value:
                 continue
             if value in PE_CANONICAL_LABELS:
@@ -769,15 +810,12 @@ def resolve_sponsor_hint(
             finalized = _finalize_sponsor_candidate(value)
             if finalized:
                 return finalized
-        pe_from_officers = extract_pe_sponsor_name(officer_history_raw)
-        if pe_from_officers:
-            return pe_from_officers
         return ""
 
-    parent_name = extract_parent_company_name(combined) or extract_sponsor_from_purposes(combined)
+    parent_name = extract_parent_company_name(window) or extract_sponsor_from_purposes(window)
     parent_name = _finalize_sponsor_candidate(parent_name)
     if not parent_name:
-        pe_name = extract_pe_sponsor_name(combined)
+        pe_name = extract_pe_sponsor_name(window)
         if pe_name:
             return pe_name
     mbo = is_mbo == "Yes" or detect_mbo([combined, opinion]) == "Yes"

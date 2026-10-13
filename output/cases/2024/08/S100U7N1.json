@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社レスター",
-    "SponsorHint": "旧株式会社バイテックホールディングス)",
+    "SponsorHint": null,
     "TargetEdinetCode": "E31640",
     "OfferorEdinetCode": "E23245",
     "TargetName": "ＰＣＩホールディングス株式会社",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UABE",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100UABE",
       "docTypeCode": "250",

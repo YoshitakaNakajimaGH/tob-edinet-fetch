@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "日本電気株式会社",
-    "SponsorHint": "設立予定の中間持株会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00210",
     "OfferorEdinetCode": "E01765",
     "TargetName": "ＮＥＣネッツエスアイ株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UZOZ",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100UZOZ",
       "docTypeCode": "250",

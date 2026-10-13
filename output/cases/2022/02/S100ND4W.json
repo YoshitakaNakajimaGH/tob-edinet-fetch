@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社日の出",
-    "SponsorHint": "又は公開買付者のみとするための一連の手続",
+    "SponsorHint": null,
     "TargetEdinetCode": "E02514",
     "OfferorEdinetCode": "E37464",
     "TargetName": "株式会社ＡＴグループ",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100ND4W",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100ND4W",
       "docTypeCode": "240",

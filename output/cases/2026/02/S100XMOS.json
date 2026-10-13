@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "有限会社斉藤ホールディングス",
-    "SponsorHint": "公開買付応募契約書",
+    "SponsorHint": null,
     "TargetEdinetCode": "E04975",
     "OfferorEdinetCode": "E25006",
     "TargetName": "株式会社エイジス",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XMOS",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XMOS",
       "docTypeCode": "240",

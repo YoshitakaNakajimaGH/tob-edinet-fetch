@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "阪急阪神ホールディングス株式会社",
-    "SponsorHint": "商号を阪急電鉄株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E04593",
     "OfferorEdinetCode": "E04103",
     "TargetName": "オーエス株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100SFFB",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100SFFB",
       "docTypeCode": "240",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ヒューリック株式会社",
-    "SponsorHint": "持分法適用関連会社26社及び他数社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01699",
     "OfferorEdinetCode": "E00523",
     "TargetName": "鉱研工業株式会社",
@@ -85,11 +85,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100W3UH",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100W3UH",
       "docTypeCode": "250",

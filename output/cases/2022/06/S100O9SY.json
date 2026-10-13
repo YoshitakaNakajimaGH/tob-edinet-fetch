@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社島津製作所",
-    "SponsorHint": "であり筆頭株主である日本水産株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00971",
     "OfferorEdinetCode": "E02265",
     "TargetName": "日水製薬株式会社",
@@ -94,11 +94,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100OPZN",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100OPZN",
       "docTypeCode": "250",

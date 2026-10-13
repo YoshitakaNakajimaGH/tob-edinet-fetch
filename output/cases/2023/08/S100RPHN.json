@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ラクスル株式会社",
-    "SponsorHint": "公開買付け及びその後の一連の手続により対象者",
+    "SponsorHint": null,
     "TargetEdinetCode": "E34476",
     "OfferorEdinetCode": "E33966",
     "TargetName": "株式会社ＡｍｉｄＡホールディングス",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100RPHN",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100RPHN",
       "docTypeCode": "240",

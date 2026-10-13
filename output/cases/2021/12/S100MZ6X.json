@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社商船三井",
-    "SponsorHint": "Goldman Sachs",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03861",
     "OfferorEdinetCode": "E04236",
     "TargetName": "ダイビル株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100MZ6X",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100MZ6X",
       "docTypeCode": "240",

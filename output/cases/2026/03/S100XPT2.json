@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "三井住友建設株式会社",
-    "SponsorHint": "インフロニア・ホールディングス株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00272",
     "OfferorEdinetCode": "E00085",
     "TargetName": "三井住建道路株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XQ3L",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XQ3L",
       "docTypeCode": "250",

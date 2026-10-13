@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "アクセンチュア株式会社",
-    "SponsorHint": "2018年５月にトヨタ自動車株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E31276",
     "OfferorEdinetCode": "E38042",
     "TargetName": "株式会社ＡＬＢＥＲＴ",
@@ -83,11 +83,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100P9U1",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100P9U1",
       "docTypeCode": "240",

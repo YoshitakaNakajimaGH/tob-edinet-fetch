@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "三井金属鉱業株式会社",
-    "SponsorHint": "公開買付けを通じて対象者",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00303",
     "OfferorEdinetCode": "E00024",
     "TargetName": "三井金属エンジニアリング株式会社",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100NDAV",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100NDAV",
       "docTypeCode": "250",

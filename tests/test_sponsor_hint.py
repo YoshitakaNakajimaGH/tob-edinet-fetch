@@ -16,6 +16,7 @@ from tob.extract_fields import (
     extract_sponsor_from_purposes,
     is_fund_offeror,
     is_acceptable_sponsor_name,
+    offer_overview_window,
     resolve_sponsor_hint,
     sanitize_sponsor_name,
 )
@@ -86,6 +87,19 @@ class SponsorHintInferenceTests(unittest.TestCase):
             ),
             "",
         )
+
+    def test_overview_window_ignores_later_name_drops(self) -> None:
+        text = (
+            "（１）本公開買付けの概要\n"
+            "公開買付者は、SBIHDグループの完全子会社です。\n"
+            "（２）本公開買付けの背景\n"
+            "社外取締役の出身母体にゴールドマン・サックス証券株式会社がある。"
+            "日本工業規格（ＪＩＳ規格）に準拠する。Optia Partners株式会社の株式を取得した。"
+        )
+        window = offer_overview_window(text)
+        self.assertIn("SBIHD", window)
+        self.assertNotIn("ゴールドマン", window)
+        self.assertEqual(extract_pe_sponsor_name(text), "")
 
     def test_extract_pe_sponsor_bain(self) -> None:
         text = "ベインキャピタルは、本公開買付けを通じて対象者株式の非公開化を企図しております。"

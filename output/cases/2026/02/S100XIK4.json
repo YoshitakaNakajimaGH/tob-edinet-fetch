@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "日本パレットレンタル株式会社",
-    "SponsorHint": "並びに③ＪＲ貨物",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05001",
     "OfferorEdinetCode": "E41398",
     "TargetName": "日本パレットプール株式会社",
@@ -89,11 +89,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XLWD",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XLWD",
       "docTypeCode": "250",

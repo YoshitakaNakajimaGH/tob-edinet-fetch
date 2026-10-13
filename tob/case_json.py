@@ -32,6 +32,7 @@ from tob.extract_fields import (
     clean_extracted_name,
     extract_parent_company_name,
     extract_pe_sponsor_name,
+    offer_overview_window,
     extract_special_committee_valuation,
     extract_sponsor_from_purposes,
     detect_mbo,
@@ -733,7 +734,7 @@ def _holdings(filing: dict | None, report: dict | None) -> tuple[dict[str, float
 
 
 def _sponsor_hint(filings: list[dict]) -> tuple[str, dict | None]:
-    """Name written in the filing text. No EDINET-list lookup and no model."""
+    """Name in the opening of （１）本公開買付の概要. No EDINET lookup and no model."""
     for item in reversed(filings):
         text = "\n".join(
             part
@@ -743,10 +744,11 @@ def _sponsor_hint(filings: list[dict]) -> tuple[str, dict | None]:
             )
             if part
         )
-        if not text:
+        window = offer_overview_window(text)
+        if not window:
             continue
         for extractor in (extract_pe_sponsor_name, extract_parent_company_name, extract_sponsor_from_purposes):
-            name = extractor(text)
+            name = extractor(window)
             if name:
                 return name, item
     return "", None

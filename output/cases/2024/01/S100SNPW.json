@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社メドレー",
-    "SponsorHint": "医療機関及び介護事業所向けのサービスを複数展開している株式会社メディパス",
+    "SponsorHint": null,
     "TargetEdinetCode": "E37939",
     "OfferorEdinetCode": "E33586",
     "TargetName": "株式会社グッピーズ",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100SNPW",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100SNPW",
       "docTypeCode": "240",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社シティクリエイションホールディングス",
-    "SponsorHint": "前身は2005年に設立した公開買付者",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03505",
     "OfferorEdinetCode": "E39776",
     "TargetName": "ホリイフードサービス株式会社",
@@ -88,11 +88,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100U7VL",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100U7VL",
       "docTypeCode": "250",

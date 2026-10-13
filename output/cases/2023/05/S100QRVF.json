@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "サイブリッジ合同会社",
-    "SponsorHint": "同社及びサイブリッジコーポレーション株式会社を含む17社のグループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05302",
     "OfferorEdinetCode": "E38659",
     "TargetName": "株式会社fonfun",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100QXRG",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100QXRG",
       "docTypeCode": "250",

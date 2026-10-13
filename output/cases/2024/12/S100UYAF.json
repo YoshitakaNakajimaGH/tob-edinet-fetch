@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社イノベーション",
-    "SponsorHint": "公開買付応募契約書",
+    "SponsorHint": null,
     "TargetEdinetCode": "E32855",
     "OfferorEdinetCode": "E32766",
     "TargetName": "株式会社シャノン",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100UYAF",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100UYAF",
       "docTypeCode": "240",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社Sunny",
-    "SponsorHint": ")に関連する各議案に賛成する旨の契約",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01433",
     "OfferorEdinetCode": "E40181",
     "TargetName": "元旦ビューティ工業株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100USBC",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100USBC",
       "docTypeCode": "240",

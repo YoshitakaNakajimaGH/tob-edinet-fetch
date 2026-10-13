@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社横浜銀行",
-    "SponsorHint": "株式会社コンコルディア・フィナンシャルグループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03672",
     "OfferorEdinetCode": "E03559",
     "TargetName": "株式会社神奈川銀行",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100QEO8",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "加賀電子株式会社",
-    "SponsorHint": "CVC",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01619",
     "OfferorEdinetCode": "E02676",
     "TargetName": "協栄産業株式会社",
@@ -92,11 +92,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100W7HE",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100W7HE",
       "docTypeCode": "250",

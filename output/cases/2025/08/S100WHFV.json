@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社ＪＰＥＣ",
-    "SponsorHint": "本特別委員会から2025年８月６日付で答申書",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05231",
     "OfferorEdinetCode": "E40883",
     "TargetName": "ＴＡＣ株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WHFV",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WHFV",
       "docTypeCode": "240",

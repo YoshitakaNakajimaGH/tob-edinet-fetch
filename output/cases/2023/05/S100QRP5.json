@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ＳＢＩ地銀ホールディングス株式会社",
-    "SponsorHint": "SBIHDグループのベンチャー・キャピタル",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03530",
     "OfferorEdinetCode": "E35850",
     "TargetName": "株式会社ＳＢＩ新生銀行",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100QVA3",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

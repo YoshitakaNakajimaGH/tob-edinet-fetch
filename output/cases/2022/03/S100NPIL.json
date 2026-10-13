@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "インフロニア・ホールディングス株式会社",
-    "SponsorHint": "前田道路株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00082",
     "OfferorEdinetCode": "E36723",
     "TargetName": "東洋建設株式会社",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100NZ8P",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100NZ8P",
       "docTypeCode": "250",

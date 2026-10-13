@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社Ｋ.Ｉ.Ｔ",
-    "SponsorHint": "ＮＣＣ及び対象者",
+    "SponsorHint": null,
     "TargetEdinetCode": "E03948",
     "OfferorEdinetCode": "E39182",
     "TargetName": "株式会社日住サービス",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100S8TD",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

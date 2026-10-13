@@ -111,7 +111,7 @@ class CaseJsonTests(unittest.TestCase):
                 "intendedPurchase": PLANNED,
                 "fund": "買付代金（円）(ａ)1,256,546,025",
                 "application": "① 公開買付代理人 名称 大和証券株式会社 所在地 東京都",
-                "purposes": "本取引はMBOとして実施する。親会社である丸紅株式会社（以下「丸紅」という。）の上場廃止を企図している。",
+                "purposes": "（１）本公開買付の概要\n本取引はMBOとして実施する。親会社である丸紅株式会社（以下「丸紅」という。）の上場廃止を企図している。",
             },
             numbers={"offerorVotes": "0", "specialVotes": "100", "totalVotes": "1000", "afterPurchaseRatio": ""},
         )

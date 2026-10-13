@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "マネーフォワードコンサルティング株式会社",
-    "SponsorHint": "Marunouchi Capital",
+    "SponsorHint": null,
     "TargetEdinetCode": "E39126",
     "OfferorEdinetCode": "E40229",
     "TargetName": "アウトルックコンサルティング株式会社",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XDXT",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XDXT",
       "docTypeCode": "250",

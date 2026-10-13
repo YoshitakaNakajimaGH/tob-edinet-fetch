@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "株式会社エーアイ",
-    "SponsorHint": "ファイナンシャル・アドバイザーとしてＥＹストラテジー・アンド・コンサルティング株式会社",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05535",
     "OfferorEdinetCode": "E34052",
     "TargetName": "株式会社フュートレック",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100QQJ0",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100QQJ0",
       "docTypeCode": "240",

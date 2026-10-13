@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "合同会社麻生東水ホールディングス",
-    "SponsorHint": "麻生より本公開買付け",
+    "SponsorHint": null,
     "TargetEdinetCode": "E02541",
     "OfferorEdinetCode": "E36109",
     "TargetName": "東都水産株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100V6TD",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100V6TD",
       "docTypeCode": "240",

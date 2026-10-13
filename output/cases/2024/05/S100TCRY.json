@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ＡＺ－ＣＯＭ丸和ホールディングス株式会社",
-    "SponsorHint": "設立されたと",
+    "SponsorHint": null,
     "TargetEdinetCode": "E31635",
     "OfferorEdinetCode": "E30443",
     "TargetName": "株式会社Ｃ＆Ｆロジホールディングス",
@@ -93,11 +93,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100TKBH",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100TKBH",
       "docTypeCode": "250",

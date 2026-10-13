@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "日本生命保険相互会社",
-    "SponsorHint": "SBIホールディングス",
+    "SponsorHint": null,
     "TargetEdinetCode": "E31056",
     "OfferorEdinetCode": "E06125",
     "TargetName": "メディカル・データ・ビジョン株式会社",
@@ -88,11 +88,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100XGF9",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100XGF9",
       "docTypeCode": "250",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "大成建設株式会社",
-    "SponsorHint": "子会社81社及び関連会社53社からなる企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00082",
     "OfferorEdinetCode": "E00052",
     "TargetName": "東洋建設株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100WIII",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100WIII",
       "docTypeCode": "240",

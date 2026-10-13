@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "ニデック株式会社",
-    "SponsorHint": "ⅰ)対象者",
+    "SponsorHint": null,
     "TargetEdinetCode": "E01496",
     "OfferorEdinetCode": "E01975",
     "TargetName": "株式会社　牧野フライス製作所",
@@ -90,11 +90,7 @@
       "docTypeCode": "260",
       "docTypeName": "公開買付撤回届出書"
     },
-    "SponsorHint": {
-      "docId": "S100VLWA",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100VLWA",
       "docTypeCode": "250",

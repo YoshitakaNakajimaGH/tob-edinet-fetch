@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "Church & Dwight Japan合同会社",
-    "SponsorHint": "長谷川氏及び対象者から独立したファイナンシャル・アドバイザー及び第三者算定機関として株式会社SBI証券",
+    "SponsorHint": null,
     "TargetEdinetCode": "E31959",
     "OfferorEdinetCode": "E39582",
     "TargetName": "株式会社グラフィコ",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100T9ZQ",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {

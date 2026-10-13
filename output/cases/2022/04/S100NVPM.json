@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "フリービット株式会社",
-    "SponsorHint": "連結子会社20社及び関連会社２社（本書提出日現在）により構成される企業グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E05704",
     "OfferorEdinetCode": "E05680",
     "TargetName": "株式会社フルスピード",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100NVPM",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100NVPM",
       "docTypeCode": "240",

@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "三井物産株式会社",
-    "SponsorHint": "IE組合等のファンド",
+    "SponsorHint": null,
     "TargetEdinetCode": "E26570",
     "OfferorEdinetCode": "E02513",
     "TargetName": "五洋食品産業株式会社",
@@ -91,11 +91,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100MMEX",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100MMEX",
       "docTypeCode": "240",

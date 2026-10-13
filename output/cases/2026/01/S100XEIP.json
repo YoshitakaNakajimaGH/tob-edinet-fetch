@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "Tiger投資事業有限責任組合",
-    "SponsorHint": "メディア事業を展開する株式会社フジ・メディア・ホールディングス",
+    "SponsorHint": null,
     "TargetEdinetCode": "E34684",
     "OfferorEdinetCode": "E41348",
     "TargetName": "サンケイリアルエステート投資法人",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100Y1GT",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100Y1GT",
       "docTypeCode": "250",

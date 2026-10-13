@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "東京海上ホールディングス株式会社",
-    "SponsorHint": "東京海上グループ",
+    "SponsorHint": null,
     "TargetEdinetCode": "E38017",
     "OfferorEdinetCode": "E03847",
     "TargetName": "ＩＤ＆Ｅホールディングス株式会社",
@@ -95,11 +95,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100V419",
-      "docTypeCode": "250",
-      "docTypeName": "訂正公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": {
       "docId": "S100V419",
       "docTypeCode": "250",

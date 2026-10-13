@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "清水建設株式会社",
-    "SponsorHint": "2024年度から2026年度までの期間",
+    "SponsorHint": null,
     "TargetEdinetCode": "E00067",
     "OfferorEdinetCode": "E00053",
     "TargetName": "日本道路株式会社",
@@ -87,11 +87,7 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": {
-      "docId": "S100VRHA",
-      "docTypeCode": "240",
-      "docTypeName": "公開買付届出書"
-    },
+    "SponsorHint": null,
     "ReferencePrices": null
   },
   "pdfLinks": {
