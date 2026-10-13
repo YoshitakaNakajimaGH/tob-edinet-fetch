@@ -34,7 +34,8 @@
       "S100Q2QC",
       "S100Q9KT",
       "S100QFPA"
-    ]
+    ],
+    "CapitalParties": "住友電工産業電線株式会社、住友電気工業株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100Q9KT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100Q9KT",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -39,7 +39,8 @@
       "S100WLOV",
       "S100WLU7",
       "S100WO9N"
-    ]
+    ],
+    "CapitalParties": "KKR、TKホールディングス株式会社、富士ソフト株式会社、株式会社日立物流、現ロジスティード株式会社、カルソニックカンセイ株式会社、現マレリ株式会社、日立工機株式会社、現工機ホールディングス株式会社、株式会社日立国際電気、株式会社KOKUSAI"
   },
   "sources": {
     "OfferPrice": {
@@ -102,7 +103,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100WLOV",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100WFE7.pdf",

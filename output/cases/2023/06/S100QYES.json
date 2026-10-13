@@ -33,7 +33,8 @@
       "S100QYES",
       "S100QYIS",
       "S100RHFL"
-    ]
+    ],
+    "CapitalParties": "日本PMIパートナーズ株式会社、ロングライフ総研株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100QYES",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100QYES",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

@@ -56,7 +56,8 @@
       "S100XK2T",
       "S100XKE9",
       "S100XNMK"
-    ]
+    ],
+    "CapitalParties": "CVC、カロンJグループホールディングス株式会社、株式会社テクノプロ、アルテリア・ネットワークス株式会社、HITOWAホールディングス株式会社、株式会社ファイントゥデイ、株式会社トライグループ、総合メディカルグループ株式会社、株式会社マクロミル等、株式会社マンダム"
   },
   "sources": {
     "OfferPrice": {
@@ -120,6 +121,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XK2T",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XK2T",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

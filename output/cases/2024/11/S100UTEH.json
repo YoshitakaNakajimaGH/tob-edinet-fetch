@@ -37,7 +37,8 @@
       "S100V3DM",
       "S100V419",
       "S100V74R"
-    ]
+    ],
+    "CapitalParties": "東京海上日動火災保険株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100V419",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100V419",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

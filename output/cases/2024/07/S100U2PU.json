@@ -34,7 +34,8 @@
       "S100U2Q7",
       "S100U7VL",
       "S100UB3G"
-    ]
+    ],
+    "CapitalParties": "株式会社シティクリエイションホールディングス、ホリイフードサービス株式会社、株式会社OUNH、合同会社及"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100U7VL",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100U7VL",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

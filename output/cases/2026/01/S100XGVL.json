@@ -34,7 +34,8 @@
       "S100XGVZ",
       "S100XH4D",
       "S100XMG1"
-    ]
+    ],
+    "CapitalParties": "Japan Industrial Partners、日本産業パートナーズ株式会社、日本産業第6号GP株式会社、LVJホールディングス合同会社、日本電気株式会社、ビッグローブ株式会社、ソニー株式会社、株式会社日立製作所、株式会社日立国際電気、株式会社東芝"
   },
   "sources": {
     "OfferPrice": {
@@ -93,7 +94,12 @@
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100XGVL",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XGVL.pdf",

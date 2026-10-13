@@ -36,7 +36,8 @@
       "S100TZ4I",
       "S100U2EJ",
       "S100U57U"
-    ]
+    ],
+    "CapitalParties": "Blackstone、ー・エックス・ジェイ・シー・ワン・ホールディング株式会社、武田コンシューマーヘルスケア株式会社、現アリナミン製薬株式会社、ソニー銀行株式会社、ソニーペイメントサービス株式会社、株式会社アイロムグループ"
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100U2EJ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100U2EJ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

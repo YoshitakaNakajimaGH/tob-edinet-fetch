@@ -33,7 +33,8 @@
       "S100MT9R",
       "S100MTDB",
       "S100N4Y0"
-    ]
+    ],
+    "CapitalParties": "凸版印刷株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100MT9R",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100MT9R",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

@@ -34,7 +34,8 @@
       "S100XK20",
       "S100XP3J",
       "S100XUGA"
-    ]
+    ],
+    "CapitalParties": "デンカ株式会社、株式会社日本政策投資銀行、旭化成ファーマ株式会社、光通信株式会社、シスメックス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100XP3J",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XP3J",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100XDIT",
       "S100XHVI",
       "S100XLXA"
-    ]
+    ],
+    "CapitalParties": "ＳＯＭＰＯホールディングス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100XHVI",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XHVI",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -37,7 +37,8 @@
       "S100T177",
       "S100T0W8",
       "S100T5FL"
-    ]
+    ],
+    "CapitalParties": "食品株式会社、INBホールディングス株式会社、ペットフード株式会社、エスエスケイフーズ株式会社、静岡塩業株式会社、株式会社ベルキャリエール"
   },
   "sources": {
     "OfferPrice": {
@@ -96,7 +97,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100T177",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100SQR3.pdf",

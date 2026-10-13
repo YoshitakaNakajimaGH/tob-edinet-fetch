@@ -34,7 +34,8 @@
       "S100SJ90",
       "S100SJQ4",
       "S100SW5S"
-    ]
+    ],
+    "CapitalParties": "株式会社三栄建築設計、株式会社オープンハウスグループ、株式会社メルディア"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100SJ7A",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100SJ7A",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

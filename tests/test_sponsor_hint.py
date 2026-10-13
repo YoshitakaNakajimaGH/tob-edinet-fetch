@@ -88,6 +88,21 @@ class SponsorHintInferenceTests(unittest.TestCase):
             "",
         )
 
+    def test_capital_parties_lists_companies_in_the_opening(self) -> None:
+        from tob.extract_fields import extract_capital_parties
+
+        text = (
+            "（１）本公開買付けの概要\n"
+            "公開買付者は、三井物産株式会社（以下「三井物産」といいます。）の完全子会社です。"
+            "ベインキャピタルは出資をします。\n"
+            "（２）背景\n"
+            "ゴールドマン・サックス証券株式会社の出身者がいます。"
+        )
+        names = extract_capital_parties(text)
+        self.assertIn("三井物産株式会社", names)
+        self.assertIn("Bain Capital", names)
+        self.assertFalse(any("ゴールドマン" in name for name in names))
+
     def test_overview_window_ignores_later_name_drops(self) -> None:
         text = (
             "（１）本公開買付けの概要\n"

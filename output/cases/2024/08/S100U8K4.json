@@ -36,7 +36,8 @@
       "S100UDVB",
       "S100UFO3",
       "S100UJ24"
-    ]
+    ],
+    "CapitalParties": "DigitalBridge"
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100UFO3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100UFO3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

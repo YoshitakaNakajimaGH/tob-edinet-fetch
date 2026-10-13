@@ -34,7 +34,8 @@
       "S100S5UX",
       "S100SH9K",
       "S100SKQM"
-    ]
+    ],
+    "CapitalParties": "株式会社ＳＯＲＡ、株式会社アルテミス、株式会社キースジャパン"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100SH9K",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100SH9K",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

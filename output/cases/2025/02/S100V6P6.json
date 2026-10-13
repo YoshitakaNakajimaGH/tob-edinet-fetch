@@ -34,7 +34,8 @@
       "S100V6VF",
       "S100V9CA",
       "S100VG11"
-    ]
+    ],
+    "CapitalParties": "Ant Capital Partners、アント・キャピタル・パートナーズ株式会社、シー・シックス・エイト・ホールディングス株式会社、株式会社本間ゴルフ、株式会社麦、バリオセキュア・ネットワークス株式会社、バリオセキュア株式会社、株式会社Casa、株式会社ムーンスター、株式会社壮関、株式会社アロスワングループ、株式会社アントレ、株式会社アミノ、株式会社ヴイ・エス・テクノロジー、株式会社APEX、ソフトブレーン株式会社、株式会社羅針、SOMPOオークス株式会社、現オークスモビリティ株式会社、株式会社NS"
   },
   "sources": {
     "OfferPrice": {
@@ -93,7 +94,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100V9CA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100V6P6.pdf",

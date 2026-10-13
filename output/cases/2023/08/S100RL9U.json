@@ -34,7 +34,8 @@
       "S100RLI7",
       "S100RRSB",
       "S100RVUC"
-    ]
+    ],
+    "CapitalParties": "Japan Industrial Partners、日本産業パートナーズ株式会社、TBGP株式会社、TBJホールディングス株式会社、日本電気株式会社、ビッグローブ株式会社、ソニー株式会社、株式会社日立製作所、株式会社日立国際電気、日立金属株式会社、株式会社東芝"
   },
   "sources": {
     "OfferPrice": {
@@ -93,7 +94,12 @@
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100RL9U",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100RL9U.pdf",

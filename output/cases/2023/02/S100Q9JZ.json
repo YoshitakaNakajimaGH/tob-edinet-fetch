@@ -34,7 +34,8 @@
       "S100Q9LA",
       "S100QAGL",
       "S100QEXK"
-    ]
+    ],
+    "CapitalParties": "株式会社光通信"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100QAGL",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100QAGL",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100O22H",
       "S100OBP2",
       "S100OFYZ"
-    ]
+    ],
+    "CapitalParties": "合同会社ＲＪキャピタル、リニューアブル・ジャパン株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100O1ZZ",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100O1ZZ",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

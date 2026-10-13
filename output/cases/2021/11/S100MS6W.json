@@ -38,7 +38,8 @@
       "S100N0SR",
       "S100N0W5",
       "S100N4EB"
-    ]
+    ],
+    "CapitalParties": "政和商事株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100N0SR",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100N0SR",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

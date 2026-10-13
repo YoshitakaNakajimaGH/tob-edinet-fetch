@@ -30,6 +30,7 @@ from tob.extract_fields import (
     LISTING_MAINTAINED,
     DELISTING_PLANNED,
     clean_extracted_name,
+    extract_capital_parties,
     extract_parent_company_name,
     extract_pe_sponsor_name,
     offer_overview_window,
@@ -143,6 +144,7 @@ SUMMARY_COLUMNS = (
     "TargetName",
     "TargetEdinetCode",
     "SponsorHint",
+    "CapitalParties",
     "Status",
     "OfferPrice",
     "OfferPeriodStart",
@@ -260,6 +262,7 @@ def summary_row(case: dict) -> dict[str, str]:
         "TargetName": _cell(core.get("TargetName")),
         "TargetEdinetCode": _cell(core.get("TargetEdinetCode")),
         "SponsorHint": _cell(core.get("SponsorHint")),
+        "CapitalParties": _cell(core.get("CapitalParties")),
         "Status": _cell(core.get("Status")),
         "OfferPrice": _cell(core.get("OfferPrice")),
         "OfferPeriodStart": _cell(core.get("OfferPeriodStart")),
@@ -454,6 +457,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
     references, ref_source = _reference_prices(filings)
     premiums = _premiums(offer_price, references)
     sponsor_hint, sponsor_source = _sponsor_hint(filings)
+    capital_parties, capital_source = _capital_parties(filings)
     valuations = _valuations(docs_by_date)
     changes = _changes(docs_by_date)
     narrative = _narrative(filings, opinions)
@@ -480,6 +484,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
             else None
         ),
         "SponsorHint": _source_ref(sponsor_source) if sponsor_hint else None,
+        "CapitalParties": _source_ref(capital_source) if capital_parties else None,
         "ReferencePrices": _source_ref(ref_source) if has_ref_prices else None,
     }
 
@@ -491,6 +496,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
         "core": {
             "OfferorName": names["offeror"] or None,
             "SponsorHint": sponsor_hint or None,
+            "CapitalParties": "、".join(capital_parties) or None,
             "TargetEdinetCode": names["targetCode"] or None,
             "OfferorEdinetCode": names["offerorCode"] or None,
             "TargetName": names["target"] or None,
@@ -736,6 +742,30 @@ def _holdings(filing: dict | None, report: dict | None) -> tuple[dict[str, float
         "special": _votes_ratio(numbers.get("specialVotes", ""), numbers.get("totalVotes", "")),
         "after": _ratio_decimal(after_raw),
     }, after_doc
+
+
+def _filing_overview(item: dict) -> str:
+    text = "\n".join(
+        part
+        for part in (
+            (item.get("texts") or {}).get("purposes", ""),
+            (item.get("texts") or {}).get("overview", ""),
+        )
+        if part
+    )
+    return offer_overview_window(text)
+
+
+def _capital_parties(filings: list[dict]) -> tuple[list[str], dict | None]:
+    """Every company or fund named in the offer-overview opening."""
+    for item in reversed(filings):
+        window = _filing_overview(item)
+        if not window:
+            continue
+        names = extract_capital_parties(window)
+        if names:
+            return names, item
+    return [], None
 
 
 def _sponsor_hint(filings: list[dict]) -> tuple[str, dict | None]:

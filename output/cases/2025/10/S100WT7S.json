@@ -34,7 +34,8 @@
       "S100WT7Y",
       "S100WU2V",
       "S100X5E0"
-    ]
+    ],
+    "CapitalParties": "オリックス株式会社、オリックス・プリンシパル・インベストメンツ株式会社、有限会社エヌ・アンド・アイ、株式会社横浜銀行"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100WU2V",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WU2V",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

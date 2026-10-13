@@ -43,7 +43,8 @@
       "S100TC7R",
       "S100TCGC",
       "S100TG9H"
-    ]
+    ],
+    "CapitalParties": "Taiyo Pacific Partners、ローランド株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -107,6 +108,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100TC7R",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TC7R",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

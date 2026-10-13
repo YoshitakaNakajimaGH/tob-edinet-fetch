@@ -35,7 +35,8 @@
       "S100TJM5",
       "S100TJMD",
       "S100TGBQ"
-    ]
+    ],
+    "CapitalParties": "株式会社日本カストディ銀行、株式会社エスラインギフ、有限会社美美興産、株式会社大垣共立銀行、信託銀行株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,7 +95,12 @@
       "docTypeName": "公開買付報告書"
     },
     "SponsorHint": null,
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100TJM5",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100TGB8.pdf",

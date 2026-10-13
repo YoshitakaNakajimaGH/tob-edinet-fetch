@@ -39,7 +39,8 @@
       "S100VCYL",
       "S100VEB6",
       "S100VG1Z"
-    ]
+    ],
+    "CapitalParties": "3D Investment Partners"
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100VEB6",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VEB6",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

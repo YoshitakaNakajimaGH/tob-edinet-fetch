@@ -34,7 +34,8 @@
       "S100VEWL",
       "S100VOKF",
       "S100VRUH"
-    ]
+    ],
+    "CapitalParties": "Longreach Group、LWLHCホールディングス株式会社、株式会社ロングリーチグループ及、ウェルネス・コミュニケーションズ株式会社、伊藤忠商事株式会社、ジャパンシステム株式会社、三洋電機ロジスティクス株式会社、パナソニック株式会社、日立ビアメカニクス株式会社、株式会社日立製作所、FCLコンポーネント株式会社、富士通コンポーネント株式会社、富士通株式会社、珈琲館株式会社、株式会社ポッカクリエイト、サッポログループ食品株式会社、ファーストキッチン株式会社、サントリーホールディングス株式会社、株式会社シャノアール、株式会社nobitel"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100VOKF",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VOKF",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

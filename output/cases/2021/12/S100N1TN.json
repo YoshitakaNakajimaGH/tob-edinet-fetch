@@ -35,7 +35,8 @@
       "S100N42I",
       "S100N43D",
       "S100N8LH"
-    ]
+    ],
+    "CapitalParties": "株式会社NSSK、VVV合同会社、株式会社日本産業推進機構"
   },
   "sources": {
     "OfferPrice": {
@@ -94,7 +95,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100N42I",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100N1TN.pdf",

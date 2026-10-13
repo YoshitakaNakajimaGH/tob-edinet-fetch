@@ -34,7 +34,8 @@
       "S100PIJZ",
       "S100PN5M",
       "S100PUXM"
-    ]
+    ],
+    "CapitalParties": "The Carlyle Group、株式会社ツバキ・ナカシマ、株式会社日本医療事務センター、株式会社ソラスト、シンプレクス株式会社、アルヒ株式会社、日立機材株式会社、現センクシア株式会社、ウイングアーク１st株式会社、オリオンビール株式会社、株式会社リガク、Holdings株式会社、古河電気工業株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100PN5M",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100PN5M",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100X1GY",
       "S100X8KK",
       "S100XCYQ"
-    ]
+    ],
+    "CapitalParties": "KKR、Group株式会社、HD株式会社、富士ソフト株式会社、株式会社日立物流、現ロジスティード株式会社、カルソニックカンセイ株式会社、現マレリ株式会社、日立工機株式会社、現工機ホールディングス株式会社、株式会社日立国際電気、株式会社KOKUSAI"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100X8KK",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100X8KK",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

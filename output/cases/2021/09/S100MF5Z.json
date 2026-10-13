@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "SBI地銀ホールディングス株式会社",
-    "SponsorHint": null,
+    "SponsorHint": "SBIホールディングス株式会社",
     "TargetEdinetCode": "E03530",
     "OfferorEdinetCode": "E35850",
     "TargetName": "株式会社ＳＢＩ新生銀行",
@@ -45,7 +45,8 @@
       "S100MYBQ",
       "S100MYE4",
       "S100N1PW"
-    ]
+    ],
+    "CapitalParties": "SBIホールディングス株式会社、株式会社アプラスフィナンシャル、昭和リース株式会社、新生フィナンシャル株式会社、新生インベストメント＆ファイナンス株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -103,8 +104,17 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": null,
+    "SponsorHint": {
+      "docId": "S100MYBQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
     "ReferencePrices": {
+      "docId": "S100MYBQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100MYBQ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

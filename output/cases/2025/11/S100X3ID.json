@@ -34,7 +34,8 @@
       "S100X3SD",
       "S100X95H",
       "S100XDMH"
-    ]
+    ],
+    "CapitalParties": "Taiyo Pacific Partners、ローランド株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100X95H",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100X95H",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

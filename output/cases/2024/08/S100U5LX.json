@@ -37,7 +37,8 @@
       "S100U9V8",
       "S100U9VB",
       "S100UE3X"
-    ]
+    ],
+    "CapitalParties": "Ｃａｐｉｔａｌ株式会社、株式会社システムソフト、株式会社ＡＰＳ、株式会社ＯＨＭＵＲＡ、株式会社ポエムホールディングス"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100U9V8",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100U9V8",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

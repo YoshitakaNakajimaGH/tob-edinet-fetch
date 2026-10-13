@@ -5,7 +5,7 @@
   "issuerTender": false,
   "core": {
     "OfferorName": "Tiger投資事業有限責任組合",
-    "SponsorHint": null,
+    "SponsorHint": "Lion投資事業有限責任組合",
     "TargetEdinetCode": "E34684",
     "OfferorEdinetCode": "E41348",
     "TargetName": "サンケイリアルエステート投資法人",
@@ -45,7 +45,8 @@
       "S100Y1GT",
       "S100Y1KG",
       "S100Y52O"
-    ]
+    ],
+    "CapitalParties": "GP合同会社、LP合同会社、トーセイ・アセット・アドバイザーズ株式会社、トーセイ株式会社、株式会社サンケイビル"
   },
   "sources": {
     "OfferPrice": {
@@ -95,8 +96,17 @@
       "docTypeCode": "270",
       "docTypeName": "公開買付報告書"
     },
-    "SponsorHint": null,
+    "SponsorHint": {
+      "docId": "S100Y1GT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
     "ReferencePrices": {
+      "docId": "S100Y1GT",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100Y1GT",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -39,7 +39,8 @@
       "S100X5DI",
       "S100X5LQ",
       "S100X8K3"
-    ]
+    ],
+    "CapitalParties": "HIBC株式会社、株式会社タイム・アンド・スペース"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100X5DI",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100X5DI",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

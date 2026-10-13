@@ -39,7 +39,8 @@
       "S100XMYS",
       "S100XN8V",
       "S100XQ6B"
-    ]
+    ],
+    "CapitalParties": "Goldman Sachs、合同会社乃木坂ホールディングス、Rパートナーズ合同会社、R2株式会社、以下R3株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XMYS",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XMYS",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

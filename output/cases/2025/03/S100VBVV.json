@@ -34,7 +34,8 @@
       "S100VBXO",
       "S100VLGX",
       "S100VO9D"
-    ]
+    ],
+    "CapitalParties": "イオンフィナンシャルサービス株式会社、株式会社フジ、イオンモール株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100VLGX",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VLGX",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

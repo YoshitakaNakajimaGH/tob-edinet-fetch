@@ -34,7 +34,8 @@
       "S100Q14L",
       "S100Q2X4",
       "S100QDK6"
-    ]
+    ],
+    "CapitalParties": "Bain Capital、株式会社BCJ、日立金属株式会社、株式会社ネットマーケティング、株式会社トライステージ、株式会社Linc、日本セーフティー株式会社、株式会社イグニス、株式会社キリン堂ホールディングス、ヘイ株式会社、株式会社ニチイ学館、昭和飛行機工業株式会社、チーターデジタル株式会社、現エンバーポイント株式会社、株式会社Works、東芝メモリ株式会社、現キオクシア株式会社、日本風力開発株式会社、大江戸温泉物語株式会社、株式会社アサツーディ・ケイ、株式会社ＡＤＫホールディングス、ジュピターショップチャンネル株式会社、株式会社ドミノ・ピザジャパン、株式会社マクロミル、株式会社ベルシステム24等26社、東海東京証券株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -89,7 +90,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100Q2X4",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100Q11O.pdf",

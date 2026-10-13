@@ -34,7 +34,8 @@
       "S100RQ4Q",
       "S100RTKA",
       "S100RY1C"
-    ]
+    ],
+    "CapitalParties": "株式会社レイチェル、三井住友信託銀行株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100RTKA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100RTKA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

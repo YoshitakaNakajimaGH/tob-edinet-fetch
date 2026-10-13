@@ -34,7 +34,8 @@
       "S100WBPB",
       "S100WE90",
       "S100WKEW"
-    ]
+    ],
+    "CapitalParties": "シンプレクス・ホールディングス株式会社、株式会社クラウドワークス"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100WE90",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100WE90",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

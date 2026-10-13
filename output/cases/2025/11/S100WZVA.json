@@ -37,7 +37,8 @@
       "S100XEMV",
       "S100XEVR",
       "S100XH9D"
-    ]
+    ],
+    "CapitalParties": "リース株式会社、エムエル・パワー株式会社、ジャパン・インフラファンド・アドバイザーズ株式会社、丸紅株式会社、信託銀行株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XEMV",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XEMV",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

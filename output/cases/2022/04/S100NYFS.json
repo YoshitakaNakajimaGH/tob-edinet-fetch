@@ -34,7 +34,8 @@
       "S100NYGG",
       "S100O29X",
       "S100O8D9"
-    ]
+    ],
+    "CapitalParties": "株式会社晴山、株式会社平田興産"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100O29X",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100O29X",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

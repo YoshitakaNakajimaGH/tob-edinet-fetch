@@ -37,7 +37,8 @@
       "S100VBRA",
       "S100VD6Y",
       "S100VFHA"
-    ]
+    ],
+    "CapitalParties": "日鉄物流株式会社、日鉄テックスエンジ株式会社、日鉄プロセッシング株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100VBRA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VBRA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

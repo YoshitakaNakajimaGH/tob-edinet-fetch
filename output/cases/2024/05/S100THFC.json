@@ -35,7 +35,8 @@
       "S100TIE7",
       "S100TJ8S",
       "S100TPMB"
-    ]
+    ],
+    "CapitalParties": "Goldman Sachs、合同会社乃木坂ホールディングス、日本ハウズイング株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100TJ8S",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TJ8S",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

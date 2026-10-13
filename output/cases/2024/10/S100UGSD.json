@@ -34,7 +34,8 @@
       "S100UGT4",
       "S100UMPI",
       "S100UTSK"
-    ]
+    ],
+    "CapitalParties": "Bain Capital、株式会社BCJ、株式会社スノーピーク、株式会社アウトソーシング、株式会社T&K、株式会社システム情報、株式会社SI&C、株式会社IDAJ、株式会社エビデント、インパクトホールディングス株式会社、日立金属株式会社、株式会社プロテリアル、株式会社トライステージ、株式会社ストリートホールディングス、株式会社Linc、日本セーフティー株式会社、株式会社イグニス、株式会社キリン堂ホールディングス、ヘイ株式会社、現STORES株式会社、昭和飛行機工業株式会社、チーターデジタル株式会社、現エンバーポイント株式会社、株式会社Works、東芝メモリ株式会社、現キオクシア株式会社、住友商事株式会社、光通信株式会社、株式会社ＵＨ、株式会社エスアイエル"
   },
   "sources": {
     "OfferPrice": {
@@ -93,7 +94,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100UMPI",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100UGSD.pdf",

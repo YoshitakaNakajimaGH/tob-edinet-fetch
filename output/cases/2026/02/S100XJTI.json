@@ -33,7 +33,8 @@
       "S100XJTI",
       "S100XJUS",
       "S100XU11"
-    ]
+    ],
+    "CapitalParties": "東レ株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
       "docTypeName": "公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XJTI",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XJTI",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

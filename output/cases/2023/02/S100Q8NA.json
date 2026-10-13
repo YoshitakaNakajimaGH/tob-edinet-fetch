@@ -34,7 +34,8 @@
       "S100Q8NT",
       "S100QBL9",
       "S100QI9C"
-    ]
+    ],
+    "CapitalParties": "日本瓦斯株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100QBL9",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100QBL9",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

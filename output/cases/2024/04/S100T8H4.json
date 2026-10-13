@@ -34,7 +34,8 @@
       "S100T8I2",
       "S100TDTK",
       "S100THS8"
-    ]
+    ],
+    "CapitalParties": "株式会社NTTデータグループ、有限会社サスヤマ"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100TDTK",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100TDTK",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

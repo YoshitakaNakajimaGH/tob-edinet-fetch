@@ -33,7 +33,8 @@
       "S100UX1Q",
       "S100UX29",
       "S100V2ZA"
-    ]
+    ],
+    "CapitalParties": "西垣林業株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100UX1Q",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100UX1Q",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

@@ -34,7 +34,8 @@
       "S100V675",
       "S100VC9V",
       "S100VFGF"
-    ]
+    ],
+    "CapitalParties": "フリービット株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100VC9V",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100VC9V",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

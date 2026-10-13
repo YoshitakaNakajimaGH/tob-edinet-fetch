@@ -37,7 +37,8 @@
       "S100U3ZF",
       "S100U46W",
       "S100U99W"
-    ]
+    ],
+    "CapitalParties": "ＪＸ金属商事株式会社、タツタ電線株式会社、ＥＮＥＯＳホールディングス株式会社、ＪＸ金属株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100U46W",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100U46W",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

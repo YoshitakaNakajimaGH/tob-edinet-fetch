@@ -34,7 +34,8 @@
       "S100XNJE",
       "S100XOSM",
       "S100XY8B"
-    ]
+    ],
+    "CapitalParties": "伊藤忠商事株式会社、信託銀行株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100XOSM",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XOSM",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

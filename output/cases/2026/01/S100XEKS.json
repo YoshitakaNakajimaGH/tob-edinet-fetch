@@ -35,7 +35,8 @@
       "S100XFSL",
       "S100XJ1A",
       "S100XMO3"
-    ]
+    ],
+    "CapitalParties": "丸東産業株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100XJ1A",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100XJ1A",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

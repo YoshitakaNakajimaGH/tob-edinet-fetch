@@ -34,7 +34,8 @@
       "S100U9MN",
       "S100UAS8",
       "S100UH7U"
-    ]
+    ],
+    "CapitalParties": "KKR、ロジスティード株式会社、ロジスティードホールディングス株式会社、株式会社日立製作所、株式会社日立物流、HTSKホールディングス株式会社、ロジスティードグループ株式会社、旧HTSK株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -97,7 +98,12 @@
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
     },
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "CapitalParties": {
+      "docId": "S100UAS8",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100U9MB.pdf",

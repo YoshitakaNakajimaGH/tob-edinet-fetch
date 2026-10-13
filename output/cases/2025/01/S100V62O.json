@@ -33,7 +33,8 @@
       "S100V62O",
       "S100V63J",
       "S100VF5F"
-    ]
+    ],
+    "CapitalParties": "有限会社ニシムラ、株式会社十六銀行、株式会社大垣共立銀行"
   },
   "sources": {
     "OfferPrice": {
@@ -93,6 +94,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100V62O",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100V62O",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

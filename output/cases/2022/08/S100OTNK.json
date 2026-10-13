@@ -34,7 +34,8 @@
       "S100OTPV",
       "S100P2GO",
       "S100P6E7"
-    ]
+    ],
+    "CapitalParties": "ホールディングス株式会社、ミネベアミツミ株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100P2GO",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100P2GO",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100UR6S",
       "S100UU27",
       "S100V0IC"
-    ]
+    ],
+    "CapitalParties": "株式会社麻生、株式会社ヴァレックス・パートナーズ、兼商産業株式会社"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100UU27",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100UU27",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

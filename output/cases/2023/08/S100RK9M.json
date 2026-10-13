@@ -35,7 +35,8 @@
       "S100RVE4",
       "S100RVFN",
       "S100S1UU"
-    ]
+    ],
+    "CapitalParties": "J-STAR、ＳＴＡＲ株式会社、JSHD合同会社、株式会社ハルメク、太平洋精機株式会社、日本ホスピスホールディングス株式会社、株式会社アイセイ薬局、株式会社越後屋、横井製作所株式会社、株式会社ホットパレット、株式会社ダイニチ、株式会社シンシア、株式会社トイファクトリー、株式会社徳山商会"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100RVFN",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100RVFN",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

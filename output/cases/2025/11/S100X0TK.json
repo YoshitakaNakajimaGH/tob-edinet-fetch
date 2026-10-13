@@ -34,7 +34,8 @@
       "S100X0UR",
       "S100X4OB",
       "S100XCGJ"
-    ]
+    ],
+    "CapitalParties": "株式会社村上企画"
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100X4OB",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100X4OB",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

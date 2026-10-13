@@ -36,7 +36,8 @@
       "S100UY96",
       "S100UY9S",
       "S100V2DZ"
-    ]
+    ],
+    "CapitalParties": "東急不動産ホールディングス株式会社、株式会社Ｈ＆Ｔコーポレーション"
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "ReferencePrices": {
+      "docId": "S100UY96",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100UY96",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -35,7 +35,8 @@
       "S100OLPW",
       "S100OMWC",
       "S100OSD3"
-    ]
+    ],
+    "CapitalParties": "株式会社大泉製作所株式"
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100OMWC",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "CapitalParties": {
       "docId": "S100OMWC",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
