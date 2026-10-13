@@ -35,7 +35,8 @@
       "S100XMOO",
       "S100XTD6"
     ],
-    "CapitalParties": "Integral、インテグラル株式会社、豊栄実業株式会社"
+    "CapitalParties": "Integral、インテグラル株式会社、豊栄実業株式会社",
+    "IssuedShares": 5054818
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100XMOO",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100XMOO",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

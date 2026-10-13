@@ -34,7 +34,8 @@
       "S100WYEY",
       "S100XB62"
     ],
-    "CapitalParties": "アメリカホールディングス株式会社、WHD株式会社、REVA株式会社、ウェーブロックグループ株式会社、株式会社ウェーブロック・アドバンスト・テクノロジー、株式会社イノベックス"
+    "CapitalParties": "アメリカホールディングス株式会社、WHD株式会社、REVA株式会社、ウェーブロックグループ株式会社、株式会社ウェーブロック・アドバンスト・テクノロジー、株式会社イノベックス",
+    "IssuedShares": 11120538
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docId": "S100WYD1",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WYEY",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

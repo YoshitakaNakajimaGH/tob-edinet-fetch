@@ -34,7 +34,8 @@
       "S100TA50",
       "S100TGFB"
     ],
-    "CapitalParties": "ＮＯＶＡホールディングス株式会社"
+    "CapitalParties": "ＮＯＶＡホールディングス株式会社",
+    "IssuedShares": 5762800
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100TA4K",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100TA50",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

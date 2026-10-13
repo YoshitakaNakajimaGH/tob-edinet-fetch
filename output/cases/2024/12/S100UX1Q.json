@@ -34,7 +34,8 @@
       "S100UX29",
       "S100V2ZA"
     ],
-    "CapitalParties": "西垣林業株式会社"
+    "CapitalParties": "西垣林業株式会社",
+    "IssuedShares": 14906142
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100UX1Q",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100UX29",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

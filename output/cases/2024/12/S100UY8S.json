@@ -36,7 +36,8 @@
       "S100V563",
       "S100V573",
       "S100V8BL"
-    ]
+    ],
+    "IssuedShares": 1073500
   },
   "sources": {
     "OfferPrice": {
@@ -92,6 +93,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100V573",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100V573",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

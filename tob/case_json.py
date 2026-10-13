@@ -37,6 +37,7 @@ from tob.extract_fields import (
     extract_special_committee_valuation,
     extract_sponsor_from_purposes,
     detect_mbo,
+    parse_issued_shares,
     detect_target_listing_status,
     parse_buyer_structure,
     parse_explicit_zero_holdings,
@@ -157,6 +158,7 @@ SUMMARY_COLUMNS = (
     "PlannedSharesMin",
     "PlannedSharesMax",
     "PlannedSharesPlanned",
+    "IssuedShares",
     "PurchaseConsideration",
     "TenderOfferAgent",
     "OpinionStance",
@@ -275,6 +277,7 @@ def summary_row(case: dict) -> dict[str, str]:
         "PlannedSharesMin": _cell(core.get("PlannedSharesMin")),
         "PlannedSharesMax": _cell(core.get("PlannedSharesMax")),
         "PlannedSharesPlanned": _cell(core.get("PlannedSharesPlanned")),
+        "IssuedShares": _cell(core.get("IssuedShares")),
         "PurchaseConsideration": _cell(core.get("PurchaseConsideration")),
         "TenderOfferAgent": _cell(core.get("TenderOfferAgent")),
         "OpinionStance": _cell(core.get("OpinionStance")),
@@ -457,6 +460,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
     references, ref_source = _reference_prices(filings)
     premiums = _premiums(offer_price, references)
     sponsor_hint, sponsor_source = _sponsor_hint(filings)
+    issued_shares, issued_source = _issued_shares(filings + opinions)
     capital_parties, capital_source = _capital_parties(filings)
     valuations = _valuations(docs_by_date)
     changes = _changes(docs_by_date)
@@ -484,6 +488,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
             else None
         ),
         "SponsorHint": _source_ref(sponsor_source) if sponsor_hint else None,
+        "IssuedShares": _source_ref(issued_source) if issued_shares is not None else None,
         "CapitalParties": _source_ref(capital_source) if capital_parties else None,
         "ReferencePrices": _source_ref(ref_source) if has_ref_prices else None,
     }
@@ -512,6 +517,7 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
             "PlannedSharesMin": _count_or_none(planned["PlannedSharesMin"]),
             "PlannedSharesMax": _count_or_none(planned["PlannedSharesMax"]),
             "PlannedSharesPlanned": _count_or_none(planned["PlannedSharesPlanned"]),
+            "IssuedShares": issued_shares,
             "PurchaseConsideration": consideration,
             "TenderOfferAgent": agent or None,
             "OpinionStance": latest_stance or None,
@@ -742,6 +748,20 @@ def _holdings(filing: dict | None, report: dict | None) -> tuple[dict[str, float
         "special": _votes_ratio(numbers.get("specialVotes", ""), numbers.get("totalVotes", "")),
         "after": _ratio_decimal(after_raw),
     }, after_doc
+
+
+def _issued_shares(docs: list[dict]) -> tuple[int | None, dict | None]:
+    """Read 発行済株式総数 from the newest filing or opinion that states it."""
+    for item in reversed(docs):
+        texts = item.get("texts") or {}
+        blob = "\n".join(
+            texts.get(key) or ""
+            for key in ("purposes", "overview", "opinion", "intendedPurchase", "offerPrice")
+        )
+        count = parse_issued_shares(blob)
+        if count:
+            return count, item
+    return None, None
 
 
 def _filing_overview(item: dict) -> str:

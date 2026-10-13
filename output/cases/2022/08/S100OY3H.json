@@ -34,7 +34,8 @@
       "S100OY84",
       "S100P811"
     ],
-    "CapitalParties": "丸井織物株式会社"
+    "CapitalParties": "丸井織物株式会社",
+    "IssuedShares": 2559072
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100OY3H",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100OY84",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

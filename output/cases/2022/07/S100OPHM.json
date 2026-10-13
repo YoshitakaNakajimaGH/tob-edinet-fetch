@@ -34,7 +34,8 @@
       "S100OPJT",
       "S100OZKF"
     ],
-    "CapitalParties": "株式会社ファミリーマート、ユニー・ファミリーマートホールディングス株式会社、株式会社日本カストディ銀行"
+    "CapitalParties": "株式会社ファミリーマート、ユニー・ファミリーマートホールディングス株式会社、株式会社日本カストディ銀行",
+    "IssuedShares": 10000000
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100OPHM",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100OPJT",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

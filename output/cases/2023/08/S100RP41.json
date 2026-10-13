@@ -34,7 +34,8 @@
       "S100RP90",
       "S100RR70",
       "S100RU12"
-    ]
+    ],
+    "IssuedShares": 19978140
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100RR70",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100RR70",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

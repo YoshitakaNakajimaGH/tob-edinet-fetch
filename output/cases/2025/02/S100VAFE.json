@@ -35,7 +35,8 @@
       "S100VCTI",
       "S100VLVQ"
     ],
-    "CapitalParties": "日本郵便株式会社、ＴＭ合同会社、北陸トナミ運輸株式会社、福井トナミ運輸株式会社"
+    "CapitalParties": "日本郵便株式会社、ＴＭ合同会社、北陸トナミ運輸株式会社、福井トナミ運輸株式会社",
+    "IssuedShares": 9761011
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100VCTI",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100VCTI",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -39,7 +39,8 @@
       "S100S36P",
       "S100SAUD"
     ],
-    "CapitalParties": "株式会社TAKISAWA"
+    "CapitalParties": "株式会社TAKISAWA",
+    "IssuedShares": 6578122
   },
   "sources": {
     "OfferPrice": {
@@ -103,6 +104,11 @@
       "docId": "S100S33U",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100S36P",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

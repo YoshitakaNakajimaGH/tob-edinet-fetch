@@ -36,7 +36,8 @@
       "S100QB4T",
       "S100QGZM"
     ],
-    "CapitalParties": "株式会社ユニマットホールディング、株式会社マラルンガ"
+    "CapitalParties": "株式会社ユニマットホールディング、株式会社マラルンガ",
+    "IssuedShares": 4091100
   },
   "sources": {
     "OfferPrice": {
@@ -105,6 +106,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100QB4T",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QB4T",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

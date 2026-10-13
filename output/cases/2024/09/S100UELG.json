@@ -34,7 +34,8 @@
       "S100UEM7",
       "S100UKGS"
     ],
-    "CapitalParties": "株式会社ＳＡＫＵＲＡコーポレーション、株式会社Ｎ、株式会社ＥＳ、株式会社日本カストディ銀行、株式会社三菱ＵＦＪ銀行、野村信託銀行株式会社"
+    "CapitalParties": "株式会社ＳＡＫＵＲＡコーポレーション、株式会社Ｎ、株式会社ＥＳ、株式会社日本カストディ銀行、株式会社三菱ＵＦＪ銀行、野村信託銀行株式会社",
+    "IssuedShares": 60600000
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100UELG",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100UEM7",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

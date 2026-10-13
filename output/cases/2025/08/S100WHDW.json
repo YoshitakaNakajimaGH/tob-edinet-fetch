@@ -45,7 +45,8 @@
       "S100WYP2",
       "S100X4QH"
     ],
-    "CapitalParties": "サントレード株式会社、株式会社エイチエーエス、株式会社日本カストディ銀行"
+    "CapitalParties": "サントレード株式会社、株式会社エイチエーエス、株式会社日本カストディ銀行",
+    "IssuedShares": 22274688
   },
   "sources": {
     "OfferPrice": {
@@ -113,6 +114,11 @@
       "docId": "S100WY58",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WYP2",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

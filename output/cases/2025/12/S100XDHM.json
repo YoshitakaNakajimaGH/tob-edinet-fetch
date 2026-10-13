@@ -35,7 +35,8 @@
       "S100XHVI",
       "S100XLXA"
     ],
-    "CapitalParties": "ＳＯＭＰＯホールディングス株式会社"
+    "CapitalParties": "ＳＯＭＰＯホールディングス株式会社",
+    "IssuedShares": 22025900
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100XHVI",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100XHVI",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

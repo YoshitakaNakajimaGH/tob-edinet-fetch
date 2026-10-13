@@ -35,7 +35,8 @@
       "S100P2GO",
       "S100P6E7"
     ],
-    "CapitalParties": "ホールディングス株式会社、ミネベアミツミ株式会社"
+    "CapitalParties": "ホールディングス株式会社、ミネベアミツミ株式会社",
+    "IssuedShares": 25006200
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100P2GO",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100P2GO",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -37,7 +37,8 @@
       "S100V8KH",
       "S100VEMC"
     ],
-    "CapitalParties": "三井住友ファイナンス＆リース株式会社、京橋興産株式会社、野村信託銀行株式会社"
+    "CapitalParties": "三井住友ファイナンス＆リース株式会社、京橋興産株式会社、野村信託銀行株式会社",
+    "IssuedShares": 29356700
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100V8KH",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100V8KH",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

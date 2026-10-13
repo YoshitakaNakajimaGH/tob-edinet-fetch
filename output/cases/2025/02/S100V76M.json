@@ -34,7 +34,8 @@
       "S100V79K",
       "S100VGOG"
     ],
-    "CapitalParties": "株式会社ＫＭエンタプライズ、株式会社ＦＵＪＩ"
+    "CapitalParties": "株式会社ＫＭエンタプライズ、株式会社ＦＵＪＩ",
+    "IssuedShares": 3462400
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100V76M",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100V79K",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

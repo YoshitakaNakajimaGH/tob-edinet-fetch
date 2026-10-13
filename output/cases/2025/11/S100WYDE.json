@@ -34,7 +34,8 @@
       "S100WYFE",
       "S100XB5D"
     ],
-    "CapitalParties": "ワイエス興産有限会社"
+    "CapitalParties": "ワイエス興産有限会社",
+    "IssuedShares": 10839663
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100WYDE",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WYFE",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

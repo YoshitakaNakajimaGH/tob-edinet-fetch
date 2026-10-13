@@ -33,7 +33,8 @@
       "S100SB5U",
       "S100SB69",
       "S100SK54"
-    ]
+    ],
+    "IssuedShares": 2142000
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docId": "S100SB5U",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100SB69",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

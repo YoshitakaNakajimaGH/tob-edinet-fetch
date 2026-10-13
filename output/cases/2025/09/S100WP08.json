@@ -37,7 +37,8 @@
       "S100WXFF",
       "S100X4HW"
     ],
-    "CapitalParties": "堯アセットマネジメント株式会社、株式会社ソフト99コーポレーション"
+    "CapitalParties": "堯アセットマネジメント株式会社、株式会社ソフト99コーポレーション",
+    "IssuedShares": 22274688
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
     },
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100WXFF",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100WXFF",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -36,7 +36,8 @@
       "S100QVAC",
       "S100R46S"
     ],
-    "CapitalParties": "SBIホールディングス株式会社、株式会社整理回収機構"
+    "CapitalParties": "SBIホールディングス株式会社、株式会社整理回収機構",
+    "IssuedShares": 259034689
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docId": "S100QVA3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100QVAC",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

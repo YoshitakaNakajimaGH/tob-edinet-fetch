@@ -35,7 +35,8 @@
       "S100MOC9",
       "S100N2NT"
     ],
-    "CapitalParties": "Creacion Capital、クレアシオン・キャピタル株式会社、クレアシオン・インベストメント株式会社"
+    "CapitalParties": "Creacion Capital、クレアシオン・キャピタル株式会社、クレアシオン・インベストメント株式会社",
+    "IssuedShares": 49682
   },
   "sources": {
     "OfferPrice": {
@@ -92,6 +93,11 @@
     },
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100MOC9",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100MOC9",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

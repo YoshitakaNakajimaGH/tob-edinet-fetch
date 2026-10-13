@@ -34,7 +34,8 @@
       "S100USBA",
       "S100UXTN"
     ],
-    "CapitalParties": "Integral、TCSホールディングス株式会社、インテグラル株式会社、GP株式会社、株式会社明成商会、株式会社セコニック、株式会社マーブル、コムシス株式会社"
+    "CapitalParties": "Integral、TCSホールディングス株式会社、インテグラル株式会社、GP株式会社、株式会社明成商会、株式会社セコニック、株式会社マーブル、コムシス株式会社",
+    "IssuedShares": 5054818
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docId": "S100US8U",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100USBA",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

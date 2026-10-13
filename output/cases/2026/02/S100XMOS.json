@@ -34,7 +34,8 @@
       "S100XMPH",
       "S100XXLG"
     ],
-    "CapitalParties": "光通信株式会社、株式会社UH"
+    "CapitalParties": "光通信株式会社、株式会社UH",
+    "IssuedShares": 10771200
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100XMOS",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100XMOS",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

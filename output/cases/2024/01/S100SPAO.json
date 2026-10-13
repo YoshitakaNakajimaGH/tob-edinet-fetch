@@ -34,7 +34,8 @@
       "S100SPAQ",
       "S100T2GA"
     ],
-    "CapitalParties": "株式会社三井住友銀行"
+    "CapitalParties": "株式会社三井住友銀行",
+    "IssuedShares": 2338001
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100SPAO",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100SPAQ",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

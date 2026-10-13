@@ -38,7 +38,8 @@
       "S100VV9X",
       "S100WBDI"
     ],
-    "CapitalParties": "Integral、インテグラル株式会社、キュービーネットホールディングス株式会社、スカイマーク株式会社、株式会社シノケングループ、株式会社ダイオーズ、旭化成メディカル株式会社"
+    "CapitalParties": "Integral、インテグラル株式会社、キュービーネットホールディングス株式会社、スカイマーク株式会社、株式会社シノケングループ、株式会社ダイオーズ、旭化成メディカル株式会社",
+    "IssuedShares": 18274000
   },
   "sources": {
     "OfferPrice": {
@@ -103,6 +104,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100VV9X",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100VV9X",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

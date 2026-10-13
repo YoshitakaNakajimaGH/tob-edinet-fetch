@@ -37,7 +37,8 @@
       "S100QUMO",
       "S100QY1Z"
     ],
-    "CapitalParties": "株式会社アニメイト、株式会社ブシロード"
+    "CapitalParties": "株式会社アニメイト、株式会社ブシロード",
+    "IssuedShares": 8747642
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100QUMO",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QUMO",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

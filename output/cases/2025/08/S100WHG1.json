@@ -36,7 +36,8 @@
       "S100WLZC",
       "S100WR94"
     ],
-    "CapitalParties": "Blackstone、ー・エックス・ジェイ・イー・ワン・ホールディング株式会社、武田コンシューマーヘルスケア株式会社、現アリナミン製薬株式会社、ソニー銀行株式会社、ソニーペイメントサービス株式会社、インフォコム株式会社、株式会社アイロムグループ、シミック株式会社"
+    "CapitalParties": "Blackstone、ー・エックス・ジェイ・イー・ワン・ホールディング株式会社、武田コンシューマーヘルスケア株式会社、現アリナミン製薬株式会社、ソニー銀行株式会社、ソニーペイメントサービス株式会社、インフォコム株式会社、株式会社アイロムグループ、シミック株式会社",
+    "IssuedShares": 104500000
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100WLZC",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100WLZC",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

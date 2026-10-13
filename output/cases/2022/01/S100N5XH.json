@@ -34,7 +34,8 @@
       "S100N5XZ",
       "S100NJAV"
     ],
-    "CapitalParties": "株式会社ゼットン株式"
+    "CapitalParties": "株式会社ゼットン株式",
+    "IssuedShares": 4829600
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100N5XH",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100N5XZ",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

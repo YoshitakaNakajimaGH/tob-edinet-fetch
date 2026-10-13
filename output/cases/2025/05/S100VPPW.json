@@ -36,7 +36,8 @@
       "S100VVSC",
       "S100VVSV",
       "S100W0DV"
-    ]
+    ],
+    "IssuedShares": 28800000
   },
   "sources": {
     "OfferPrice": {
@@ -95,6 +96,11 @@
       "docId": "S100VVSC",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100VVSV",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

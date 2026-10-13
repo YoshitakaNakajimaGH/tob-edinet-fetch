@@ -36,7 +36,8 @@
       "S100V0MA",
       "S100V493"
     ],
-    "CapitalParties": "株式会社三菱UFJフィナンシャル・グループ"
+    "CapitalParties": "株式会社三菱UFJフィナンシャル・グループ",
+    "IssuedShares": 59317770
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100V0MA",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100V0MA",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

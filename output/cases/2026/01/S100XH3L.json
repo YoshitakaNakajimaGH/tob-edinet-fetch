@@ -36,7 +36,8 @@
       "S100XMHC",
       "S100XPL1"
     ],
-    "CapitalParties": "堯アセットマネジメント株式会社、株式会社ソフト９９コーポレーション"
+    "CapitalParties": "堯アセットマネジメント株式会社、株式会社ソフト９９コーポレーション",
+    "IssuedShares": 22274688
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docId": "S100XMGP",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100XMHC",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

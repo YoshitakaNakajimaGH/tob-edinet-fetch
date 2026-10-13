@@ -36,7 +36,8 @@
       "S100WVEK",
       "S100WXI0"
     ],
-    "CapitalParties": "有限会社カツコーポレーション"
+    "CapitalParties": "有限会社カツコーポレーション",
+    "IssuedShares": 9107516
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docId": "S100WV1P",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WVEK",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

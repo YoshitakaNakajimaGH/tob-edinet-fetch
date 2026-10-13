@@ -34,7 +34,8 @@
       "S100ND7N",
       "S100NQ3X"
     ],
-    "CapitalParties": "名古屋友豊株式会社"
+    "CapitalParties": "名古屋友豊株式会社",
+    "IssuedShares": 35171051
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100ND4W",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100ND7N",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

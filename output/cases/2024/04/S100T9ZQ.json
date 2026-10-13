@@ -34,7 +34,8 @@
       "S100TA1B",
       "S100TIZ1"
     ],
-    "CapitalParties": "株式会社グラフィコ、野村證券株式会社"
+    "CapitalParties": "株式会社グラフィコ、野村證券株式会社",
+    "IssuedShares": 1000778
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
       "docId": "S100T9ZQ",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100TA1B",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

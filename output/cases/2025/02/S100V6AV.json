@@ -35,7 +35,8 @@
       "S100VAOK",
       "S100VFGH"
     ],
-    "CapitalParties": "SBIホールディングス株式会社"
+    "CapitalParties": "SBIホールディングス株式会社",
+    "IssuedShares": 129916662
   },
   "sources": {
     "OfferPrice": {
@@ -92,6 +93,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100VAOK",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100VAOK",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

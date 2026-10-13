@@ -34,7 +34,8 @@
       "S100V8EO",
       "S100V9WL",
       "S100VEM4"
-    ]
+    ],
+    "IssuedShares": 34536302
   },
   "sources": {
     "OfferPrice": {
@@ -90,6 +91,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100V9WL",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100V9WL",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100VLSJ",
       "S100VU8Q"
     ],
-    "CapitalParties": "ベストフレンズ有限会社"
+    "CapitalParties": "ベストフレンズ有限会社",
+    "IssuedShares": 1480000
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100VLS8",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100VLSJ",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

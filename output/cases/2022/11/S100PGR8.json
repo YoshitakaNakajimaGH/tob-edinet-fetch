@@ -36,7 +36,8 @@
       "S100PTE3",
       "S100PXNY"
     ],
-    "CapitalParties": "株式会社ドリームインキュベータ"
+    "CapitalParties": "株式会社ドリームインキュベータ",
+    "IssuedShares": 10890423
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100PTE3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100PTE3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100WIHV",
       "S100WNXP"
     ],
-    "CapitalParties": "株式会社ベリテ、ジュエルソース・ジャパン・ホールディングス株式会社、センコーグループホールディングス株式会社"
+    "CapitalParties": "株式会社ベリテ、ジュエルソース・ジャパン・ホールディングス株式会社、センコーグループホールディングス株式会社",
+    "IssuedShares": 27230825
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100WIHD",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100WIHD",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

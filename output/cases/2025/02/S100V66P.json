@@ -34,7 +34,8 @@
       "S100V68D",
       "S100V9TU",
       "S100VFG4"
-    ]
+    ],
+    "IssuedShares": 5225008
   },
   "sources": {
     "OfferPrice": {
@@ -94,6 +95,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100V9TU",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100V9TU",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

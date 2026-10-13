@@ -36,7 +36,8 @@
       "S100QEO8",
       "S100QLRF"
     ],
-    "CapitalParties": "浜銀ファイナンス株式会社"
+    "CapitalParties": "浜銀ファイナンス株式会社",
+    "IssuedShares": 4674900
   },
   "sources": {
     "OfferPrice": {
@@ -97,6 +98,11 @@
     "SponsorHint": null,
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100QEO8",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100QEO8",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

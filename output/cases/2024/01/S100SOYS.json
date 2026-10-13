@@ -35,7 +35,8 @@
       "S100SX1C",
       "S100T03J"
     ],
-    "CapitalParties": "EQT、ブルーム２株式会社、株式会社ベネッセホールディングス"
+    "CapitalParties": "EQT、ブルーム２株式会社、株式会社ベネッセホールディングス",
+    "IssuedShares": 102648129
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
     },
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100SX1C",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100SX1C",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

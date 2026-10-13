@@ -36,7 +36,8 @@
       "S100TJMD",
       "S100TGBQ"
     ],
-    "CapitalParties": "株式会社日本カストディ銀行、株式会社エスラインギフ、有限会社美美興産、株式会社大垣共立銀行、信託銀行株式会社"
+    "CapitalParties": "株式会社日本カストディ銀行、株式会社エスラインギフ、有限会社美美興産、株式会社大垣共立銀行、信託銀行株式会社",
+    "IssuedShares": 11095203
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docId": "S100TJM5",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100TJMD",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

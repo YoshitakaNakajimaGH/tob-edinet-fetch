@@ -35,7 +35,8 @@
       "S100RF7Y",
       "S100RJ3K"
     ],
-    "CapitalParties": "アルテリア・ネットワークス株式会社"
+    "CapitalParties": "アルテリア・ネットワークス株式会社",
+    "IssuedShares": 50000000
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100RF7Y",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100RF7Y",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

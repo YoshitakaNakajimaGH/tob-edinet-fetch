@@ -34,7 +34,8 @@
       "S100TGI9",
       "S100TMA2"
     ],
-    "CapitalParties": "株式会社玉光堂ホールディングス、株式会社鈴木商店、株式会社ネクスタ、株式会社由井工業、株式会社ＯＵＮＨ"
+    "CapitalParties": "株式会社玉光堂ホールディングス、株式会社鈴木商店、株式会社ネクスタ、株式会社由井工業、株式会社ＯＵＮＨ",
+    "IssuedShares": 5670000
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100TGFP",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100TGI9",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

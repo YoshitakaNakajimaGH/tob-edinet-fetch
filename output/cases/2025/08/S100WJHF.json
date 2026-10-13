@@ -34,7 +34,8 @@
       "S100WJSB",
       "S100WMA4",
       "S100WSGO"
-    ]
+    ],
+    "IssuedShares": 3996850
   },
   "sources": {
     "OfferPrice": {
@@ -86,6 +87,11 @@
     },
     "SponsorHint": null,
     "ReferencePrices": {
+      "docId": "S100WMA4",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100WMA4",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

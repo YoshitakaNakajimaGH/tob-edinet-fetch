@@ -44,7 +44,8 @@
       "S100TCGC",
       "S100TG9H"
     ],
-    "CapitalParties": "Taiyo Pacific Partners、ローランド株式会社"
+    "CapitalParties": "Taiyo Pacific Partners、ローランド株式会社",
+    "IssuedShares": 17800000
   },
   "sources": {
     "OfferPrice": {
@@ -116,6 +117,11 @@
       "docId": "S100TC7R",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100TCGC",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

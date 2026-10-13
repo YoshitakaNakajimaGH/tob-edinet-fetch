@@ -36,7 +36,8 @@
       "S100VFZU",
       "S100VKSY"
     ],
-    "CapitalParties": "株式会社夢現"
+    "CapitalParties": "株式会社夢現",
+    "IssuedShares": 41925300
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100VFT8",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100VFT8",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

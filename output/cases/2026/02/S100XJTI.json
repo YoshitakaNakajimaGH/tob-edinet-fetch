@@ -34,7 +34,8 @@
       "S100XJUS",
       "S100XU11"
     ],
-    "CapitalParties": "東レ株式会社"
+    "CapitalParties": "東レ株式会社",
+    "IssuedShares": 4295968
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docId": "S100XJTI",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100XJUS",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

@@ -570,6 +570,29 @@ _OVERVIEW_HEAD = re.compile(
 _OVERVIEW_END = re.compile(r"(?<![「『])[（(]\s*[2２]\s*[)）]|【[^】]{1,30}】")
 
 
+def parse_issued_shares(text: str) -> int | None:
+    """Target's issued share count, from 発行済株式総数 in the filing text."""
+    if not text:
+        return None
+    plain = re.sub(r"\s+", "", strip_html(text))
+    pattern = re.compile(r"発行済株式(?:の)?総数[（(：:はが]*([0-9０-９,，]+)株")
+    hits: list[tuple[bool, int]] = []
+    for match in pattern.finditer(plain):
+        raw = match.group(1).translate(str.maketrans("０１２３４５６７８９，", "0123456789,"))
+        digits = raw.replace(",", "")
+        if not digits.isdigit():
+            continue
+        number = int(digits)
+        if number < 100:
+            continue
+        context = plain[max(0, match.start() - 40) : match.start()]
+        hits.append(("対象者" in context or "当社" in context, number))
+    if not hits:
+        return None
+    preferred = [number for flagged, number in hits if flagged]
+    return max(preferred or [number for _, number in hits])
+
+
 def offer_overview_window(text: str, limit: int = 1800) -> str:
     """Plain text right after （１）本公開買付の概要, until （２） or the next 【heading】.
 

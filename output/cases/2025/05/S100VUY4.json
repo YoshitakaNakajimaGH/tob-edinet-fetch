@@ -37,7 +37,8 @@
       "S100W2WG",
       "S100WCMX"
     ],
-    "CapitalParties": "三井住友信託銀行株式会社、日本電信電話株式会社、ＮＴＴ株式会社、ＳＢＩホールディングス株式会社"
+    "CapitalParties": "三井住友信託銀行株式会社、日本電信電話株式会社、ＮＴＴ株式会社、ＳＢＩホールディングス株式会社",
+    "IssuedShares": 150793800
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100W2WG",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100W2WG",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

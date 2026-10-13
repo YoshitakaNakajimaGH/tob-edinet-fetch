@@ -34,7 +34,8 @@
       "S100MW7D",
       "S100N5V0"
     ],
-    "CapitalParties": "三井物産株式会社、大和ＰＩパートナーズ株式会社、サイコム・ブレインズ株式会社"
+    "CapitalParties": "三井物産株式会社、大和ＰＩパートナーズ株式会社、サイコム・ブレインズ株式会社",
+    "IssuedShares": 3255237
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100MW6Z",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100MW7D",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

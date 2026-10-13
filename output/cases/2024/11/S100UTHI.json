@@ -43,7 +43,8 @@
       "S100V7N3",
       "S100VA4N"
     ],
-    "CapitalParties": "KKR、FKホールディングス株式会社、株式会社日本ビジネスソフト"
+    "CapitalParties": "KKR、FKホールディングス株式会社、株式会社日本ビジネスソフト",
+    "IssuedShares": 67400000
   },
   "sources": {
     "OfferPrice": {
@@ -111,6 +112,11 @@
       "docId": "S100V6JB",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100V7N3",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

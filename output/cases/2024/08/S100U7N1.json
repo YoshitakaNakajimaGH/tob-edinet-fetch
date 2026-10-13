@@ -36,7 +36,8 @@
       "S100UABE",
       "S100UEVG"
     ],
-    "CapitalParties": "株式会社Ｙ＆Ｕ"
+    "CapitalParties": "株式会社Ｙ＆Ｕ",
+    "IssuedShares": 10322400
   },
   "sources": {
     "OfferPrice": {
@@ -101,6 +102,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100UABE",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100UABE",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

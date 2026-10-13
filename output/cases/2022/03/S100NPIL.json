@@ -38,7 +38,8 @@
       "S100NZDN",
       "S100O3A4"
     ],
-    "CapitalParties": "前田建設工業株式会社"
+    "CapitalParties": "前田建設工業株式会社",
+    "IssuedShares": 94371183
   },
   "sources": {
     "OfferPrice": {
@@ -106,6 +107,11 @@
       "docId": "S100NZ8P",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100NZDN",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

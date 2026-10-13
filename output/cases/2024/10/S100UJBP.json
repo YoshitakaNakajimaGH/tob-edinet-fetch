@@ -37,7 +37,8 @@
       "S100UOM4",
       "S100UUTI"
     ],
-    "CapitalParties": "Holdings合同会社"
+    "CapitalParties": "Holdings合同会社",
+    "IssuedShares": 51309061
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100UOM4",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100UOM4",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -35,7 +35,8 @@
       "S100RRM3",
       "S100S03I"
     ],
-    "CapitalParties": "BPインベストメント株式会社、BPインベストメント合同会社、伊藤忠商事株式会社、伊藤忠トレジャリー株式会社"
+    "CapitalParties": "BPインベストメント株式会社、BPインベストメント合同会社、伊藤忠商事株式会社、伊藤忠トレジャリー株式会社",
+    "IssuedShares": 27080043
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100RRM3",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100RRM3",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

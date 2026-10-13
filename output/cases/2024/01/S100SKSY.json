@@ -34,7 +34,8 @@
       "S100SKUW",
       "S100SXOZ"
     ],
-    "CapitalParties": "株式会社東海流通システム"
+    "CapitalParties": "株式会社東海流通システム",
+    "IssuedShares": 6250000
   },
   "sources": {
     "OfferPrice": {
@@ -99,6 +100,11 @@
       "docTypeName": "公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100SKSY",
+      "docTypeCode": "240",
+      "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100SKSY",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"

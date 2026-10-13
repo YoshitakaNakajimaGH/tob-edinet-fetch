@@ -34,7 +34,8 @@
       "S100X9OF",
       "S100XA98",
       "S100XI3E"
-    ]
+    ],
+    "IssuedShares": 7500000
   },
   "sources": {
     "OfferPrice": {
@@ -93,7 +94,12 @@
       "docTypeName": "公開買付報告書"
     },
     "SponsorHint": null,
-    "ReferencePrices": null
+    "ReferencePrices": null,
+    "IssuedShares": {
+      "docId": "S100XA98",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    }
   },
   "pdfLinks": {
     "firstFiling": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100X9HX.pdf",

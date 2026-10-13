@@ -35,7 +35,8 @@
       "S100X4OB",
       "S100XCGJ"
     ],
-    "CapitalParties": "株式会社村上企画"
+    "CapitalParties": "株式会社村上企画",
+    "IssuedShares": 25003233
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100X4OB",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100X4OB",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

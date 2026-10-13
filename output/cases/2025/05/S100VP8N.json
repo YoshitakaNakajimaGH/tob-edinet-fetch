@@ -57,7 +57,8 @@
       "S100WM85",
       "S100WOLX"
     ],
-    "CapitalParties": "Advantage Partners、株式会社芝浦電子、株式会社アドバンテッジパートナーズ"
+    "CapitalParties": "Advantage Partners、株式会社芝浦電子、株式会社アドバンテッジパートナーズ",
+    "IssuedShares": 15559730
   },
   "sources": {
     "OfferPrice": {
@@ -117,6 +118,11 @@
       "docId": "S100WM0S",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WM85",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {

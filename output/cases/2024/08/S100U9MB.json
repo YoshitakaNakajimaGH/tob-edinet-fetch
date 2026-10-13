@@ -35,7 +35,8 @@
       "S100UAS8",
       "S100UH7U"
     ],
-    "CapitalParties": "KKR、ロジスティード株式会社、ロジスティードホールディングス株式会社、株式会社日立製作所、株式会社日立物流、HTSKホールディングス株式会社、ロジスティードグループ株式会社、旧HTSK株式会社"
+    "CapitalParties": "KKR、ロジスティード株式会社、ロジスティードホールディングス株式会社、株式会社日立製作所、株式会社日立物流、HTSKホールディングス株式会社、ロジスティードグループ株式会社、旧HTSK株式会社",
+    "IssuedShares": 35501000
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
     },
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100UAS8",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100UAS8",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

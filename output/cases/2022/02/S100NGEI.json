@@ -34,7 +34,8 @@
       "S100NGHF",
       "S100NRYE"
     ],
-    "CapitalParties": "有限会社トレント"
+    "CapitalParties": "有限会社トレント",
+    "IssuedShares": 14839349
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100NGEI",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100NGHF",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

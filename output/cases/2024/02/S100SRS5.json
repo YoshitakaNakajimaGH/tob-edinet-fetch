@@ -35,7 +35,8 @@
       "S100SWPQ",
       "S100T192"
     ],
-    "CapitalParties": "株式会社ベネフィット・ワン株式、株式会社パソナグループ、エムスリー株式会社"
+    "CapitalParties": "株式会社ベネフィット・ワン株式、株式会社パソナグループ、エムスリー株式会社",
+    "IssuedShares": 159190900
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
     },
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100SWPQ",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100SWPQ",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

@@ -34,7 +34,8 @@
       "S100WJRP",
       "S100WSGR"
     ],
-    "CapitalParties": "TDA株式会社"
+    "CapitalParties": "TDA株式会社",
+    "IssuedShares": 10044200
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100WJRB",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100WJRP",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

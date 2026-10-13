@@ -34,7 +34,8 @@
       "S100VG3J",
       "S100VPVC"
     ],
-    "CapitalParties": "Aホールディングス株式会社、ソフトバンク株式会社、ソフトバンクグループジャパン株式会社、ソフトバンクグループ株式会社、BEENOS株式会社"
+    "CapitalParties": "Aホールディングス株式会社、ソフトバンク株式会社、ソフトバンクグループジャパン株式会社、ソフトバンクグループ株式会社、BEENOS株式会社",
+    "IssuedShares": 13608995
   },
   "sources": {
     "OfferPrice": {
@@ -98,6 +99,11 @@
       "docId": "S100VG14",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100VG3J",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

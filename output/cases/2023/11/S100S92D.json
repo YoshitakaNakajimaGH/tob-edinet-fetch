@@ -35,7 +35,8 @@
       "S100SFQW",
       "S100SJOU"
     ],
-    "CapitalParties": "株式会社フェローテックホールディングス"
+    "CapitalParties": "株式会社フェローテックホールディングス",
+    "IssuedShares": 9258968
   },
   "sources": {
     "OfferPrice": {
@@ -96,6 +97,11 @@
     "SponsorHint": null,
     "ReferencePrices": null,
     "CapitalParties": {
+      "docId": "S100SFQW",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100SFQW",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

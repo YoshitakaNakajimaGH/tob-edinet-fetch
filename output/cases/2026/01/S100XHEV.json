@@ -35,7 +35,8 @@
       "S100XMZ5",
       "S100XQ6Z"
     ],
-    "CapitalParties": "EQT、株式会社トライト、パイオニア株式会社、株式会社HRBrain、株式会社ベネッセホールディングス、株式会社ケアネット、フジテック株式会社、株式会社M&I"
+    "CapitalParties": "EQT、株式会社トライト、パイオニア株式会社、株式会社HRBrain、株式会社ベネッセホールディングス、株式会社ケアネット、フジテック株式会社、株式会社M&I",
+    "IssuedShares": 16050000
   },
   "sources": {
     "OfferPrice": {
@@ -100,6 +101,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100XMZ5",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100XMZ5",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

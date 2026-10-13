@@ -37,7 +37,8 @@
       "S100UKBK",
       "S100UN3S"
     ],
-    "CapitalParties": "常磐開発株式会社、信託銀行株式会社、株式会社常陽銀行"
+    "CapitalParties": "常磐開発株式会社、信託銀行株式会社、株式会社常陽銀行",
+    "IssuedShares": 8808778
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docTypeName": "訂正公開買付届出書"
     },
     "CapitalParties": {
+      "docId": "S100UKBK",
+      "docTypeCode": "250",
+      "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
       "docId": "S100UKBK",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"

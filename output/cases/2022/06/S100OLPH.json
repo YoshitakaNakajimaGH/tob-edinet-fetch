@@ -34,7 +34,8 @@
       "S100OLRE",
       "S100OZM0"
     ],
-    "CapitalParties": "Advantage Partners、株式会社アドバンテッジパートナーズ、富士通インターコネクトテクノロジーズ株式会社、株式会社デンタルホールディング、株式会社キット、一風騎士ホールディングス株式会社、キューサイ株式会社、ビアメカニクス株式会社、エナジーウィズ株式会社、株式会社ネオ・コーポレーション"
+    "CapitalParties": "Advantage Partners、株式会社アドバンテッジパートナーズ、富士通インターコネクトテクノロジーズ株式会社、株式会社デンタルホールディング、株式会社キット、一風騎士ホールディングス株式会社、キューサイ株式会社、ビアメカニクス株式会社、エナジーウィズ株式会社、株式会社ネオ・コーポレーション",
+    "IssuedShares": 8252564
   },
   "sources": {
     "OfferPrice": {
@@ -102,6 +103,11 @@
       "docId": "S100OLPH",
       "docTypeCode": "240",
       "docTypeName": "公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100OLRE",
+      "docTypeCode": "290",
+      "docTypeName": "意見表明報告書"
     }
   },
   "pdfLinks": {

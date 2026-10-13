@@ -40,7 +40,8 @@
       "S100XPGA",
       "S100XTBR"
     ],
-    "CapitalParties": "トヨタアセット株式会社、トヨタ不動産株式会社、トヨタ自動車株式会社、豊田産業株式会社、豊田通商株式会社、東和不動産株式会社、株式会社豊田自動織機"
+    "CapitalParties": "トヨタアセット株式会社、トヨタ不動産株式会社、トヨタ自動車株式会社、豊田産業株式会社、豊田通商株式会社、東和不動産株式会社、株式会社豊田自動織機",
+    "IssuedShares": 325840640
   },
   "sources": {
     "OfferPrice": {
@@ -104,6 +105,11 @@
       "docId": "S100XPEK",
       "docTypeCode": "250",
       "docTypeName": "訂正公開買付届出書"
+    },
+    "IssuedShares": {
+      "docId": "S100XPGA",
+      "docTypeCode": "300",
+      "docTypeName": "訂正意見表明報告書"
     }
   },
   "pdfLinks": {
