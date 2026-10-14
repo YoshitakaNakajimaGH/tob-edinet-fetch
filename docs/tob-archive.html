@@ -645,10 +645,17 @@ main.wide {
 .share-bought {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   bottom: 0;
   border-radius: 999px;
   background: #0f6e56;
+}
+
+.share-note {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .share-axis {
@@ -1223,28 +1230,43 @@ function sharePlan(item) {
   ].map(([label, value, kind]) => ({ label, kind, value: asNumber(value) }));
   if (!marks.some((mark) => mark.value != null)) return "";
   const high = Math.max(...marks.map((mark) => mark.value || 0));
-  const fromRight = (value) => ((high - value) / high) * 100;
-  const min = marks.find((mark) => mark.kind === "min").value;
-  const max = marks.find((mark) => mark.kind === "max").value;
-  const planned = marks.find((mark) => mark.kind === "planned").value;
+  const fromLeft = (value) => (value / high) * 100;
   const bought = marks.find((mark) => mark.kind === "bought").value;
-  const fill = bought == null ? "" : `<i class="share-bought" style="width:${(bought / high) * 100}%"></i>`;
-  const ticks = [
-    ["min", "下限", min],
-    ["max", "上限", max],
-    ["planned", "予定", planned],
-  ].filter(([, , value]) => value != null).map(([kind, label, value]) => (
-    `<span class="share-tick ${kind}" style="left:${fromRight(value)}%"><b>${escapeHtml(label)}</b></span>`
+  const applied = marks.find((mark) => mark.kind === "applied").value;
+  const bar = bought != null ? bought : applied;
+  const barFromApplied = bought == null && applied != null;
+  const fill = bar == null ? "" : `<i class="share-bought" style="width:${fromLeft(bar)}%"></i>`;
+  const tickGroups = [];
+  for (const mark of marks) {
+    if (mark.kind === "applied" || mark.kind === "bought" || mark.value == null) continue;
+    const group = tickGroups.find((item) => item.value === mark.value);
+    if (group) group.labels.push(mark.label);
+    else tickGroups.push({ kind: mark.kind, labels: [mark.label], value: mark.value });
+  }
+  const ticks = tickGroups.map((group) => (
+    `<span class="share-tick ${group.kind}" style="left:${fromLeft(group.value)}%"><b>${escapeHtml(group.labels.join("/"))}</b></span>`
   )).join("");
-  const legend = marks.map((mark) => (
-    `<li class="${mark.kind}"><i></i>${escapeHtml(mark.label)} ${escapeHtml(mark.value == null ? "—" : shares(mark.value))}</li>`
+  const legendGroups = [];
+  for (const mark of marks) {
+    if (mark.value == null) {
+      legendGroups.push({ kind: mark.kind, labels: [mark.label], value: null });
+      continue;
+    }
+    const group = legendGroups.find((item) => item.value === mark.value);
+    if (group) group.labels.push(mark.label);
+    else legendGroups.push({ kind: mark.kind, labels: [mark.label], value: mark.value });
+  }
+  const legend = legendGroups.map((group) => (
+    `<li class="${group.kind}"><i></i>${escapeHtml(group.labels.join("/"))} ${escapeHtml(group.value == null ? "—" : shares(group.value))}</li>`
   )).join("");
+  const note = barFromApplied ? `<p class="share-note">買付数の記載がないため、棒は応募数です。</p>` : "";
   return `
     <div class="share-plan" aria-label="買付株数">
       <p>買付株数</p>
       <div class="share-track">${fill}${ticks}</div>
-      <div class="share-axis"><span>${escapeHtml(shares(high))}</span><span>0株</span></div>
+      <div class="share-axis"><span>0株</span><span>${escapeHtml(shares(high))}</span></div>
       <ul>${legend}</ul>
+      ${note}
     </div>`;
 }
 
