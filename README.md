@@ -4,6 +4,8 @@
 
 サイトが読むのは `docs/data/all.csv` です。機械が書いた修正前の表は `output/case_summaries/all.csv` です。
 
+会社のネットワークで GitHub Pages が開けないときは、`docs/tob-archive.html` を1ファイルだけダウンロードしてダブルクリックします。CSVと検索画面が入っていて、Pythonもローカルサーバも要りません。案件JSON作成フローが CSV を更新するときに、このHTMLも作り直します。
+
 ## 毎月の更新
 
 いまは手動です。Actions タブで `master` を選び、次の順に **Run workflow** します。
