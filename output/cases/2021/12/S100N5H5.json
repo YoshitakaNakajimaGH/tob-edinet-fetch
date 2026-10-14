@@ -138,17 +138,17 @@
     ]
   },
   "referencePrices": {
-    "priorClose": 109,
+    "priorClose": 123,
     "avg1m": null,
     "avg3m": null,
     "avg6m": null
   },
   "premiums": {
-    "vsPriorClose": 0.5046,
+    "vsPriorClose": 0.3333,
     "vs1m": null,
     "vs3m": null,
     "vs6m": null,
-    "computed": false,
+    "computed": true,
     "vsPriorCloseDerived": true
   },
   "agreedTender": {

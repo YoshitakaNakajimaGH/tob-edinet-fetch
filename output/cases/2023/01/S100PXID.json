@@ -15,11 +15,11 @@
     "OfferPeriodEnd": "2023-02-22",
     "ExistingHoldingRatio": 0.030092,
     "SpecialRelatedHoldingRatio": 0.192815,
-    "AfterPurchaseRatio": 0.2228,
+    "AfterPurchaseRatio": null,
     "IsMBO": "Yes",
     "IsHostileInitial": null,
     "PlannedSharesMin": null,
-    "PlannedSharesMax": null,
+    "PlannedSharesMax": 4911564,
     "PlannedSharesPlanned": null,
     "PurchaseConsideration": 6385033200,
     "TenderOfferAgent": "三田証券株式会社",
@@ -166,7 +166,8 @@
     "vs1m": null,
     "vs3m": null,
     "vs6m": null,
-    "computed": true
+    "computed": true,
+    "vsPriorCloseDerived": false
   },
   "agreedTender": {
     "shares": null,

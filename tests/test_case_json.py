@@ -114,6 +114,14 @@ class RuleParserTests(unittest.TestCase):
         self.assertEqual(parse_reference_market_price_details(text)["priorClose"], "")
         self.assertEqual(parse_reference_market_price_details(text, first_only=True)["priorClose"], "18,260")
 
+    def test_previous_tender_close_is_not_this_deals_prior_close(self) -> None:
+        text = (
+            "前回公開買付け実施についての公表日の前営業日である2021年９月29日の終値2,512円。"
+            "本公開買付け実施についての公表日の前営業日である2022年６月27日の終値2,784円。"
+        )
+        self.assertEqual(parse_reference_market_price_details(text)["priorClose"], "2,784")
+        self.assertEqual(parse_reference_market_price_details(text, first_only=True)["priorClose"], "2,784")
+
     def test_reference_prices_keep_three_and_six_month_averages(self) -> None:
         parsed = parse_reference_market_price_details(PRICE)
         self.assertEqual(parsed["priorClose"], "1,000")

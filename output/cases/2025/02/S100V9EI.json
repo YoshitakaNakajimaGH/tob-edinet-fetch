@@ -148,7 +148,8 @@
     "vs1m": 1.3854,
     "vs3m": null,
     "vs6m": null,
-    "computed": true
+    "computed": true,
+    "vsPriorCloseDerived": false
   },
   "agreedTender": {
     "shares": 808800,

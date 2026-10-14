@@ -148,7 +148,7 @@
     "vs1m": null,
     "vs3m": null,
     "vs6m": null,
-    "computed": false,
+    "computed": true,
     "vsPriorCloseDerived": true
   },
   "agreedTender": {
