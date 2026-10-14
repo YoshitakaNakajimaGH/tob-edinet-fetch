@@ -49,15 +49,7 @@ function text(value) {
 function matches(item) {
   const query = els.query.value.trim().toLowerCase();
   if (query) {
-    const haystack = [
-      item.TargetName,
-      item.OfferorName,
-      item.SponsorHint,
-      item.TenderOfferAgent,
-      item.caseId,
-    ]
-      .join(" ")
-      .toLowerCase();
+    const haystack = Object.values(item).join(" ").toLowerCase();
     if (!haystack.includes(query)) return false;
   }
   if (els.fromMonth.value && item.filingMonth < els.fromMonth.value) return false;
@@ -396,13 +388,17 @@ function renderDetail(item) {
 }
 
 function fillStatusOptions() {
-  const values = [...new Set(cases.map((item) => item.Status).filter(Boolean))].sort();
+  const current = els.status.value;
+  const blank = els.status.querySelector("option[value='']");
+  els.status.replaceChildren(blank || new Option("すべて", ""));
+  const values = [...new Set(cases.map((item) => (item.Status || "").trim()).filter(Boolean))].sort();
   for (const value of values) {
     const option = document.createElement("option");
     option.value = value;
     option.textContent = value;
     els.status.append(option);
   }
+  els.status.value = values.includes(current) ? current : "";
 }
 
 function bind() {
