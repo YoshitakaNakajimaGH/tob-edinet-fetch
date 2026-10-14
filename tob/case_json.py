@@ -58,6 +58,7 @@ from tob.extract_fields import (
     parse_planned_purchase_counts,
     parse_purchase_consideration,
     parse_reference_market_price_details,
+    parse_stated_prior_close,
     parse_valuation_records,
     summarize_price,
     judge_tob_result,
@@ -939,6 +940,11 @@ def _reference_prices(filings: list[dict]) -> tuple[dict[str, int | None], dict 
         for key in keys:
             parsed = parse_reference_market_price_details(first["texts"].get(key, ""), first_only=True)
             if parsed["priorClose"]:
+                return _prices_from_parsed(parsed, close_only=True), first, True
+        for key in keys:
+            close = parse_stated_prior_close(first["texts"].get(key, ""))
+            if close:
+                parsed = {"priorClose": close, "avg1m": "", "avg3m": "", "avg6m": ""}
                 return _prices_from_parsed(parsed, close_only=True), first, True
     return empty, None, False
 
