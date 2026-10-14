@@ -451,6 +451,7 @@ main.wide {
 
 .flag-mbo { background: #1d4e89; }
 .flag-hostile { background: #b42318; }
+.flag-contest { background: #6b3fa0; }
 
 .party span {
   color: var(--muted);

@@ -169,6 +169,7 @@ function dealFlags(item) {
   const flags = [];
   if (item.IsMBO === "Yes") flags.push(`<em class="flag flag-mbo">MBO</em>`);
   if (item.IsHostileInitial === "Yes") flags.push(`<em class="flag flag-hostile">敵対的</em>`);
+  if (item.IsTobContest === "Yes") flags.push(`<em class="flag flag-contest">TOB合戦</em>`);
   return flags.length ? `<span class="flags">${flags.join("")}</span>` : "";
 }
 

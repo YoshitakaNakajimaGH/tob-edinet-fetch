@@ -15,6 +15,7 @@ from tob.case_json import (
     write_case_json,
     apply_summary_corrections,
     load_summary_corrections,
+    mark_tob_contests,
     write_month_summary,
 )
 from tob.taxonomy import TaxonomyCatalog
@@ -606,6 +607,17 @@ class CaseJsonTests(unittest.TestCase):
                 all_ids = [item["caseId"] for item in csv.DictReader(handle)]
         self.assertEqual(year_ids, ["S100MARCH", "S100DECEM"])
         self.assertEqual(all_ids, ["S100MARCH", "S100DECEM"])
+
+    def test_tob_contest_marks_rival_bids_within_three_months(self) -> None:
+        rows = [
+            {"TargetName": "対象", "OfferorName": "甲", "FilingSubmitDate": "2024-05-17", "issuerTender": "false"},
+            {"TargetName": "対象", "OfferorName": "乙", "FilingSubmitDate": "2024-07-18", "issuerTender": "false"},
+            {"TargetName": "対象", "OfferorName": "甲", "FilingSubmitDate": "2025-01-01", "issuerTender": "false"},
+            {"TargetName": "別件", "OfferorName": "丙", "FilingSubmitDate": "2024-05-17", "issuerTender": "false"},
+            {"TargetName": "自社", "OfferorName": "自社", "FilingSubmitDate": "2024-05-17", "issuerTender": "true"},
+        ]
+        mark_tob_contests(rows)
+        self.assertEqual([row["IsTobContest"] for row in rows], ["Yes", "Yes", "No", "No", "No"])
 
     def test_month_summary_copies_all_csv_into_the_site_folder(self) -> None:
         path = write_month_summary("2026-03")
