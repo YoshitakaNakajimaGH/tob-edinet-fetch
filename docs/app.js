@@ -140,9 +140,25 @@ function priceChart(item) {
   const start = Math.max(0, low - pad);
   const end = high + pad;
   const at = (value) => ((value - start) / (end - start)) * 100;
-  const line = (value, kind, label) => value == null
-    ? ""
-    : `<span class="price-line ${kind}" style="left:${at(value)}%">${label ? `<b>${escapeHtml(yen(value))}</b>` : ""}</span>`;
+  const labelBox = (value) => {
+    const pos = at(value);
+    const half = Math.max(8, yen(value).length * 1.75);
+    if (pos < 10) return { left: pos, right: pos + half * 2 };
+    if (pos > 90) return { left: pos - half * 2, right: pos };
+    return { left: pos - half, right: pos + half };
+  };
+  const priorBox = prior == null ? null : labelBox(prior);
+  const offerBox = offer == null ? null : labelBox(offer);
+  const stackOffer = Boolean(
+    priorBox && offerBox && priorBox.left < offerBox.right && offerBox.left < priorBox.right,
+  );
+  const line = (value, kind, label) => {
+    if (value == null) return "";
+    const pos = at(value);
+    const lift = label && stackOffer && kind === "offer" ? " lift" : "";
+    const edge = !label ? "" : pos < 10 ? " edge-left" : pos > 90 ? " edge-right" : "";
+    return `<span class="price-line ${kind}${lift}${edge}" style="left:${pos}%">${label ? `<b>${escapeHtml(yen(value))}</b>` : ""}</span>`;
+  };
   const labeled = `${line(prior, "prior", true)}${line(offer, "offer", true)}`;
   const plain = `${line(prior, "prior", false)}${line(offer, "offer", false)}`;
   const rows = bands.map((band) => {
@@ -269,9 +285,12 @@ function sharePlan(item) {
   const fromLeft = (value) => (value / high) * 100;
   const bought = marks.find((mark) => mark.kind === "bought").value;
   const applied = marks.find((mark) => mark.kind === "applied").value;
-  const bar = bought != null ? bought : applied;
   const barFromApplied = bought == null && applied != null;
-  const fill = bar == null ? "" : `<i class="share-bought" style="width:${fromLeft(bar)}%"></i>`;
+  const pair = applied != null && bought != null;
+  const fill = [
+    applied == null ? "" : `<i class="share-applied${pair ? " pair" : ""}" style="width:${fromLeft(applied)}%"></i>`,
+    bought == null ? "" : `<i class="share-bought${pair ? " pair" : ""}" style="width:${fromLeft(bought)}%"></i>`,
+  ].join("");
   const tickGroups = [];
   for (const mark of marks) {
     if (mark.kind === "applied" || mark.kind === "bought" || mark.value == null) continue;
@@ -284,11 +303,12 @@ function sharePlan(item) {
   )).join("");
   const legendGroups = [];
   for (const mark of marks) {
-    if (mark.value == null) {
-      legendGroups.push({ kind: mark.kind, labels: [mark.label], value: null });
+    const separate = mark.value == null || mark.kind === "applied" || mark.kind === "bought";
+    if (separate) {
+      legendGroups.push({ kind: mark.kind, labels: [mark.label], value: mark.value });
       continue;
     }
-    const group = legendGroups.find((item) => item.value === mark.value);
+    const group = legendGroups.find((item) => item.value === mark.value && item.kind !== "applied" && item.kind !== "bought");
     if (group) group.labels.push(mark.label);
     else legendGroups.push({ kind: mark.kind, labels: [mark.label], value: mark.value });
   }
