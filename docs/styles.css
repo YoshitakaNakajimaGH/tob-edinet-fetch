@@ -470,6 +470,10 @@ main.wide {
   font-weight: 700;
 }
 
+.party em.flag {
+  color: #fff;
+}
+
 .party-right {
   text-align: right;
   align-items: flex-end;
