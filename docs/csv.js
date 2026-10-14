@@ -113,3 +113,9 @@ export function periodDays(start, end) {
   if (!Number.isFinite(from) || !Number.isFinite(to) || to < from) return null;
   return Math.round((to - from) / 86_400_000);
 }
+
+export function slashDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+  if (!match) return "";
+  return `${match[1]}/${Number(match[2])}/${Number(match[3])}`;
+}

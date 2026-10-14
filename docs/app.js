@@ -1,4 +1,4 @@
-import { considerationOku, escapeHtml, isSelfTender, loadCases, premiumLabel } from "./csv.js";
+import { considerationOku, escapeHtml, isSelfTender, loadCases, periodDays, premiumLabel, slashDate } from "./csv.js";
 
 const els = {
   query: document.getElementById("query"),
@@ -253,6 +253,28 @@ function holdingPies(item) {
   return `<div class="pies">${beforeParts.length ? pie("買付前", beforeParts) : ""}${afterParts.length ? pie("買付後", afterParts) : ""}</div>`;
 }
 
+function periodField(item) {
+  const start = slashDate(item.OfferPeriodStart);
+  const end = slashDate(item.OfferPeriodEnd);
+  const days = periodDays(item.OfferPeriodStart, item.OfferPeriodEnd);
+  const range = start || end ? `（${start || "—"}~${end || "—"}）` : "";
+  const value = days == null
+    ? (range || "—")
+    : `${days + 1}日<br>${range}`;
+  return `
+    <div class="item wide">
+      <span class="label">買付期間</span>
+      <span class="value">${value}</span>
+    </div>`;
+}
+
+function financingField(label, value) {
+  if (value === "" || value == null) return "";
+  const number = Number(String(value).replace(/,/g, ""));
+  const shown = number === 0 ? "0円" : considerationOku(value);
+  return field(label, shown);
+}
+
 function premiumField(item) {
   const label = premiumLabel(item.PremiumVsPriorClose, item.PremiumDerived);
   const number = Number(item.PremiumVsPriorClose);
@@ -288,15 +310,17 @@ function renderDetail(item) {
   }
   els.detail.innerHTML = `
     ${dealStory(item)}
+    <p class="capital-line">資本関係者候補 ${escapeHtml(text(item.CapitalParties))}</p>
     ${priceChart(item)}
     ${holdingPies(item)}
-    <p class="capital-line">資本関係者候補 ${escapeHtml(text(item.CapitalParties))}</p>
     <div class="grid">
       ${field("届出月", text(item.filingMonth))}
       ${field("上場区分", text(item.TargetListingStatus))}
       ${field("公開買付代理人", text(item.TenderOfferAgent))}
       ${premiumField(item)}
-      ${field("買付期間", `${text(item.OfferPeriodStart)} 〜 ${text(item.OfferPeriodEnd)}`, true)}
+      ${periodField(item)}
+      ${financingField("借入枠", item.FinancingDebt)}
+      ${financingField("出資枠", item.FinancingEquity)}
       ${field("発行済株式数", shares(item.IssuedShares))}
       ${field("買付予定株数", shares(item.PlannedSharesPlanned))}
       ${field("買付前保有（買付者）", ratio(item.ExistingHoldingRatio))}
