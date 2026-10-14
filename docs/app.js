@@ -173,6 +173,13 @@ function partyName(value) {
   return String(value || "").replace(/[\s\u3000]/g, "");
 }
 
+function dealFlags(item) {
+  const flags = [];
+  if (item.IsMBO === "Yes") flags.push(`<em class="flag flag-mbo">MBO</em>`);
+  if (item.IsHostileInitial === "Yes") flags.push(`<em class="flag flag-hostile">敵対的</em>`);
+  return flags.length ? `<span class="flags">${flags.join("")}</span>` : "";
+}
+
 function dealStory(item) {
   const self = isSelfTender(item);
   const sponsor = (item.SponsorHint || "").trim();
@@ -180,10 +187,12 @@ function dealStory(item) {
   const sameSponsor = !sponsor || partyName(sponsor) === partyName(buyer);
   const result = item.FinalResultNote || item.Status || "—";
   const resultClass = /不成立|撤回/.test(result) ? "result-bad" : /成立/.test(result) ? "result-good" : "";
+  const flags = dealFlags(item);
   if (self) {
     return `
       <div class="deal">
         <div class="party">
+          ${flags}
           <span>対象会社</span>
           <strong>${escapeHtml(item.TargetName || item.caseId)}</strong>
           <em>自社株TOB</em>
@@ -195,6 +204,7 @@ function dealStory(item) {
   return `
     <div class="deal">
       <div class="party">
+        ${flags}
         <span>対象会社</span>
         <strong>${escapeHtml(item.TargetName || item.caseId)}</strong>
       </div>
@@ -251,6 +261,48 @@ function holdingPies(item) {
       <ul>${legend(parts) || "<li>その他 100%</li>"}</ul>
     </figure>`;
   return `<div class="pies">${beforeParts.length ? pie("買付前", beforeParts) : ""}${afterParts.length ? pie("買付後", afterParts) : ""}</div>`;
+}
+
+function sharePlan(item) {
+  const marks = [
+    ["下限", item.PlannedSharesMin, "min"],
+    ["予定", item.PlannedSharesPlanned, "planned"],
+    ["上限", item.PlannedSharesMax, "max"],
+    ["応募", item.ApplicationCount, "applied"],
+    ["買付", item.PurchaseCount, "bought"],
+  ].map(([label, value, kind]) => ({ label, kind, value: asNumber(value) }));
+  if (!marks.some((mark) => mark.value != null)) return "";
+  const high = Math.max(...marks.map((mark) => mark.value || 0));
+  const at = (value) => (value / high) * 100;
+  const min = marks.find((mark) => mark.kind === "min").value;
+  const max = marks.find((mark) => mark.kind === "max").value;
+  const planned = marks.find((mark) => mark.kind === "planned").value;
+  const applied = marks.find((mark) => mark.kind === "applied").value;
+  const bought = marks.find((mark) => mark.kind === "bought").value;
+  const band = min != null && max != null
+    ? `<i class="share-band" style="left:${at(min)}%;width:${Math.max(at(max) - at(min), 1.2)}%"></i>`
+    : "";
+  const fill = [
+    planned == null ? "" : `<i class="share-planned" style="width:${at(planned)}%"></i>`,
+    applied == null ? "" : `<i class="share-applied" style="width:${at(applied)}%"></i>`,
+    bought == null ? "" : `<i class="share-bought" style="width:${at(bought)}%"></i>`,
+  ].join("");
+  const ticks = [
+    ["planned", planned],
+    ["applied", applied],
+    ["bought", bought],
+  ].filter(([, value]) => value != null).map(([kind, value]) => (
+    `<span class="share-tick ${kind}" style="left:${at(value)}%"></span>`
+  )).join("");
+  const legend = marks.map((mark) => (
+    `<li class="${mark.kind}"><i></i>${escapeHtml(mark.label)} ${escapeHtml(mark.value == null ? "—" : shares(mark.value))}</li>`
+  )).join("");
+  return `
+    <div class="share-plan" aria-label="買付株数">
+      <p>買付株数</p>
+      <div class="share-track">${band}${fill}${ticks}</div>
+      <ul>${legend}</ul>
+    </div>`;
 }
 
 function periodField(item) {
@@ -313,6 +365,7 @@ function renderDetail(item) {
     <p class="capital-line">資本関係者候補 ${escapeHtml(text(item.CapitalParties))}</p>
     ${priceChart(item)}
     ${holdingPies(item)}
+    ${sharePlan(item)}
     <div class="grid">
       ${field("届出月", text(item.filingMonth))}
       ${field("上場区分", text(item.TargetListingStatus))}
@@ -322,11 +375,9 @@ function renderDetail(item) {
       ${financingField("借入枠", item.FinancingDebt)}
       ${financingField("出資枠", item.FinancingEquity)}
       ${field("発行済株式数", shares(item.IssuedShares))}
-      ${field("買付予定株数", shares(item.PlannedSharesPlanned))}
       ${field("買付前保有（買付者）", ratio(item.ExistingHoldingRatio))}
       ${field("買付後保有", ratio(item.AfterPurchaseRatio))}
       ${field("意見", text(item.OpinionStance))}
-      ${field("応募 / 買付", `${shares(item.ApplicationCount)} / ${shares(item.PurchaseCount)}`)}
       ${field("書類総数", text(item.DocCount))}
       ${field("廃止注記", text(item.TargetDelistingNote), true)}
     </div>
