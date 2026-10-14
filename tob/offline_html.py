@@ -150,7 +150,7 @@ def build_offline_html(csv_text: str, docs_dir: Path | None = None) -> str:
   <main data-view="search" id="view-search">
     <section class="search" aria-label="検索条件">
       <label class="field grow"><span>名称</span>
-        <input id="query" type="search" placeholder="対象会社・買付者・スポンサー・代理人" autocomplete="off" />
+        <input id="query" type="search" placeholder="名称・資本関係者・証券コードなど" autocomplete="off" />
       </label>
       <label class="field"><span>開始月</span><input id="from-month" type="month" /></label>
       <label class="field"><span>終了月</span><input id="to-month" type="month" /></label>
