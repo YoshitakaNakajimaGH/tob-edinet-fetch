@@ -425,6 +425,27 @@ main.wide {
   gap: 0.15rem;
 }
 
+.flags {
+  display: flex;
+  gap: 0.35rem;
+  min-height: 1.35rem;
+  margin-bottom: 0.2rem;
+}
+
+.flag {
+  display: inline-block;
+  padding: 0.08rem 0.45rem;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.flag-mbo { background: #1d4e89; }
+.flag-hostile { background: #b42318; }
+
 .party span {
   color: var(--muted);
   font-size: 0.78rem;
@@ -590,6 +611,76 @@ main.wide {
   font-style: normal;
   font-weight: 600;
 }
+.share-plan {
+  margin: 0.2rem 0 1rem;
+}
+
+.share-plan p {
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.share-track {
+  position: relative;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: rgba(18, 32, 43, 0.08);
+}
+
+.share-band,
+.share-bought,
+.share-applied,
+.share-planned {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+}
+
+.share-band { background: rgba(29, 78, 137, 0.18); }
+.share-planned { background: #9a4d1c; }
+.share-applied { background: #1f6f8b; }
+.share-bought { background: #0f6e56; }
+
+.share-tick {
+  position: absolute;
+  top: -0.15rem;
+  bottom: -0.15rem;
+  width: 2px;
+  background: #12202b;
+}
+
+.share-plan ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  margin: 0.45rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+}
+
+.share-plan li {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.share-plan li i {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  background: #d7e0dc;
+}
+
+.share-plan .min i,
+.share-plan .max i { background: rgba(29, 78, 137, 0.35); }
+.share-plan .planned i { background: #9a4d1c; }
+.share-plan .applied i { background: #1f6f8b; }
+.share-plan .bought i { background: #0f6e56; }
+
 .capital-line {
   margin: 0 0 0.8rem;
   color: var(--ink);
