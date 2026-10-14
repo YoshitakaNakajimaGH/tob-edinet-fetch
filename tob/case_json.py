@@ -141,6 +141,7 @@ def write_case_json(document: dict, root: Path | None = None) -> Path:
 SUMMARY_COLUMNS = (
     "caseId",
     "filingMonth",
+    "FilingSubmitDate",
     "issuerTender",
     "OfferorName",
     "OfferorEdinetCode",
@@ -231,6 +232,16 @@ def case_all_summary_path(root: Path | None = None) -> Path:
     return base / "all.csv"
 
 
+def _filing_submit_date(case: dict) -> str:
+    """Submit date of the earliest tender-offer registration (doc type 240)."""
+    dates = [
+        str(item.get("submitDate") or "")[:10]
+        for item in case.get("documents") or []
+        if str(item.get("docTypeCode") or "") == "240" and item.get("submitDate")
+    ]
+    return min(dates) if dates else ""
+
+
 def _cell(value: object) -> str:
     if value is None or value is False:
         return "" if value is not False else "false"
@@ -264,6 +275,7 @@ def summary_row(case: dict) -> dict[str, str]:
     row = {
         "caseId": _cell(case.get("caseId")),
         "filingMonth": _cell(case.get("filingMonth")),
+        "FilingSubmitDate": _filing_submit_date(case),
         "issuerTender": _cell(bool(case.get("issuerTender"))),
         "OfferorName": _cell(core.get("OfferorName")),
         "OfferorEdinetCode": _cell(core.get("OfferorEdinetCode")),
