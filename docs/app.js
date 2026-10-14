@@ -250,17 +250,17 @@ function holdingPies(item) {
     special ? { label: "特別関係者", share: special, color: "#1f6f8b" } : null,
   ].filter(Boolean);
   const afterParts = after ? [{ label: "買付後", share: Math.min(after, 1), color: "#0f6e56" }] : [];
-  if (!beforeParts.length && !afterParts.length) return "";
   const legend = (parts) => parts.map((part) => (
     `<li><i style="background:${part.color}"></i>${escapeHtml(part.label)} ${escapeHtml((part.share * 100).toFixed(1))}%</li>`
   )).join("");
   const pie = (title, parts) => `
     <figure class="pie">
       <figcaption>${escapeHtml(title)}</figcaption>
-      <span class="pie-disc" style="background:${pieStyle(parts)}"></span>
-      <ul>${legend(parts) || "<li>その他 100%</li>"}</ul>
+      ${parts.length
+        ? `<span class="pie-disc" style="background:${pieStyle(parts)}"></span><ul>${legend(parts)}</ul>`
+        : `<span class="pie-disc pie-empty"></span><ul><li>記載なし</li></ul>`}
     </figure>`;
-  return `<div class="pies">${beforeParts.length ? pie("買付前", beforeParts) : ""}${afterParts.length ? pie("買付後", afterParts) : ""}</div>`;
+  return `<div class="pies">${pie("買付前", beforeParts)}${pie("買付後", afterParts)}</div>`;
 }
 
 function sharePlan(item) {
@@ -273,26 +273,18 @@ function sharePlan(item) {
   ].map(([label, value, kind]) => ({ label, kind, value: asNumber(value) }));
   if (!marks.some((mark) => mark.value != null)) return "";
   const high = Math.max(...marks.map((mark) => mark.value || 0));
-  const at = (value) => (value / high) * 100;
+  const fromRight = (value) => ((high - value) / high) * 100;
   const min = marks.find((mark) => mark.kind === "min").value;
   const max = marks.find((mark) => mark.kind === "max").value;
   const planned = marks.find((mark) => mark.kind === "planned").value;
-  const applied = marks.find((mark) => mark.kind === "applied").value;
   const bought = marks.find((mark) => mark.kind === "bought").value;
-  const band = min != null && max != null
-    ? `<i class="share-band" style="left:${at(min)}%;width:${Math.max(at(max) - at(min), 1.2)}%"></i>`
-    : "";
-  const fill = [
-    planned == null ? "" : `<i class="share-planned" style="width:${at(planned)}%"></i>`,
-    applied == null ? "" : `<i class="share-applied" style="width:${at(applied)}%"></i>`,
-    bought == null ? "" : `<i class="share-bought" style="width:${at(bought)}%"></i>`,
-  ].join("");
+  const fill = bought == null ? "" : `<i class="share-bought" style="width:${(bought / high) * 100}%"></i>`;
   const ticks = [
-    ["planned", planned],
-    ["applied", applied],
-    ["bought", bought],
-  ].filter(([, value]) => value != null).map(([kind, value]) => (
-    `<span class="share-tick ${kind}" style="left:${at(value)}%"></span>`
+    ["min", "下限", min],
+    ["max", "上限", max],
+    ["planned", "予定", planned],
+  ].filter(([, , value]) => value != null).map(([kind, label, value]) => (
+    `<span class="share-tick ${kind}" style="left:${fromRight(value)}%"><b>${escapeHtml(label)}</b></span>`
   )).join("");
   const legend = marks.map((mark) => (
     `<li class="${mark.kind}"><i></i>${escapeHtml(mark.label)} ${escapeHtml(mark.value == null ? "—" : shares(mark.value))}</li>`
@@ -300,7 +292,8 @@ function sharePlan(item) {
   return `
     <div class="share-plan" aria-label="買付株数">
       <p>買付株数</p>
-      <div class="share-track">${band}${fill}${ticks}</div>
+      <div class="share-track">${fill}${ticks}</div>
+      <div class="share-axis"><span>${escapeHtml(shares(high))}</span><span>0株</span></div>
       <ul>${legend}</ul>
     </div>`;
 }
@@ -310,21 +303,24 @@ function periodField(item) {
   const end = slashDate(item.OfferPeriodEnd);
   const days = periodDays(item.OfferPeriodStart, item.OfferPeriodEnd);
   const range = start || end ? `（${start || "—"}~${end || "—"}）` : "";
-  const value = days == null
-    ? (range || "—")
-    : `${days + 1}日<br>${range}`;
+  const daysText = days == null ? "—" : `${days + 1}日`;
   return `
     <div class="item wide">
       <span class="label">買付期間</span>
-      <span class="value">${value}</span>
+      <span class="value period-line"><b>${daysText}</b><span>${range || "—"}</span></span>
     </div>`;
 }
 
-function financingField(label, value) {
-  if (value === "" || value == null) return "";
+function yenFacility(value) {
+  if (value === "" || value == null) return "—";
   const number = Number(String(value).replace(/,/g, ""));
-  const shown = number === 0 ? "0円" : considerationOku(value);
-  return field(label, shown);
+  if (!Number.isFinite(number)) return String(value);
+  if (number === 0) return "0円";
+  return considerationOku(value);
+}
+
+function financingField(item) {
+  return field("借入・出資", `借入 ${yenFacility(item.FinancingDebt)}　出資 ${yenFacility(item.FinancingEquity)}`);
 }
 
 function premiumField(item) {
@@ -372,14 +368,13 @@ function renderDetail(item) {
       ${field("公開買付代理人", text(item.TenderOfferAgent))}
       ${premiumField(item)}
       ${periodField(item)}
-      ${financingField("借入枠", item.FinancingDebt)}
-      ${financingField("出資枠", item.FinancingEquity)}
       ${field("発行済株式数", shares(item.IssuedShares))}
       ${field("買付前保有（買付者）", ratio(item.ExistingHoldingRatio))}
       ${field("買付後保有", ratio(item.AfterPurchaseRatio))}
       ${field("意見", text(item.OpinionStance))}
       ${field("書類総数", text(item.DocCount))}
-      ${field("廃止注記", text(item.TargetDelistingNote), true)}
+      ${field("廃止注記", text(item.TargetDelistingNote))}
+      ${financingField(item)}
     </div>
     <div class="links">${links.join("") || "<span class='value'>—</span>"}</div>
   `;

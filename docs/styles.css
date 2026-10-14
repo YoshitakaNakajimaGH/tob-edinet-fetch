@@ -281,6 +281,12 @@ main {
   grid-column: 1 / -1;
 }
 
+.period-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .links {
   display: flex;
   flex-wrap: wrap;
@@ -629,20 +635,22 @@ main.wide {
   background: rgba(18, 32, 43, 0.08);
 }
 
-.share-band,
-.share-bought,
-.share-applied,
-.share-planned {
+.share-bought {
   position: absolute;
   top: 0;
+  right: 0;
   bottom: 0;
   border-radius: 999px;
+  background: #0f6e56;
 }
 
-.share-band { background: rgba(29, 78, 137, 0.18); }
-.share-planned { background: #9a4d1c; }
-.share-applied { background: #1f6f8b; }
-.share-bought { background: #0f6e56; }
+.share-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
 
 .share-tick {
   position: absolute;
@@ -650,6 +658,23 @@ main.wide {
   bottom: -0.15rem;
   width: 2px;
   background: #12202b;
+}
+
+.share-tick b {
+  position: absolute;
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.share-track { margin-top: 1.1rem; }
+
+.pie-empty {
+  background: rgba(18, 32, 43, 0.06);
 }
 
 .share-plan ul {
