@@ -617,10 +617,13 @@ main.wide {
 }
 .price-line.prior b,
 .price-line.offer b { top: -1.05rem; }
+.price-line.lift b { top: -2.35rem; }
+.price-line.edge-left b { left: 0; transform: none; }
+.price-line.edge-right b { left: 0; transform: translateX(-100%); }
 .price-line.prior b { color: #5c6b76; }
 .price-line.offer { background: #9a4d1c; }
 .price-line.offer b { color: #9a4d1c; }
-.band-track.axis { margin-top: 1.15rem; }
+.band-track.axis { margin-top: 2.7rem; }
 
 .same-as {
   display: block;
@@ -647,14 +650,28 @@ main.wide {
   background: rgba(18, 32, 43, 0.08);
 }
 
+.share-applied,
 .share-bought {
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   border-radius: 999px;
-  background: #0f6e56;
 }
+
+.share-applied { background: #b7ebc9; }
+
+.share-bought { background: #0f6e56; }
+
+.share-applied.pair,
+.share-bought.pair {
+  bottom: auto;
+  height: 0.34rem;
+}
+
+.share-applied.pair { top: 0.06rem; }
+
+.share-bought.pair { top: auto; bottom: 0.06rem; }
 
 .share-note {
   margin: 0.35rem 0 0;
@@ -722,7 +739,7 @@ main.wide {
 .share-plan .min i,
 .share-plan .max i { background: rgba(29, 78, 137, 0.35); }
 .share-plan .planned i { background: #9a4d1c; }
-.share-plan .applied i { background: #1f6f8b; }
+.share-plan .applied i { background: #b7ebc9; }
 .share-plan .bought i { background: #0f6e56; }
 
 .capital-line {
@@ -1102,9 +1119,25 @@ function priceChart(item) {
   const start = Math.max(0, low - pad);
   const end = high + pad;
   const at = (value) => ((value - start) / (end - start)) * 100;
-  const line = (value, kind, label) => value == null
-    ? ""
-    : `<span class="price-line ${kind}" style="left:${at(value)}%">${label ? `<b>${escapeHtml(yen(value))}</b>` : ""}</span>`;
+  const labelBox = (value) => {
+    const pos = at(value);
+    const half = Math.max(8, yen(value).length * 1.75);
+    if (pos < 10) return { left: pos, right: pos + half * 2 };
+    if (pos > 90) return { left: pos - half * 2, right: pos };
+    return { left: pos - half, right: pos + half };
+  };
+  const priorBox = prior == null ? null : labelBox(prior);
+  const offerBox = offer == null ? null : labelBox(offer);
+  const stackOffer = Boolean(
+    priorBox && offerBox && priorBox.left < offerBox.right && offerBox.left < priorBox.right,
+  );
+  const line = (value, kind, label) => {
+    if (value == null) return "";
+    const pos = at(value);
+    const lift = label && stackOffer && kind === "offer" ? " lift" : "";
+    const edge = !label ? "" : pos < 10 ? " edge-left" : pos > 90 ? " edge-right" : "";
+    return `<span class="price-line ${kind}${lift}${edge}" style="left:${pos}%">${label ? `<b>${escapeHtml(yen(value))}</b>` : ""}</span>`;
+  };
   const labeled = `${line(prior, "prior", true)}${line(offer, "offer", true)}`;
   const plain = `${line(prior, "prior", false)}${line(offer, "offer", false)}`;
   const rows = bands.map((band) => {
@@ -1231,9 +1264,12 @@ function sharePlan(item) {
   const fromLeft = (value) => (value / high) * 100;
   const bought = marks.find((mark) => mark.kind === "bought").value;
   const applied = marks.find((mark) => mark.kind === "applied").value;
-  const bar = bought != null ? bought : applied;
   const barFromApplied = bought == null && applied != null;
-  const fill = bar == null ? "" : `<i class="share-bought" style="width:${fromLeft(bar)}%"></i>`;
+  const pair = applied != null && bought != null;
+  const fill = [
+    applied == null ? "" : `<i class="share-applied${pair ? " pair" : ""}" style="width:${fromLeft(applied)}%"></i>`,
+    bought == null ? "" : `<i class="share-bought${pair ? " pair" : ""}" style="width:${fromLeft(bought)}%"></i>`,
+  ].join("");
   const tickGroups = [];
   for (const mark of marks) {
     if (mark.kind === "applied" || mark.kind === "bought" || mark.value == null) continue;
@@ -1246,11 +1282,12 @@ function sharePlan(item) {
   )).join("");
   const legendGroups = [];
   for (const mark of marks) {
-    if (mark.value == null) {
-      legendGroups.push({ kind: mark.kind, labels: [mark.label], value: null });
+    const separate = mark.value == null || mark.kind === "applied" || mark.kind === "bought";
+    if (separate) {
+      legendGroups.push({ kind: mark.kind, labels: [mark.label], value: mark.value });
       continue;
     }
-    const group = legendGroups.find((item) => item.value === mark.value);
+    const group = legendGroups.find((item) => item.value === mark.value && item.kind !== "applied" && item.kind !== "bought");
     if (group) group.labels.push(mark.label);
     else legendGroups.push({ kind: mark.kind, labels: [mark.label], value: mark.value });
   }

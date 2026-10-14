@@ -610,10 +610,13 @@ main.wide {
 }
 .price-line.prior b,
 .price-line.offer b { top: -1.05rem; }
+.price-line.lift b { top: -2.35rem; }
+.price-line.edge-left b { left: 0; transform: none; }
+.price-line.edge-right b { left: 0; transform: translateX(-100%); }
 .price-line.prior b { color: #5c6b76; }
 .price-line.offer { background: #9a4d1c; }
 .price-line.offer b { color: #9a4d1c; }
-.band-track.axis { margin-top: 1.15rem; }
+.band-track.axis { margin-top: 2.7rem; }
 
 .same-as {
   display: block;
@@ -640,14 +643,28 @@ main.wide {
   background: rgba(18, 32, 43, 0.08);
 }
 
+.share-applied,
 .share-bought {
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   border-radius: 999px;
-  background: #0f6e56;
 }
+
+.share-applied { background: #b7ebc9; }
+
+.share-bought { background: #0f6e56; }
+
+.share-applied.pair,
+.share-bought.pair {
+  bottom: auto;
+  height: 0.34rem;
+}
+
+.share-applied.pair { top: 0.06rem; }
+
+.share-bought.pair { top: auto; bottom: 0.06rem; }
 
 .share-note {
   margin: 0.35rem 0 0;
@@ -715,7 +732,7 @@ main.wide {
 .share-plan .min i,
 .share-plan .max i { background: rgba(29, 78, 137, 0.35); }
 .share-plan .planned i { background: #9a4d1c; }
-.share-plan .applied i { background: #1f6f8b; }
+.share-plan .applied i { background: #b7ebc9; }
 .share-plan .bought i { background: #0f6e56; }
 
 .capital-line {
