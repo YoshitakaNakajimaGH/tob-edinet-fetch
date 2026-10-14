@@ -16,6 +16,8 @@ import re
 import sys
 import time
 import zipfile
+from collections import defaultdict
+from datetime import date
 from pathlib import Path
 
 from tob.enrich_tob import (
@@ -158,6 +160,7 @@ SUMMARY_COLUMNS = (
     "AfterPurchaseRatio",
     "IsMBO",
     "IsHostileInitial",
+    "IsTobContest",
     "PlannedSharesMin",
     "PlannedSharesMax",
     "PlannedSharesPlanned",
@@ -230,6 +233,65 @@ def case_all_summary_path(root: Path | None = None) -> Path:
     """output/case_summaries/all.csv. Every case JSON summarized so far."""
     base = Path(root) if root is not None else DEFAULT_SUMMARY_DIR
     return base / "all.csv"
+
+
+TOB_CONTEST_DAYS = 92
+
+
+def _filing_day(value: str):
+    text = (value or "").strip()
+    if len(text) != 10 or text[4] != "-" or text[7] != "-":
+        return None
+    try:
+        return date(int(text[0:4]), int(text[5:7]), int(text[8:10]))
+    except ValueError:
+        return None
+
+
+def mark_tob_contests(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Mark offers for the same target by different buyers within three months.
+
+    Three months is 92 days between filing dates. A later offer can count even
+    when the first offer period has already ended, as with a follow-up counterbid.
+    """
+    groups: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in rows:
+        row["IsTobContest"] = "No"
+        if str(row.get("issuerTender")).lower() == "true":
+            continue
+        target = (row.get("TargetName") or "").strip()
+        offeror = (row.get("OfferorName") or "").strip()
+        filed = _filing_day(row.get("FilingSubmitDate") or "")
+        if target and offeror and filed is not None:
+            groups[target].append(row)
+    for items in groups.values():
+        parent = list(range(len(items)))
+
+        def find(index: int) -> int:
+            while parent[index] != index:
+                parent[index] = parent[parent[index]]
+                index = parent[index]
+            return index
+
+        dated = [(index, _filing_day(item.get("FilingSubmitDate") or "")) for index, item in enumerate(items)]
+        for left, left_day in dated:
+            for right, right_day in dated[left + 1 :]:
+                if items[left].get("OfferorName", "").strip() == items[right].get("OfferorName", "").strip():
+                    continue
+                if left_day is None or right_day is None:
+                    continue
+                if abs((left_day - right_day).days) <= TOB_CONTEST_DAYS:
+                    parent[find(left)] = find(right)
+        members: dict[int, list[int]] = defaultdict(list)
+        for index in range(len(items)):
+            members[find(index)].append(index)
+        for indexes in members.values():
+            buyers = {(items[index].get("OfferorName") or "").strip() for index in indexes}
+            if len(buyers) < 2:
+                continue
+            for index in indexes:
+                items[index]["IsTobContest"] = "Yes"
+    return rows
 
 
 def _filing_submit_date(case: dict) -> str:
@@ -420,6 +482,7 @@ def write_month_summary(filing_month: str, case_root: Path | None = None, summar
             continue
         all_rows.extend(_read_summary_rows(month_file))
     all_path = case_all_summary_path(base)
+    mark_tob_contests(all_rows)
     _write_summary_rows(all_path, all_rows)
     self_rows = [row for row in all_rows if str(row.get("issuerTender")).lower() == "true"]
     self_path = base / "self_tob.csv"

@@ -175,7 +175,7 @@ def build_offline_html(csv_text: str, docs_dir: Path | None = None) -> str:
         <thead>
           <tr>
             <th>届出提出日</th><th>上場区分</th><th>対象会社</th><th>買収者</th><th>直前株価</th><th>プレミアム</th>
-            <th>買付総額</th><th>MBO</th><th>敵対的</th><th>結果</th><th>期間日数</th><th>幹事証券</th>
+            <th>買付総額</th><th>MBO</th><th>敵対的</th><th>合戦</th><th>結果</th><th>期間日数</th><th>幹事証券</th>
           </tr>
         </thead>
         <tbody data-role="body"></tbody>

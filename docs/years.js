@@ -193,6 +193,7 @@ function renderTable() {
       <td>${escapeHtml(considerationOku(item.PurchaseConsideration))}</td>
       <td>${escapeHtml(yesNo(item.IsMBO))}</td>
       <td>${escapeHtml(yesNo(item.IsHostileInitial))}</td>
+      <td>${escapeHtml(yesNo(item.IsTobContest))}</td>
       ${resultCell(item)}
       <td>${escapeHtml(period)}</td>
       <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
@@ -222,7 +223,7 @@ async function boot() {
     renderTable();
   } catch (error) {
     els.meta.textContent = "データを読めませんでした。ローカルサーバ経由で開いてください。";
-    const span = selfOnly ? 9 : 12;
+    const span = selfOnly ? 9 : 13;
     els.body.innerHTML = `<tr><td colspan="${span}">${escapeHtml(String(error))}</td></tr>`;
   }
 }
