@@ -638,10 +638,17 @@ main.wide {
 .share-bought {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   bottom: 0;
   border-radius: 999px;
   background: #0f6e56;
+}
+
+.share-note {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .share-axis {

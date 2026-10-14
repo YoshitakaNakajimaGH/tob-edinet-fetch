@@ -417,6 +417,9 @@ def write_month_summary(filing_month: str, case_root: Path | None = None, summar
         corrected_self = [row for row in corrected if str(row.get("issuerTender")).lower() == "true"]
         _write_summary_rows(DEFAULT_SITE_DATA, corrected)
         _write_summary_rows(DEFAULT_SELF_SITE_DATA, corrected_self)
+        from tob.offline_html import write_offline_archive
+
+        write_offline_archive(DEFAULT_SITE_DATA)
     return path
 
 

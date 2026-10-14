@@ -608,6 +608,16 @@ class CaseJsonTests(unittest.TestCase):
             ids = [item["caseId"] for item in csv.DictReader(handle)]
         self.assertIn("S100XNYP", ids)
 
+    def test_offline_html_embeds_the_site_csv(self) -> None:
+        from tob.offline_html import build_offline_html
+
+        html = build_offline_html("caseId,TargetName\nS100TEST,試験株式会社\n", Path("docs"))
+        self.assertIn("S100TEST", html)
+        self.assertIn("試験株式会社", html)
+        self.assertNotIn("type=\"module\"", html)
+        self.assertNotIn("fetch(DATA_URL)", html)
+        self.assertIn("window.TOB_CSV", html)
+
     def test_document_from_xbrl_keeps_full_text_and_stock_price_element(self) -> None:
         long_text = "あ" * 6000
         mapping = {
