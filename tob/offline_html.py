@@ -174,7 +174,7 @@ def build_offline_html(csv_text: str, docs_dir: Path | None = None) -> str:
       <table class="year-table">
         <thead>
           <tr>
-            <th>上場区分</th><th>対象会社</th><th>買収者</th><th>直前株価</th><th>プレミアム</th>
+            <th>届出提出日</th><th>上場区分</th><th>対象会社</th><th>買収者</th><th>直前株価</th><th>プレミアム</th>
             <th>買付総額</th><th>MBO</th><th>敵対的</th><th>結果</th><th>期間日数</th><th>幹事証券</th>
           </tr>
         </thead>
@@ -189,7 +189,7 @@ def build_offline_html(csv_text: str, docs_dir: Path | None = None) -> str:
       <table class="year-table">
         <thead>
           <tr>
-            <th>対象会社</th><th>買付予定株数</th><th>発行済株式数</th><th>予定比率</th>
+            <th>届出提出日</th><th>対象会社</th><th>買付予定株数</th><th>発行済株式数</th><th>予定比率</th>
             <th>買付総額</th><th>結果</th><th>期間日数</th><th>幹事証券</th>
           </tr>
         </thead>

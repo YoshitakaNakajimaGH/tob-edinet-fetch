@@ -5,6 +5,7 @@ import {
   loadCases,
   offerorLabel,
   periodDays,
+  slashDate,
   premiumLabel,
   resultLabel,
   yenLabel,
@@ -150,8 +151,8 @@ function renderTable() {
   const rows = cases
     .filter((item) => filingYear(item) === selectedYear)
     .sort((a, b) => {
-      const left = `${a.OfferPeriodStart || ""}${a.caseId}`;
-      const right = `${b.OfferPeriodStart || ""}${b.caseId}`;
+      const left = `${a.FilingSubmitDate || a.OfferPeriodStart || ""}${a.caseId}`;
+      const right = `${b.FilingSubmitDate || b.OfferPeriodStart || ""}${b.caseId}`;
       return left < right ? -1 : left > right ? 1 : 0;
     });
   els.meta.textContent = selectedYear
@@ -172,6 +173,7 @@ function renderTable() {
       : "—";
     tr.innerHTML = selfOnly
       ? `
+      <td>${escapeHtml(slashDate(item.FilingSubmitDate) || "—")}</td>
       <td>${escapeHtml(item.TargetName || item.caseId)}</td>
       <td>${escapeHtml(sharesLabel(item.PlannedSharesPlanned))}</td>
       <td>${escapeHtml(sharesLabel(item.IssuedShares))}</td>
@@ -182,6 +184,7 @@ function renderTable() {
       <td>${escapeHtml(item.TenderOfferAgent || "—")}</td>
     `
       : `
+      <td>${escapeHtml(slashDate(item.FilingSubmitDate) || "—")}</td>
       <td>${escapeHtml(item.TargetListingStatus || "—")}</td>
       <td>${escapeHtml(item.TargetName || item.caseId)}</td>
       <td>${escapeHtml(offerorLabel(item))}</td>
@@ -219,7 +222,7 @@ async function boot() {
     renderTable();
   } catch (error) {
     els.meta.textContent = "データを読めませんでした。ローカルサーバ経由で開いてください。";
-    const span = selfOnly ? 8 : 11;
+    const span = selfOnly ? 9 : 12;
     els.body.innerHTML = `<tr><td colspan="${span}">${escapeHtml(String(error))}</td></tr>`;
   }
 }
