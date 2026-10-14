@@ -254,6 +254,18 @@ class PlannedPurchaseTests(unittest.TestCase):
         self.assertEqual(parsed["PlannedSharesMin"], "12,133,398")
         self.assertEqual(parsed["PlannedSharesMax"], EXPLICIT_EMPTY)
 
+    def test_parses_three_cells_when_the_total_row_is_absent(self) -> None:
+        text = (
+            "（３）【買付予定の株券等の数】"
+            "買付予定数買付予定数の下限買付予定数の上限"
+            "15,015,111（株）7,539,900（株）─（株）"
+            "（注１）応募株券等の数の合計が買付予定数の下限に満たない場合"
+        )
+        parsed = parse_planned_purchase_counts(text)
+        self.assertEqual(parsed["PlannedSharesPlanned"], "15,015,111")
+        self.assertEqual(parsed["PlannedSharesMin"], "7,539,900")
+        self.assertEqual(parsed["PlannedSharesMax"], EXPLICIT_EMPTY)
+
 
 class PurchaseConsiderationTests(unittest.TestCase):
     def test_parses_yen_amount(self) -> None:

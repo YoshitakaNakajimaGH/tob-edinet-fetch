@@ -1809,6 +1809,9 @@ def _reference_price_windows(text: str) -> list[dict[str, str]]:
     )
     windows: list[dict[str, str]] = []
     for match in re.finditer(r"公表日の前営業日|公表日前営業日", plain):
+        sentence_start = plain.rfind("。", 0, match.start())
+        if "前回" in plain[sentence_start + 1 : match.start()]:
+            continue
         window = plain[match.end() : match.end() + 420]
         stop = re.search(r"。|公表日の前営業日|公表日前営業日", window)
         if stop:
@@ -1861,7 +1864,10 @@ def parse_stated_prior_close(text: str) -> str:
     )
     found: list[tuple[str, str]] = []
     for match in pattern.finditer(plain):
-        before = plain[max(0, match.start() - 40) : match.start()]
+        sentence_start = plain.rfind("。", 0, match.start())
+        before = plain[sentence_start + 1 : match.start()]
+        if "前回" in before:
+            continue
         if before.endswith("平均") or "単純平均" in before[-8:]:
             continue
         if any(word in before for word in ("中央値", "類似", "事例", "第１回", "第２回", "再提案")):
@@ -1998,14 +2004,14 @@ def _is_dash_count(token: str) -> bool:
     stripped = (token or "").strip()
     if not stripped:
         return True
-    dash_chars = set("―－—-−‑ー")
+    dash_chars = set("―－—-−‑ー─━")
     return all(ch in dash_chars for ch in stripped)
 
 
 _SHARE_UNIT = r"(?:株|口|個)"
 _SHARE_PAREN = rf"(?:\({_SHARE_UNIT}\)|（{_SHARE_UNIT}）)"
 _SHARE_SUFFIX = rf"(?:{_SHARE_PAREN}|{_SHARE_UNIT})?"
-_DASH_CHARS = "―－—-−‑ー"
+_DASH_CHARS = "―－—-−‑ー─━"
 EXPLICIT_EMPTY = "-"
 
 
@@ -2013,6 +2019,8 @@ def _planned_table_found(section: str) -> bool:
     if re.search(rf"合計[\d,，]+{_SHARE_SUFFIX}?", section):
         return True
     if re.search(r"合計.{0,40}(?:上限|下限|買付予定数)", section):
+        return True
+    if re.search(r"買付予定数の上限", section):
         return True
     return bool("買付予定の株券等の数" in section and "合計" in section)
 
@@ -2057,6 +2065,29 @@ def _extract_planned_purchase_section(compact: str) -> str:
         if match:
             tail = tail[: match.start()]
     return tail[:1200]
+
+
+def _parse_header_row_counts(
+    section: str,
+) -> tuple[int | None, int | None, int | None, bool, bool]:
+    """Read the three cells under 買付予定数 / 下限 / 上限 when there is no 合計 row."""
+    cell = rf"(?:[\d,，]+|[{_DASH_CHARS}]+)"
+    match = re.search(
+        rf"買付予定数の上限({cell}){_SHARE_PAREN}({cell}){_SHARE_PAREN}({cell}){_SHARE_PAREN}",
+        section,
+    )
+    if not match:
+        return None, None, None, False, False
+
+    def one(token: str) -> tuple[int | None, bool]:
+        if _is_dash_count(token):
+            return None, True
+        return _parse_int(token), False
+
+    planned, _planned_dash = one(match.group(1))
+    floor, floor_dash = one(match.group(2))
+    cap, cap_dash = one(match.group(3))
+    return planned, floor, cap, floor_dash, cap_dash
 
 
 def _parse_total_row_counts(
@@ -2111,6 +2142,17 @@ def parse_planned_purchase_counts(text: str) -> dict[str, str]:
     no_cap = bool(re.search(r"上限(?:及び下限)?[をは]?(?:設定して|定めて)おりません", section))
 
     table_planned, table_floor, table_cap, floor_dash, cap_dash = _parse_total_row_counts(section)
+    if table_planned is None:
+        header_planned, header_floor, header_cap, header_floor_dash, header_cap_dash = (
+            _parse_header_row_counts(section)
+        )
+        table_planned = header_planned
+        if table_floor is None and not floor_dash:
+            table_floor = header_floor
+            floor_dash = header_floor_dash
+        if table_cap is None and not cap_dash:
+            table_cap = header_cap
+            cap_dash = header_cap_dash
 
     floor_val = None if no_floor else table_floor
     cap_val = None if no_cap else table_cap

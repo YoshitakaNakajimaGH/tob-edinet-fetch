@@ -18,7 +18,7 @@
     "AfterPurchaseRatio": 0.7683,
     "IsMBO": "Yes",
     "IsHostileInitial": "No",
-    "PlannedSharesMin": null,
+    "PlannedSharesMin": 4716300,
     "PlannedSharesMax": null,
     "PlannedSharesPlanned": null,
     "PurchaseConsideration": 1517777670,
@@ -152,7 +152,8 @@
     "vs1m": 0.2,
     "vs3m": null,
     "vs6m": null,
-    "computed": true
+    "computed": true,
+    "vsPriorCloseDerived": false
   },
   "agreedTender": {
     "shares": 835600,

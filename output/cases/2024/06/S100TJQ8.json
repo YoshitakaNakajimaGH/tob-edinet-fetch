@@ -18,9 +18,9 @@
     "AfterPurchaseRatio": 0.8483,
     "IsMBO": "No",
     "IsHostileInitial": "No",
-    "PlannedSharesMin": null,
+    "PlannedSharesMin": 14372200,
     "PlannedSharesMax": null,
-    "PlannedSharesPlanned": null,
+    "PlannedSharesPlanned": 21557194,
     "PurchaseConsideration": 123738293560,
     "TenderOfferAgent": "大和証券株式会社",
     "OpinionStance": "賛同・応募推奨",
@@ -160,7 +160,8 @@
     "vs1m": null,
     "vs3m": null,
     "vs6m": null,
-    "computed": true
+    "computed": true,
+    "vsPriorCloseDerived": false
   },
   "agreedTender": {
     "shares": null,

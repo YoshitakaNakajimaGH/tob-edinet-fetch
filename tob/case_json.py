@@ -540,6 +540,10 @@ def build_case_json(filing_month: str, documents: list[dict], *, case_id: str = 
     purpose_text = _section_text(filings, ("purposes",))
     raw_holdings, after_doc = _holdings(latest_filing, latest_report)
     holdings = _apply_explicit_zero(raw_holdings, purpose_text)
+    if result_note in {"不成立", "撤回"} and not _positive_purchase(counts):
+        # The filing's after-purchase ratio is the plan if the offer had succeeded.
+        holdings["after"] = None
+        after_doc = None
     references, ref_source, prior_derived = _reference_prices(filings)
     premiums = _premiums(offer_price, references)
     premiums["vsPriorCloseDerived"] = bool(prior_derived and premiums.get("vsPriorClose") is not None)
@@ -767,6 +771,11 @@ def _yen_number(text: str) -> int | None:
     if any(unit in text for unit in ("ウォン", "ドル")):
         return None
     return _parse_int(re.sub(r"[^\d]", "", text))
+
+
+def _positive_purchase(counts: dict) -> bool:
+    number = _count_or_none(str(counts.get("PurchaseCount") or ""))
+    return number is not None and number > 0
 
 
 def _count_or_none(value: str) -> int | None:

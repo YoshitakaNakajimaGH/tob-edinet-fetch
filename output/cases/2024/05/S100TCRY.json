@@ -15,7 +15,7 @@
     "OfferPeriodEnd": "2024-06-19",
     "ExistingHoldingRatio": 0.001108,
     "SpecialRelatedHoldingRatio": 0.033357,
-    "AfterPurchaseRatio": 0.0347,
+    "AfterPurchaseRatio": null,
     "IsMBO": "No",
     "IsHostileInitial": null,
     "PlannedSharesMin": 10811204,
@@ -168,7 +168,8 @@
     "vs1m": 0.5789,
     "vs3m": null,
     "vs6m": null,
-    "computed": true
+    "computed": true,
+    "vsPriorCloseDerived": false
   },
   "agreedTender": {
     "shares": null,

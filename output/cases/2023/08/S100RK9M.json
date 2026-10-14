@@ -15,7 +15,7 @@
     "OfferPeriodEnd": "2023-10-18",
     "ExistingHoldingRatio": 0.0,
     "SpecialRelatedHoldingRatio": null,
-    "AfterPurchaseRatio": 0.0,
+    "AfterPurchaseRatio": null,
     "IsMBO": "No",
     "IsHostileInitial": "No",
     "PlannedSharesMin": 7628600,
@@ -168,7 +168,8 @@
     "vs1m": 0.3866,
     "vs3m": null,
     "vs6m": null,
-    "computed": true
+    "computed": true,
+    "vsPriorCloseDerived": false
   },
   "agreedTender": {
     "shares": null,
