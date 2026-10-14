@@ -1847,6 +1847,35 @@ def _reference_price_windows(text: str) -> list[dict[str, str]]:
     return windows
 
 
+def parse_stated_prior_close(text: str) -> str:
+    """Yen close written next to a premium or discount, without a 円 suffix.
+
+    Used when the filing does not say 公表日の前営業日. Averages, comparable-deal
+    medians, and earlier price proposals are skipped. The filing-date close is
+    used only when no earlier close is paired with a percent.
+    """
+    plain = re.sub(r"\s+", "", strip_html(text or ""))
+    pattern = re.compile(
+        r"終値[（(]?([0-9０-９,，]+)円[)）]?"
+        r"に対して([0-9０-９]+(?:[.．][0-9０-９]+)?)％"
+    )
+    found: list[tuple[str, str]] = []
+    for match in pattern.finditer(plain):
+        before = plain[max(0, match.start() - 40) : match.start()]
+        if before.endswith("平均") or "単純平均" in before[-8:]:
+            continue
+        if any(word in before for word in ("中央値", "類似", "事例", "第１回", "第２回", "再提案")):
+            continue
+        after = plain[match.end() : match.end() + 120]
+        if "プレミアム" not in after and "ディスカウント" not in after:
+            continue
+        found.append((_yen_amount(match.group(1)), before))
+    if not found:
+        return ""
+    earlier = [close for close, before in found if "本書提出日" not in before and "提出日の前営業日" not in before]
+    return (earlier or [close for close, _before in found])[0]
+
+
 def parse_reference_market_price_details(text: str, *, first_only: bool = False) -> dict[str, str]:
     """Announcement prior-close and 1/3/6-month averages, without a 円 suffix.
 

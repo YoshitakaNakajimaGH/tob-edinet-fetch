@@ -25,6 +25,7 @@ from tob.extract_fields import (
     parse_fairness_measures,
     parse_financing,
     parse_reference_market_price_details,
+    parse_stated_prior_close,
     parse_valuation_records,
 )
 
@@ -84,6 +85,26 @@ class RuleParserTests(unittest.TestCase):
         self.assertEqual(parse_board_opinion(OPINION_SUPPORT), "賛同・応募推奨")
         self.assertEqual(parse_board_opinion("対象者は判断を留保する。"), "判断留保")
         self.assertEqual(parse_board_opinion(""), "")
+
+    def test_stated_premium_close_when_the_wording_is_not_announcement_day(self) -> None:
+        self.assertEqual(
+            parse_stated_prior_close("終値（1,135円）に対して35.42％のプレミアムを加えた価格"),
+            "1,135",
+        )
+        self.assertEqual(
+            parse_stated_prior_close(
+                "終値3,450円に対して21.74％のプレミアム。"
+                "本書提出日の前営業日の終値4,185円に対して0.36％のプレミアム"
+            ),
+            "3,450",
+        )
+        self.assertEqual(
+            parse_stated_prior_close(
+                "終値4,480円に対して9.60％（小数点以下第三位を四捨五入。以下、ディスカウント率の計算において同じです。）"
+            ),
+            "4,480",
+        )
+        self.assertEqual(parse_stated_prior_close("類似案件の終値3,000円に対して25％のプレミアム"), "")
 
     def test_first_announcement_close_survives_a_later_price(self) -> None:
         text = (
